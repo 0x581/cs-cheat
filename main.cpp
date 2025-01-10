@@ -10,6 +10,10 @@ namespace offsets {
 	constexpr auto movementServices = 0x11E8; // Parent: localPlayerPawn
 	constexpr auto buttons = 0x48; // Parent: movementServices
 	constexpr auto jump = 0x1861A00; // In client
+	constexpr auto attack = 0x18625A0;
+	constexpr auto dwViewRender = 0x1A81080;
+	constexpr auto dwGlowManager = 0x1A7B758;
+	constexpr auto dwEntityList = 0x1A157C8;
 }
 
 namespace keybinds {
