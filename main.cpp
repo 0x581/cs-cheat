@@ -38,11 +38,7 @@ int main()
 
 	while (true)
 	{
-		int t = client + offsets::localPlayerPawn;
-		if (offsets::m_flFlashDuration > 0)
-		{
-			mem.Write<float>(t + 0x13F8, 0);
-		}
+		
 		if (GetAsyncKeyState(keybinds::slowMode) ^ DEFAULT_SLOW)
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		else
@@ -62,8 +58,7 @@ int main()
 			bunnyHop(&mem, client);
 		if (offsets::m_flFlashDuration > 0)
 		{
-			mem.Write<float>(t + 0x13F8, 0);
+			mem.Write<float>(localPlayer + 0x13F8, 0);
 		}
-		
 	}
 }
