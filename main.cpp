@@ -13,7 +13,7 @@ namespace keybinds {
 	constexpr auto bunnyHop = VK_SPACE;
 }
 
-
+constexpr auto DEFAULT_SLOW = true;
 
 
 int main()
@@ -38,7 +38,7 @@ int main()
 
 	while (true)
 	{
-		if (GetAsyncKeyState(keybinds::slowMode))
+		if (GetAsyncKeyState(keybinds::slowMode) ^ DEFAULT_SLOW)
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		else
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
