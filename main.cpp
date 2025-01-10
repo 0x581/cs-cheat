@@ -6,7 +6,7 @@
 #include <bitset>
 
 
-#define bits(n) std::bitset<sizeof(n) * 8>(n)
+#include "modules/bunnyHop.hpp"
 
 namespace keybinds {
 	constexpr auto slowMode = VK_MENU;
@@ -14,29 +14,7 @@ namespace keybinds {
 }
 
 
-void bunnyHop(const Memory *mem, uintptr_t client)
-{
-	//const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 
-	static bool jump = false;
-	if (!jump)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		mem->Write<int>(client + offsets::jump, 65537);
-		jump = true;
-	}
-	if (jump)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		mem->Write<int>(client + offsets::jump, 256);
-		jump = false;
-	}
-}
-
-void radarHack(const Memory* mem, uintptr_t client)
-{
-
-}
 
 int main()
 {
