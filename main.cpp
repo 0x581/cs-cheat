@@ -7,6 +7,7 @@
 
 
 #include "modules/bunnyHop.hpp"
+#include "modules/antiflash.hpp"
 
 namespace keybinds {
 	constexpr auto slowMode = VK_MENU;
@@ -53,13 +54,13 @@ int main()
 		const auto movementService = mem.Read<std::uintptr_t>(localPlayer + offsets::movementServices);
 
 		mem.Inspect(movementService + offsets::buttons, 64);
-
-		if (GetAsyncKeyState(keybinds::bunnyHop))
-			bunnyHop(&mem, client);
-		//working antiflash pls implement
+		//working anti flash pls implement
 		if (offsets::m_flFlashDuration > 0)
 		{
 			mem.Write<float>(localPlayer + 0x13F8, 0);
 		}
+		if (GetAsyncKeyState(keybinds::bunnyHop))
+			bunnyHop(&mem, client);
+		
 	}
 }

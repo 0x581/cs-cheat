@@ -141,8 +141,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="modules\activeCheats.hpp" />
+    <ClInclude Include="antiflash.hpp" />
     <ClInclude Include="memory.hpp" />
+    <ClInclude Include="modules\activeCheats.hpp" />
+    <ClInclude Include="modules\glow.hpp" />
+    <ClInclude Include="modules\radarHack.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
