@@ -2,8 +2,13 @@
 
 #include <Windows.h>
 #include <iostream>
+#include <sstream>
+#include <format>
+#include <iomanip>
 
 #include <TlHelp32.h>
+
+#define BYTES_PER_ROW 64
 
 class Memory {
 
@@ -81,5 +86,46 @@ public:
 	template <typename T>
 	bool Write(uintptr_t address, T value) const {
 		return WriteProcessMemory(this->process, (LPVOID)address, &value, sizeof(T), NULL);
+	}
+
+	void Inspect(uintptr_t address, size_t nBytes) const {
+		size_t nBytesRead = 0;
+		byte* data = new byte[nBytes];
+
+		bool ret = ReadProcessMemory(this->process, (LPCVOID)address, data, nBytes, &nBytesRead);
+
+		if (!ret) {
+			std::cout << "Inspect " << nBytes << " bytes at 0x" << std::hex << address << std::dec << " failed." << std::endl;
+
+			delete[] data;
+			return;
+		}
+
+		std::ostringstream byteString{};
+		
+		byteString << std::hex;
+
+		for (size_t i = 0; i < nBytesRead; i += BYTES_PER_ROW)
+		{
+			for (size_t j = 0; (i + j < nBytesRead) and j < BYTES_PER_ROW; j++)
+			{
+				if (i + j >= nBytes) {
+					std::cout << "Read over the limit." << std::endl;
+					exit(-1);
+				}
+
+				byteString << std::setw(2) << std::setfill('0') << (unsigned int)data[i + j] << " ";
+			}
+			byteString << std::endl;
+		}
+		byteString << std::dec;
+		
+		if (nBytesRead != nBytes) {
+			byteString << "Inspect read " << nBytesRead << "/" << nBytes << " bytes." << std::endl;
+		}
+
+		std::cout << byteString.str();
+
+		delete[] data;
 	}
 };
