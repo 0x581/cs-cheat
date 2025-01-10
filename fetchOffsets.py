@@ -114,7 +114,7 @@ def get_offset(offset: Offset) -> str:
 
 def get_all_offsets() -> str:
     """This function gets the offsets from the github repo."""
-    offsets = "namespace offsets {\n"
+    offsets = "#pragma once\n\nnamespace offsets {\n"
 
     longest = max(len(offset.alias) for offset in OFFSETS) + 40
 
