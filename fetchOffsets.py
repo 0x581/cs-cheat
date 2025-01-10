@@ -23,6 +23,7 @@ OFFSETS: list[Offset] = [
         "localPlayerPawn",
         "offsets.hpp",
         "dwLocalPlayerPawn",
+        "Relative to client.dll",
     ),
     Offset(
         "onGroundLastTick",
@@ -46,7 +47,25 @@ OFFSETS: list[Offset] = [
         "jump",
         "buttons.hpp",
         "jump",
-        "Namespace in client.dll",
+        "Relative to client.dll",
+    ),
+    Offset(
+        "entityList",
+        "offsets.hpp",
+        "dwEntityList",
+        "Relative to client.dll",
+    ),
+    Offset(
+        "teamNum",
+        "client_dll.hpp",
+        "m_iTeamNum",
+        "Member of C_BaseEntity",
+    ),
+    Offset(
+        "spotted",
+        "client_dll.hpp",
+        "m_bSpotted",
+        "Member of EntitySpottedState_t",
     ),
 ]
 
