@@ -1,16 +1,12 @@
 #include "memory.hpp"
+#include "offsets.hpp"
 
 #include <thread>
 #include <iostream>
+#include <bitset>
 
-namespace offsets {
-	//constexpr auto localPlayerController = 0x1A64E90;
-	constexpr auto localPlayerPawn = 0x1868CF8;
-	constexpr auto onGroundLastTick = 0x2298;
-	constexpr auto movementServices = 0x11E8; // Parent: localPlayerPawn
-	constexpr auto buttons = 0x48; // Parent: movementServices
-	constexpr auto jump = 0x1861A00; // In client
-}
+
+#define bits(n) std::bitset<sizeof(n) * 8>(n)
 
 namespace keybinds {
 	constexpr auto bunnyHop = VK_SPACE;
@@ -73,9 +69,10 @@ int main()
 		if (!localPlayer)
 			continue;
 
-		//const auto movementService = mem.Read<std::uintptr_t>(localPlayer + offsets::movementServices);
-		//const auto buttons = mem.Read<BIG_data>(movementService + offsets::buttons);
-		//std::cout << buttons.a << buttons.b << buttons.c << buttons.d << std::endl;
+		const auto movementService = mem.Read<std::uintptr_t>(localPlayer + offsets::movementServices);
+		const auto buttons = mem.Read<BIG_data>(movementService + offsets::buttons);
+
+		std::cout << bits(buttons.a) << bits(buttons.b) << std::endl;
 
 
 		if (GetAsyncKeyState(keybinds::bunnyHop))
