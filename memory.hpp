@@ -3,12 +3,11 @@
 #include <Windows.h>
 #include <iostream>
 #include <sstream>
-#include <format>
 #include <iomanip>
 
 #include <TlHelp32.h>
 
-#define BYTES_PER_ROW 64
+constexpr auto BYTES_PER_ROW = 32;
 
 class Memory {
 
