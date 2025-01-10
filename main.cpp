@@ -13,15 +13,8 @@ namespace keybinds {
 	constexpr auto bunnyHop = VK_SPACE;
 }
 
-struct BIG_data {
-	size_t a;
-	size_t b;
-	size_t c;
-	size_t d;
-};
 
-
-void bhop(const Memory *mem, uintptr_t client)
+void bunnyHop(const Memory *mem, uintptr_t client)
 {
 	//const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 
@@ -38,6 +31,11 @@ void bhop(const Memory *mem, uintptr_t client)
 		mem->Write<int>(client + offsets::jump, 256);
 		jump = false;
 	}
+}
+
+void radarHack(const Memory* mem, uintptr_t client)
+{
+
 }
 
 int main()
@@ -65,7 +63,7 @@ int main()
 		if (GetAsyncKeyState(keybinds::slowMode))
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		else
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 		const auto localPlayer = mem.Read<std::uintptr_t>(client + offsets::localPlayerPawn);
 
@@ -74,12 +72,10 @@ int main()
 			continue;
 
 		const auto movementService = mem.Read<std::uintptr_t>(localPlayer + offsets::movementServices);
-		const auto buttons = mem.Read<BIG_data>(movementService + offsets::buttons);
 
-		std::cout << bits(buttons.a) << bits(buttons.b) << std::endl;
-
+		mem.Inspect(movementService + offsets::buttons, 64);
 
 		if (GetAsyncKeyState(keybinds::bunnyHop))
-			bhop(&mem, client);
+			bunnyHop(&mem, client);
 	}
 }
