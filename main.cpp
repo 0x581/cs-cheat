@@ -9,6 +9,7 @@
 #define bits(n) std::bitset<sizeof(n) * 8>(n)
 
 namespace keybinds {
+	constexpr auto slowMode = VK_MENU;
 	constexpr auto bunnyHop = VK_SPACE;
 }
 
@@ -61,6 +62,9 @@ int main()
 
 	while (true)
 	{
+		if (GetAsyncKeyState(keybinds::slowMode))
+			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+		else
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 		const auto localPlayer = mem.Read<std::uintptr_t>(client + offsets::localPlayerPawn);
