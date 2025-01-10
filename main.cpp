@@ -56,6 +56,7 @@ int main()
 
 		if (GetAsyncKeyState(keybinds::bunnyHop))
 			bunnyHop(&mem, client);
+		//working antiflash pls implement
 		if (offsets::m_flFlashDuration > 0)
 		{
 			mem.Write<float>(localPlayer + 0x13F8, 0);
