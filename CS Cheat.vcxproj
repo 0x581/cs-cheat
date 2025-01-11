@@ -143,8 +143,11 @@
   <ItemGroup>
     <ClInclude Include="memory.hpp" />
     <ClInclude Include="modules\activeCheats.hpp" />
-    <ClInclude Include="modules\glow.hpp" />
+    <ClInclude Include="modules\triggerbot.hpp" />
     <ClInclude Include="modules\radarHack.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fetchOffsets.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

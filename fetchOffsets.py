@@ -73,6 +73,18 @@ OFFSETS: list[Offset] = [
         "m_flFlashDuration",
         "Member of localPlayerPawn",
     ),
+    Offset(
+        "attack",
+        "offsets.hpp",
+        "attack",
+
+    ),
+    Offset(
+        "IDEntIndex",
+        "client_dll.hpp",
+        "m_iIDEntIndex",
+        
+    ),
 ]
 
 

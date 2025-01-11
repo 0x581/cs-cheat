@@ -29,14 +29,14 @@
     <ClInclude Include="modules\radarHack.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="modules\glow.hpp">
+    <ClInclude Include="modules\triggerbot.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="modules\activeCheats.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="antiflash.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fetchOffsets.py" />
   </ItemGroup>
 </Project>

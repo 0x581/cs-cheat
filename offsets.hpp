@@ -16,4 +16,6 @@ namespace offsets {
     constexpr auto m_iszPlayerName = 0x660;
     constexpr auto m_entitySpottedState = 0x23D0;
     constexpr auto m_iHealth = 0x344;
+    constexpr auto IDEntIndex = 0x1458;
+    constexpr auto attack = 0x18625A0;
 }

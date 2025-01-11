@@ -9,10 +9,12 @@
 
 #include "modules/bunnyHop.hpp"
 #include "modules/antiflash.hpp"
+#include "modules/triggerbot.hpp"
 
 namespace keybinds {
 	constexpr auto slowMode = VK_MENU;
 	constexpr auto bunnyHop = VK_SPACE;
+	constexpr auto triggerbot = VK_RBUTTON;
 }
 
 constexpr auto DEFAULT_SLOW = false;
@@ -57,7 +59,8 @@ int main()
 		//mem.Inspect(entityList, 64);
 
 		std::cout << std::endl;
-
+		if (GetAsyncKeyState(keybinds::triggerbot))
+			triggerbot(mem);
 		if (GetAsyncKeyState(keybinds::bunnyHop))
 			bunnyHop(mem);
 		//get entity list
@@ -82,8 +85,7 @@ int main()
 			// reads any health
 			UINT health = mem.Read<int>(currentPawn + offsets::m_iHealth);
 			//shows health
-			std::cout << health << "hp" << std::endl;
-			
+			//std::cout << health << "hp" << std::endl;
 			//string name = mem.Read<string>(currentController + offsets::m_iszPlayerName);
 			//bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
 			//string spottedStatus = spotted == true ? "spotted" : " ";
