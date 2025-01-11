@@ -34,7 +34,7 @@ int main()
 
 	while (true)
 	{
-		if (GetAsyncKeyState(keybinds::slowMode) ^ DEFAULT_SLOW)
+		if (!GetAsyncKeyState(keybinds::slowMode) != !DEFAULT_SLOW)
 			std::this_thread::sleep_for(std::chrono::milliseconds(500));
 		else
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -47,11 +47,6 @@ int main()
 
 		const auto movementService = mem.Read<std::uintptr_t>(localPlayer + offsets::movementServices);
 
-		//working anti flash pls implement
-		if (offsets::m_flFlashDuration > 0)
-		{
-			mem.Write<float>(localPlayer + 0x13F8, 0);
-		}
 		const auto entityList = mem.Read<std::uintptr_t>(client + offsets::entityList);
 
 		std::cout << "LocalBasePlayerPawn address: 0x" << std::hex << localPlayer << std::dec << std::endl;
