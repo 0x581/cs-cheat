@@ -46,8 +46,10 @@ int main()
 		// No local player -> No match currently going on
 		if (!localPlayer)
 			continue;
+
 		if (GetAsyncKeyState(keybinds::triggerbot))
 			triggerbot(mem);
+
 		if (GetAsyncKeyState(keybinds::bunnyHop))
 			bunnyHop(mem);
 
@@ -81,6 +83,7 @@ int main()
 
 			// reads any health
 			auto health = mem.Read<int>(currentPawn + offsets::health);
+
 			//shows health
 			std::cout << health << "hp ";
 			
