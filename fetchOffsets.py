@@ -98,7 +98,7 @@ OFFSETS: list[Offset] = [
 
     Offset(
         "attack",
-        "offsets.hpp",
+        "buttons.hpp",
         "attack",
 
     ),
