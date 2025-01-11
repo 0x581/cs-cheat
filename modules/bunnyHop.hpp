@@ -10,21 +10,23 @@
 #ifdef ENABLE_BHOP
 
 
-void static bunnyHop(const Memory* mem, uintptr_t client)
+void static bunnyHop(const Memory &mem)
 {
 	//const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
+
+	const auto client = mem.GetModuleAddress(L"client.dll");
 
 	static bool jump = false;
 	if (!jump)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		mem->Write<int>(client + offsets::jump, 65537);
+		mem.Write<int>(client + offsets::jump, 65537);
 		jump = true;
 	}
 	if (jump)
 	{
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		mem->Write<int>(client + offsets::jump, 256);
+		mem.Write<int>(client + offsets::jump, 256);
 		jump = false;
 	}
 }

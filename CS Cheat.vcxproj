@@ -141,7 +141,6 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="antiflash.hpp" />
     <ClInclude Include="memory.hpp" />
     <ClInclude Include="modules\activeCheats.hpp" />
     <ClInclude Include="modules\glow.hpp" />

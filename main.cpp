@@ -30,12 +30,6 @@ int main()
 
 	const auto client = mem.GetModuleAddress(L"client.dll");
 
-	if (!client) {
-		std::cout << "Failed to find required module: client.dll\nPress any key to exit." << std::endl;
-		(void)getchar();
-		exit(-1);
-	}
-
 	std::cout << "Simple CS2 cheat running (PID: " << mem.getProcessId() << ")" << std::endl;
 
 	while (true)
@@ -70,6 +64,8 @@ int main()
 		std::cout << std::endl;
 
 		if (GetAsyncKeyState(keybinds::bunnyHop))
-			bunnyHop(&mem, client);
+			bunnyHop(mem);
+
+		antiFlash(mem);
 	}
 }
