@@ -47,7 +47,7 @@ void runRadarLoop(const Memory& mem)
 
 	while (activeCheats.radar.load())
 	{
-		std::this_thread::sleep_for(std::chrono::seconds(10));
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 
 		const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 

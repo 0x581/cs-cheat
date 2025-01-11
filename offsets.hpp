@@ -17,4 +17,5 @@ namespace offsets
     constexpr auto health = 0x344;              // Member of C_BaseEntity
     constexpr auto attack = 0x18625A0;
     constexpr auto IDEntIndex = 0x1458;
+    constexpr auto PlayerName = 0x660; //needs to be added to python
 }
