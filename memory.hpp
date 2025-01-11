@@ -6,6 +6,30 @@
 #include <iomanip>
 
 #include <TlHelp32.h>
+#include <unordered_map>
+
+struct WCharHash {
+	size_t operator()(const wchar_t* const str) const noexcept {
+		size_t hash = 0;
+
+		auto len = std::wcslen(str);
+
+		for (size_t i = 0; i < len; ++i)
+		{
+			hash += hash * 65599 + str[i];
+		}
+
+		return hash ^ (hash >> 16);
+	}
+};
+
+// Custom equality function for wchar_t*
+struct WCharEqual {
+	bool operator()(const wchar_t* const lhs, const wchar_t* const rhs) const noexcept {
+		return std::wcscmp(lhs, rhs) == 0;
+	}
+};
+
 
 constexpr auto BYTES_PER_ROW = 32;
 
@@ -15,64 +39,81 @@ private:
 	DWORD id = 0; // PID
 	HANDLE process = NULL; // Process handle
 
+	std::unordered_map<const wchar_t *, uintptr_t, WCharHash, WCharEqual> modules{};
+
 public:
 	Memory(const wchar_t* processName) {
-		PROCESSENTRY32W entry{};
-		entry.dwSize = sizeof(PROCESSENTRY32W);
+		PROCESSENTRY32W processEntry{};
+		processEntry.dwSize = sizeof(PROCESSENTRY32W);
 
-		const auto snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+		const auto processSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
-		if (snapShot == INVALID_HANDLE_VALUE) {
+		if (processSnapShot == INVALID_HANDLE_VALUE) {
 			DWORD error = GetLastError();
 			std::cout << "Process snapshot failed: " << error << std::endl;
 			return;
 		}
 
-		while (Process32NextW(snapShot, &entry)) {
-			if (!wcscmp(processName, entry.szExeFile)) {
-				this->id = entry.th32ProcessID;
+		while (Process32NextW(processSnapShot, &processEntry)) {
+			if (!wcscmp(processName, processEntry.szExeFile)) {
+				this->id = processEntry.th32ProcessID;
 				this->process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->id);
 				break;
 			}
 		}
 
-		if (snapShot)
-			CloseHandle(snapShot);
+		if (processSnapShot)
+			CloseHandle(processSnapShot);
+
+		if (!this->id || !this->process)
+			return;
+
+		MODULEENTRY32W moduleEntry{};
+		moduleEntry.dwSize = sizeof(MODULEENTRY32W);
+
+		const auto moduleSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, this->id);
+
+		if (moduleSnapShot == INVALID_HANDLE_VALUE) {
+			DWORD error = GetLastError();
+			std::cout << "Module snapshot failed: " << error << std::endl;
+			return;
+		}
+
+		while (Module32NextW(moduleSnapShot, &moduleEntry)) {
+			auto len = wcslen(moduleEntry.szModule) + 1;
+			wchar_t* mNameCopy = new wchar_t[len];
+
+			if (!wcscpy_s(mNameCopy, len, moduleEntry.szModule))
+				modules[mNameCopy] = reinterpret_cast<uintptr_t>(moduleEntry.modBaseAddr);
+			else
+				delete[] mNameCopy;
+		}
+
+		if (moduleSnapShot)
+			CloseHandle(moduleSnapShot);
 	}
 
 	~Memory() {
 		if (this->process)
 			CloseHandle(this->process);
+
+		for(auto &module : this->modules)
+		{
+			delete[] module.first;
+		}
+
+		this->modules.clear();
 	}
 
 	DWORD getProcessId() const { return this->id; }
 	HANDLE getProcessHandle() const { return this->process; }
 
-	uintptr_t GetModuleAddress(const wchar_t* moduleName) const {
-		MODULEENTRY32W entry{};
-		entry.dwSize = sizeof(MODULEENTRY32W);
-
-		const auto snapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, this->id);
-
-		if (snapShot == INVALID_HANDLE_VALUE) {
-			DWORD error = GetLastError();
-			std::cout << "Module snapshot failed: " << error << std::endl;
-			return 0;
+	uintptr_t GetModuleAddress(const wchar_t* moduleName) const{
+		if (!modules.contains(moduleName)) {
+			std::wcout << "Failed to find module: " << moduleName << std::endl;
 		}
 
-		uintptr_t result = 0;
-
-		while (Module32NextW(snapShot, &entry)) {
-			if (!wcscmp(moduleName, entry.szModule)) {
-				result = reinterpret_cast<uintptr_t>(entry.modBaseAddr);
-				break;
-			}
-		}
-
-		if (snapShot)
-			CloseHandle(snapShot);
-
-		return result;
+		return modules.at(moduleName);
 	}
 
 	template <typename T>

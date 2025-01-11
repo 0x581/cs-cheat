@@ -1,12 +1,12 @@
 """
-This file gets the offsets from https://github.com/a2x/cs2-dumper
+This file gets the offsets from https://cloud.0x581.zip/s/fZna7TEp5SbsBc4/download?path=%2F&files=
 """
 
 from dataclasses import dataclass
 
 import requests
 
-OFFSETS_URL = "https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/"
+OFFSETS_URL = "https://cloud.0x581.zip/s/fZna7TEp5SbsBc4/download?path=%2F&files="
 
 FETCHED_FILES: dict[str, str] = {}
 
@@ -29,7 +29,7 @@ OFFSETS: list[Offset] = [
         "onGroundLastTick",
         "client_dll.hpp",
         "m_bOnGroundLastTick",
-        "Relative to localPlayerPawn, bool",
+        "Member of localPlayerPawn",
     ),
     Offset(
         "movementServices",
@@ -66,6 +66,12 @@ OFFSETS: list[Offset] = [
         "client_dll.hpp",
         "m_bSpotted",
         "Member of EntitySpottedState_t",
+    ),
+    Offset(
+        "flashDuration",
+        "client_dll.hpp",
+        "m_flFlashDuration",
+        "Member of localPlayerPawn",
     ),
 ]
 
