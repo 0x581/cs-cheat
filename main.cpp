@@ -45,18 +45,14 @@ int main()
 		if (!localPlayer)
 			continue;
 
-		const auto movementService = mem.Read<std::uintptr_t>(localPlayer + offsets::movementServices);
+		//const auto entityList = mem.Read<std::uintptr_t>(client + offsets::entityList);
 
-		const auto entityList = mem.Read<std::uintptr_t>(client + offsets::entityList);
+		//std::cout << "LocalBasePlayerPawn address: 0x" << std::hex << localPlayer << std::dec << std::endl;
+		//std::cout << "Entity List address: 0x" << std::hex << entityList << std::dec << std::endl;
 
-		std::cout << "LocalBasePlayerPawn address: 0x" << std::hex << localPlayer << std::dec << std::endl;
-		std::cout << "Entity List address: 0x" << std::hex << entityList << std::dec << std::endl;
+		//mem.Inspect(entityList, 64);
 
-		mem.Inspect(movementService + offsets::buttons, 32);
-
-		mem.Inspect(entityList, 64);
-
-		std::cout << std::endl;
+		//std::cout << std::endl;
 
 		if (GetAsyncKeyState(keybinds::bunnyHop))
 			bunnyHop(mem);
