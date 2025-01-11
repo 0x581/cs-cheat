@@ -74,6 +74,29 @@ OFFSETS: list[Offset] = [
         "Member of localPlayerPawn",
     ),
     Offset(
+        "playerPawn",
+        "client_dll.hpp",
+        "m_hPlayerPawn",
+    ),
+    Offset(
+        "playerName",
+        "client_dll.hpp",
+        "m_iszPlayerName",
+    ),
+    Offset(
+        "entitySpottedState",
+        "client_dll.hpp",
+        "m_entitySpottedState",
+        "Member of C_CSPlayerPawn, was 0x23D0",
+    ),
+    Offset(
+        "health",
+        "client_dll.hpp",
+        "m_iHealth",
+        "Member of C_BaseEntity",
+    ),
+
+    Offset(
         "attack",
         "offsets.hpp",
         "attack",
