@@ -42,9 +42,9 @@ void static triggerbot(const Memory& mem)
 			auto entityTeam = mem.Read<int>(currentPawn + offsets::teamNum);
 			if (team != entityTeam) // if entity is enemy
 			{
-					mem.Write<int>(client + offsets::attack, 65537);//+ attack
+					mem.Write<int>(client + offsets::attack, 65537);			// + attack
 					std::this_thread::sleep_for(std::chrono::milliseconds(10));
-					mem.Write<int>(client + offsets::attack, 256);//-attack
+					mem.Write<int>(client + offsets::attack, 256);				// - attack
 			}
 		}
 	}

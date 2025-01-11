@@ -11,15 +11,6 @@
 #include "modules/antiflash.hpp"
 #include "modules/triggerbot.hpp"
 
-namespace keybinds {
-	constexpr auto slowMode = VK_MENU;
-	constexpr auto bunnyHop = VK_SPACE;
-	constexpr auto triggerbot = VK_RBUTTON;
-}
-
-constexpr auto DEFAULT_SLOW = false;
-
-
 int main()
 {
 	const auto mem = Memory(L"cs2.exe");
