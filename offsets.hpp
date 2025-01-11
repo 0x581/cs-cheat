@@ -11,8 +11,9 @@ namespace offsets {
     constexpr auto spotted = 0x8;                       // Member of EntitySpottedState_t
     constexpr auto glowObjectManager = 0x5309C78;
     constexpr auto m_flFlashBangTime = 0x13F8;
-    constexpr auto m_flFlashDuration = 0x140C;
+    constexpr auto FlashDuration = 0x140C;
     constexpr auto m_hPlayerPawn = 0x80C;
     constexpr auto m_iszPlayerName = 0x660;
     constexpr auto m_entitySpottedState = 0x23D0;
+    constexpr auto m_iHealth = 0x344;
 }

@@ -49,20 +49,19 @@ int main()
 
 		const auto entityList = mem.Read<std::uintptr_t>(client + offsets::entityList);
 
-		std::cout << "LocalBasePlayerPawn address: 0x" << std::hex << localPlayer << std::dec << std::endl;
-		std::cout << "Entity List address: 0x" << std::hex << entityList << std::dec << std::endl;
+		//std::cout << "LocalBasePlayerPawn address: 0x" << std::hex << localPlayer << std::dec << std::endl;
+		//std::cout << "Entity List address: 0x" << std::hex << entityList << std::dec << std::endl;
 
-		mem.Inspect(movementService + offsets::buttons, 32);
+		//mem.Inspect(movementService + offsets::buttons, 32);
 
-		mem.Inspect(entityList, 64);
+		//mem.Inspect(entityList, 64);
 
 		std::cout << std::endl;
 
 		if (GetAsyncKeyState(keybinds::bunnyHop))
-			bunnyHop(&mem, client);
+			bunnyHop(mem);
 		//get entity list
-		uintptr_t entityList = mem.Read<uintptr_t>(client + offsets::entityList);
-
+		antiFlash(mem);
 		//first entry 
 		uintptr_t listEntry = mem.Read<uintptr_t>(entityList +0x10);
 		for (int i = 0; i < 64; i++)
@@ -79,15 +78,17 @@ int main()
 				continue;
 			uintptr_t listEntry2 = mem.Read<uintptr_t>(entityList + 0x8 *((pawnHandle & 0x7FFF)>>9) + 0x10);
 
-			uintptr_t currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 *(pawnHandle & 0x1FF));
-
+			uintptr_t currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
+			// reads any health
+			UINT health = mem.Read<int>(currentPawn + offsets::m_iHealth);
+			//shows health
+			std::cout << health << "hp" << std::endl;
+			
 			//string name = mem.Read<string>(currentController + offsets::m_iszPlayerName);
-
-			bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
-
-
+			//bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
 			//string spottedStatus = spotted == true ? "spotted" : " ";
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
 	}
 }
