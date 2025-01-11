@@ -73,6 +73,22 @@ OFFSETS: list[Offset] = [
         "m_flFlashDuration",
         "Member of localPlayerPawn",
     ),
+    Offset(
+        "playerPawn",
+        "client_dll.hpp",
+        "m_hPlayerPawn",
+    ),
+    Offset(
+        "playerName",
+        "client_dll.hpp",
+        "m_iszPlayerName",
+    ),
+    Offset(
+        "entitySpottedState",
+        "client_dll.hpp",
+        "m_entitySpottedState",
+        "Member of C_CSPlayerPawn",
+    ),
 ]
 
 
