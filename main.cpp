@@ -14,7 +14,7 @@ namespace keybinds {
 	constexpr auto bunnyHop = VK_SPACE;
 }
 
-constexpr auto DEFAULT_SLOW = true;
+constexpr auto DEFAULT_SLOW = false;
 
 
 int main()
@@ -36,7 +36,7 @@ int main()
 	}
 
 	std::cout << "Simple CS2 cheat running (PID: " << mem.getProcessId() << ")" << std::endl;
-
+	
 	while (true)
 	{
 		
@@ -53,14 +53,40 @@ int main()
 
 		const auto movementService = mem.Read<std::uintptr_t>(localPlayer + offsets::movementServices);
 
-		mem.Inspect(movementService + offsets::buttons, 64);
 		//working anti flash pls implement
-		if (offsets::m_flFlashDuration > 0)
-		{
+		
 			mem.Write<float>(localPlayer + 0x13F8, 0);
-		}
+		
 		if (GetAsyncKeyState(keybinds::bunnyHop))
 			bunnyHop(&mem, client);
-		
+		//get entity list
+		uintptr_t entityList = mem.Read<uintptr_t>(client + offsets::entityList);
+
+		//first entry 
+		uintptr_t listEntry = mem.Read<uintptr_t>(entityList +0x10);
+		for (int i = 0; i < 64; i++)
+		{
+			if (listEntry == 0)// skip if invalid
+				continue;
+			//get current controller
+			uintptr_t currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
+
+			if (currentController == 0)
+				continue; // if invalid skip
+			int pawnHandle = mem.Read<int>(currentController + offsets::m_hPlayerPawn);
+			if (pawnHandle == 0)
+				continue;
+			uintptr_t listEntry2 = mem.Read<uintptr_t>(entityList + 0x8 *((pawnHandle & 0x7FFF)>>9) + 0x10);
+
+			uintptr_t currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 *(pawnHandle & 0x1FF));
+
+			//string name = mem.Read<string>(currentController + offsets::m_iszPlayerName);
+
+			bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
+
+
+			//string spottedStatus = spotted == true ? "spotted" : " ";
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(50));
 	}
 }
