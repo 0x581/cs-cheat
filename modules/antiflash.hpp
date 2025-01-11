@@ -16,7 +16,7 @@ void static antiFlash(const Memory &mem)
 
 	const auto localPlayer = mem.Read<std::uintptr_t>(client + offsets::localPlayerPawn);
 
-	mem.Write<float>(localPlayer + offsets::FlashDuration, 0);
+	mem.Write<float>(localPlayer + offsets::flashDuration, 0);
 }
 
 #else
