@@ -33,6 +33,6 @@ void static bunnyHop(const Memory &mem)
 
 #else
 
-static void bunnyHop(const Memory* mem, uintptr_t client) {}
+static void bunnyHop(const Memory& mem) {}
 
 #endif

@@ -51,5 +51,5 @@ void static triggerbot(const Memory& mem)
 }
 
 #else
-void glowHack(const Memory* mem, uintptr_t client) {}
+void static triggerbot(const Memory& mem) {}
 #endif

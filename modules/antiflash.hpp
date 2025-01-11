@@ -21,6 +21,6 @@ void static antiFlash(const Memory &mem)
 
 #else
 
-static void antiflash(const Memory* mem, uintptr_t client) {}
+static void antiflash(const Memory& mem) {}
 
 #endif
