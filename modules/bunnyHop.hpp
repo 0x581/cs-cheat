@@ -6,33 +6,29 @@
 
 #include "../memory.hpp"
 #include "../offsets.hpp"
+#include "../keybinds.hpp"
 
-#ifdef ENABLE_BHOP
-
-
-void static bunnyHop(const Memory &mem)
+void runBunnyHopLoop(const Memory &mem)
 {
-	//const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
+    const auto client = mem.GetModuleAddress(L"client.dll");
 
-	const auto client = mem.GetModuleAddress(L"client.dll");
+    // const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 
-	static bool jump = false;
-	if (!jump)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		mem.Write<int>(client + offsets::jump, 65537);
-		jump = true;
-	}
-	if (jump)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
-		mem.Write<int>(client + offsets::jump, 256);
-		jump = false;
-	}
+    while (activeCheats.bunnyHop.load())
+    {
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+
+        // No local player -> No match currently going on
+        if (!localPlayer)
+            continue;
+
+        if (!GetAsyncKeyState(keybinds::bunnyHop))
+            continue;
+
+        mem.Write<int>(client + offsets::jump, 256);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        mem.Write<int>(client + offsets::jump, 65537);
+    }
 }
-
-#else
-
-static void bunnyHop(const Memory& mem) {}
-
-#endif

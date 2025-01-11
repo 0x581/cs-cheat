@@ -7,11 +7,10 @@
 
 #ifdef ENABLE_RADAR
 
-void radarHack(const Memory& mem)
+void radarHack(const Memory &mem)
 {
-
 }
 
 #else
-void radarHack(const Memory& mem) {}
+void radarHack(const Memory &mem) {}
 #endif

@@ -4,9 +4,6 @@
 #include <thread>
 #include <iostream>
 
-//#include <bitset>
-//#define bits(n) std::bitset<sizeof(n) * 8>(n)
-
 #include "modules/bunnyHop.hpp"
 #include "modules/antiflash.hpp"
 #include "modules/triggerbot.hpp"
@@ -15,9 +12,10 @@ int main()
 {
 	const auto mem = Memory(L"cs2.exe");
 
-	if (!mem.getProcessId() or !mem.getProcessHandle()) {
+    if (!mem.getProcessId() || !mem.getProcessHandle())
+    {
 		std::cout << "Failed to find Counter Strike: 2\nPress any key to exit." << std::endl;
-		(void) getchar();
+        (void)getchar();
 		exit(-1);
 	}
 
@@ -25,12 +23,13 @@ int main()
 
 	std::cout << "Simple CS2 cheat running (PID: " << mem.getProcessId() << ")" << std::endl;
 	
+    std::thread triggerBot{runTriggerBotLoop, mem};
+    std::thread antiFlash{runAntiFlashLoop, mem};
+    std::thread bunnyHop{runBunnyHopLoop, mem};
+
 	while (true)
 	{
-		if (!GetAsyncKeyState(keybinds::slowMode) != !DEFAULT_SLOW)
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
-		else
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
 		const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
@@ -38,18 +37,10 @@ int main()
 		if (!localPlayer)
 			continue;
 
-		if (GetAsyncKeyState(keybinds::triggerbot))
-			triggerbot(mem);
-
-		if (GetAsyncKeyState(keybinds::bunnyHop))
-			bunnyHop(mem);
-
-		antiFlash(mem);
-
-		//get entity list
+        // get entity list
 		auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
 
-		//first entry 
+        // first entry
 		auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
 
 		if (!listEntry)
@@ -57,7 +48,7 @@ int main()
 
 		for (size_t i = 0; i < 64; i++)
 		{
-			//get current controller
+            // get current controller
 			auto currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
 
 			if (currentController == 0)
@@ -75,13 +66,13 @@ int main()
 			// reads any health
 			auto health = mem.Read<int>(currentPawn + offsets::health);
 
-			//shows health
+            // shows health
 			std::cout << health << "hp ";
 			
-			//string name = mem.Read<string>(currentController + offsets::playerName);
+            // string name = mem.Read<string>(currentController + offsets::playerName);
 
-			//bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
-			//string spottedStatus = spotted == true ? "spotted" : " ";
+            // bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
+            // string spottedStatus = spotted == true ? "spotted" : " ";
 		}
 
 		std::cout << std::endl;
