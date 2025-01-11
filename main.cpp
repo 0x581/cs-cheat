@@ -15,8 +15,8 @@ namespace keybinds {
 	constexpr auto bunnyHop = VK_SPACE;
 }
 
-constexpr auto DEFAULT_SLOW = true;
-
+constexpr auto DEFAULT_SLOW = false;
+   
 
 int main()
 {
