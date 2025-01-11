@@ -12,5 +12,6 @@ namespace offsets {
     constexpr auto flashDuration = 0x140C;                // Member of localPlayerPawn
     constexpr auto playerPawn = 0x80C;
     constexpr auto playerName = 0x660;
-    constexpr auto entitySpottedState = 0x23D0;
+    constexpr auto entitySpottedState = 0x23D0;           // Member of C_CSPlayerPawn, was 0x23D0
+    constexpr auto health = 0x344;                        // Member of C_BaseEntity
 }

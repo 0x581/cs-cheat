@@ -87,8 +87,15 @@ OFFSETS: list[Offset] = [
         "entitySpottedState",
         "client_dll.hpp",
         "m_entitySpottedState",
-        "Member of C_CSPlayerPawn",
+        "Member of C_CSPlayerPawn, was 0x23D0",
     ),
+    Offset(
+        "health",
+        "client_dll.hpp",
+        "m_iHealth",
+        "Member of C_BaseEntity",
+    ),
+
 ]
 
 

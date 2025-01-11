@@ -72,14 +72,20 @@ int main()
 			if (pawnHandle == 0)
 				continue;
 
-			std::cout << mem.Read<int>(listEntry + 0x344) << "HP ";
-
+			uintptr_t currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
+			// reads any health
+			UINT health = mem.Read<int>(currentPawn + offsets::m_iHealth);
+			//shows health
+			std::cout << health << "hp" << std::endl;
+			
 			auto listEntry2 = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 *((pawnHandle & 0x7FFF) >> 9));
 
 			auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 *(pawnHandle & 0x1FF));
 
 			//string name = mem.Read<string>(currentController + offsets::playerName);
 
+			//bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
+			//string spottedStatus = spotted == true ? "spotted" : " ";
 		}
 
 		std::cout << std::endl;
