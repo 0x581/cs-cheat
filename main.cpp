@@ -39,51 +39,49 @@ int main()
 		else
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-		const auto localPlayer = mem.Read<std::uintptr_t>(client + offsets::localPlayerPawn);
+		const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
 		// No local player -> No match currently going on
 		if (!localPlayer)
 			continue;
 
-		//const auto entityList = mem.Read<std::uintptr_t>(client + offsets::entityList);
-
-		//std::cout << "LocalBasePlayerPawn address: 0x" << std::hex << localPlayer << std::dec << std::endl;
-		//std::cout << "Entity List address: 0x" << std::hex << entityList << std::dec << std::endl;
-
-		//mem.Inspect(entityList, 64);
-
-		//std::cout << std::endl;
-
 		if (GetAsyncKeyState(keybinds::bunnyHop))
-			bunnyHop(&mem, client);
+			bunnyHop(mem);
+
+		antiFlash(mem);
+
 		//get entity list
-		uintptr_t entityList = mem.Read<uintptr_t>(client + offsets::entityList);
+		auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
 
 		//first entry 
-		uintptr_t listEntry = mem.Read<uintptr_t>(entityList +0x10);
-		for (int i = 0; i < 64; i++)
+		auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
+
+		if (!listEntry)
+			continue;
+
+		for (size_t i = 0; i < 64; i++)
 		{
-			if (listEntry == 0)// skip if invalid
-				continue;
 			//get current controller
-			uintptr_t currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
+			auto currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
 
 			if (currentController == 0)
 				continue; // if invalid skip
-			int pawnHandle = mem.Read<int>(currentController + offsets::m_hPlayerPawn);
+
+			auto pawnHandle = mem.Read<uintptr_t>(currentController + offsets::playerPawn);
+
 			if (pawnHandle == 0)
 				continue;
-			uintptr_t listEntry2 = mem.Read<uintptr_t>(entityList + 0x8 *((pawnHandle & 0x7FFF)>>9) + 0x10);
 
-			uintptr_t currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 *(pawnHandle & 0x1FF));
+			std::cout << mem.Read<int>(listEntry + 0x344) << "HP ";
 
-			//string name = mem.Read<string>(currentController + offsets::m_iszPlayerName);
+			auto listEntry2 = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 *((pawnHandle & 0x7FFF) >> 9));
 
-			bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
+			auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 *(pawnHandle & 0x1FF));
 
+			//string name = mem.Read<string>(currentController + offsets::playerName);
 
-			//string spottedStatus = spotted == true ? "spotted" : " ";
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+		std::cout << std::endl;
 	}
 }
