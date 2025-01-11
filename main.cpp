@@ -3,8 +3,9 @@
 
 #include <thread>
 #include <iostream>
-#include <bitset>
 
+//#include <bitset>
+//#define bits(n) std::bitset<sizeof(n) * 8>(n)
 
 #include "modules/bunnyHop.hpp"
 
@@ -39,7 +40,7 @@ int main()
 	while (true)
 	{
 		if (GetAsyncKeyState(keybinds::slowMode) ^ DEFAULT_SLOW)
-			std::this_thread::sleep_for(std::chrono::milliseconds(500));
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 		else
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
@@ -51,7 +52,16 @@ int main()
 
 		const auto movementService = mem.Read<std::uintptr_t>(localPlayer + offsets::movementServices);
 
-		mem.Inspect(movementService + offsets::buttons, 64);
+		const auto entityList = mem.Read<std::uintptr_t>(client + offsets::entityList);
+
+		std::cout << "LocalBasePlayerPawn address: 0x" << std::hex << localPlayer << std::dec << std::endl;
+		std::cout << "Entity List address: 0x" << std::hex << entityList << std::dec << std::endl;
+
+		mem.Inspect(movementService + offsets::buttons, 32);
+
+		mem.Inspect(entityList, 64);
+
+		std::cout << std::endl;
 
 		if (GetAsyncKeyState(keybinds::bunnyHop))
 			bunnyHop(&mem, client);
