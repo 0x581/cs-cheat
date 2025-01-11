@@ -137,6 +137,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="modules\activeCheats.cpp" />
     <ClCompile Include="modules\bunnyHop.hpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

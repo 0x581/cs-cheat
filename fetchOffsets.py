@@ -10,6 +10,7 @@ OFFSETS_URL = "https://cloud.0x581.zip/s/fZna7TEp5SbsBc4/download?path=%2F&files
 
 FETCHED_FILES: dict[str, str] = {}
 
+
 @dataclass(init=True, frozen=True)
 class Offset:
     alias: str
@@ -95,18 +96,15 @@ OFFSETS: list[Offset] = [
         "m_iHealth",
         "Member of C_BaseEntity",
     ),
-
     Offset(
         "attack",
         "buttons.hpp",
         "attack",
-
     ),
     Offset(
         "IDEntIndex",
         "client_dll.hpp",
         "m_iIDEntIndex",
-        
     ),
 ]
 
@@ -118,7 +116,7 @@ def get_github_file(file: str) -> str:
 
         if response.status_code != 200:
             print(f"Failed to get {file} from github.")
-            
+
             FETCHED_FILES[file] = ""
 
         FETCHED_FILES[file] = response.text

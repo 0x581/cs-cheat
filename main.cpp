@@ -10,71 +10,71 @@
 
 int main()
 {
-	const auto mem = Memory(L"cs2.exe");
+    const auto mem = Memory(L"cs2.exe");
 
     if (!mem.getProcessId() || !mem.getProcessHandle())
     {
-		std::cout << "Failed to find Counter Strike: 2\nPress any key to exit." << std::endl;
+        std::cout << "Failed to find Counter Strike: 2\nPress any key to exit." << std::endl;
         (void)getchar();
-		exit(-1);
-	}
+        exit(-1);
+    }
 
-	const auto client = mem.GetModuleAddress(L"client.dll");
+    const auto client = mem.GetModuleAddress(L"client.dll");
 
-	std::cout << "Simple CS2 cheat running (PID: " << mem.getProcessId() << ")" << std::endl;
-	
+    std::cout << "Simple CS2 cheat running (PID: " << mem.getProcessId() << ")" << std::endl;
+
     std::thread triggerBot{runTriggerBotLoop, mem};
     std::thread antiFlash{runAntiFlashLoop, mem};
     std::thread bunnyHop{runBunnyHopLoop, mem};
 
-	while (true)
-	{
+    while (true)
+    {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-		const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
-		// No local player -> No match currently going on
-		if (!localPlayer)
-			continue;
+        // No local player -> No match currently going on
+        if (!localPlayer)
+            continue;
 
         // get entity list
-		auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
+        auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
 
         // first entry
-		auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
+        auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
 
-		if (!listEntry)
-			continue;
+        if (!listEntry)
+            continue;
 
-		for (size_t i = 0; i < 64; i++)
-		{
+        for (size_t i = 0; i < 64; i++)
+        {
             // get current controller
-			auto currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
+            auto currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
 
-			if (currentController == 0)
-				continue; // if invalid skip
+            if (currentController == 0)
+                continue; // if invalid skip
 
-			auto pawnHandle = mem.Read<uintptr_t>(currentController + offsets::playerPawn);
+            auto pawnHandle = mem.Read<uintptr_t>(currentController + offsets::playerPawn);
 
-			if (pawnHandle == 0)
-				continue;
+            if (pawnHandle == 0)
+                continue;
 
-			auto listEntry2 = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * ((pawnHandle & 0x7FFF) >> 9));
+            auto listEntry2 = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * ((pawnHandle & 0x7FFF) >> 9));
 
-			auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
+            auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
 
-			// reads any health
-			auto health = mem.Read<int>(currentPawn + offsets::health);
+            // reads any health
+            auto health = mem.Read<int>(currentPawn + offsets::health);
 
             // shows health
-			std::cout << health << "hp ";
-			
+            std::cout << health << "hp ";
+
             // string name = mem.Read<string>(currentController + offsets::playerName);
 
             // bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
             // string spottedStatus = spotted == true ? "spotted" : " ";
-		}
+        }
 
-		std::cout << std::endl;
-	}
+        std::cout << std::endl;
+    }
 }
