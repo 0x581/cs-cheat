@@ -8,7 +8,7 @@
 #include "../offsets.hpp"
 #include "../keybinds.hpp"
 
-void runBunnyHopLoop(const Memory &mem)
+void static runBunnyHopLoop(const Memory &mem)
 {
     const auto client = mem.GetModuleAddress(L"client.dll");
 

@@ -6,6 +6,8 @@
 
 #include "../memory.hpp"
 #include "../offsets.hpp"
+#include "../keybinds.hpp"
+
 
 void static runTriggerBot(const Memory &mem, const uintptr_t client)
 {
