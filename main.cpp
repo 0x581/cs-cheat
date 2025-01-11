@@ -7,6 +7,7 @@
 #include "modules/bunnyHop.hpp"
 #include "modules/antiflash.hpp"
 #include "modules/triggerbot.hpp"
+#include "modules/radarHack.hpp"
 
 int main()
 {
@@ -26,11 +27,12 @@ int main()
     std::thread triggerBot{runTriggerBotLoop, mem};
     std::thread antiFlash{runAntiFlashLoop, mem};
     std::thread bunnyHop{runBunnyHopLoop, mem};
+    std::thread radar{runRadarLoop, mem};
 
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-
+        /*
         const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
@@ -74,7 +76,7 @@ int main()
             // bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
             // string spottedStatus = spotted == true ? "spotted" : " ";
         }
-
         std::cout << std::endl;
-    }
+        */
+	}
 }

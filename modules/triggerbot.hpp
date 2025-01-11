@@ -9,7 +9,7 @@
 #include "../keybinds.hpp"
 
 
-void static runTriggerBot(const Memory &mem, const uintptr_t client)
+void runTriggerBot(const Memory &mem, const uintptr_t client)
 {
     const auto entityList = mem.Read<uintptr_t>(client + offsets::entityList);
     const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
