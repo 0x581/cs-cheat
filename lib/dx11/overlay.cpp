@@ -1,4 +1,6 @@
 #include "../pch.h"
+#include "../../modules/activeCheats.hpp"
+
 
 // microsoft safe release of pointers
 template <typename T>
@@ -112,7 +114,7 @@ VOID c_overlay::init_imgui() {
 	ImGui_ImplDX11_Init(d3d_device, device_context);
 }
 
-VOID c_overlay::dest_imgui() {
+ VOID c_overlay::dest_imgui() {
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
@@ -193,7 +195,8 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	static bool l_crosshair = false;
-	static bool l_show_fps = true;
+	static bool l_test = false;
+	
 
 	init_draw_list(); // we only do this once a loop
 
@@ -203,20 +206,24 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	style.Alpha = menu_anim;
 	style.Colors[ImGuiCol_Border] = ImVec4(0.012f, 0.91f, 0.957f, ((breath / (float)breath_anim_time) * .7f) + .3f);
 
-	if (l_show_fps) {
-		std::string fps = std::to_string(static_cast<int>(ImGui::GetIO().Framerate));
-		text({ window_width - ImGui::CalcTextSize(fps.c_str()).x, 0 }, fps);
-	}
+	
 
 	//auto io = &ImGui::GetIO();
 	//overlay.text({io->MousePos.x, io->MousePos.y + 10}, "CURSOR IS RIGHT HERE");
 
-	if (l_crosshair)
-		crosshair(10, ImColor(3, 232, 244));
-
+	std::string version = "exorite.cc"; // Beispiel für eine Versionsnummer
+	text({ window_width - ImGui::CalcTextSize(version.c_str()).x, 0 }, version);
 	if (menu_ticks == 1)
 		return;
-
+	if (l_test)
+	{
+		std::cout << "t";
+		//activeCheats.triggerBot.store(true);
+	}
+	/*else
+	{
+		activeCheats.triggerBot.store(false);
+	}*/
 	// imgui menu itself
 	ImGui::Begin(
 		"Misc",
@@ -225,8 +232,10 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoSavedSettings
 	);
-	ImGui::Checkbox("Enable Crosshair", &l_crosshair);
-	ImGui::Checkbox("Enable FPS Counter", &l_show_fps);
+
+	ImGui::Checkbox("triggerbot", &l_test);
+	ImGui::Checkbox("radar", &l_test);
+	ImGui::Checkbox("antiflash", &l_test);
 	ImGui::End();
 }
 
@@ -313,10 +322,7 @@ VOID c_overlay::init_draw_list() {
 	draw_list = ImGui::GetBackgroundDrawList();
 }
 
-VOID c_overlay::crosshair(const FLOAT aSize, ImU32 color) {
-	draw_list->AddLine({ window_width / 2,window_height / 2 - (aSize + 1) }, { window_width / 2 ,window_height / 2 + (aSize + 1) }, color, 2);
-	draw_list->AddLine({ window_width / 2 - (aSize + 1),window_height / 2 }, { window_width / 2 + (aSize + 1), window_height / 2 }, color, 2);
-}
+
 
 VOID c_overlay::box(const ImVec2& pos, const FLOAT width, const FLOAT height, ImU32 color, const FLOAT line_width) {
 	std::array<ImVec2, 4> box_lines{ pos,ImVec2{pos.x + width,pos.y},ImVec2{pos.x + width,pos.y + height},ImVec2{pos.x,pos.y + height} };
