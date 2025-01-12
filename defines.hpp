@@ -11,6 +11,11 @@ namespace delays
 {
     constexpr auto memConnectionWaitTime = std::chrono::seconds(1);
 
+    namespace memory
+    {
+        constexpr auto moduleFetchWaitTime = std::chrono::seconds(1);
+    }
+
     namespace antiFlash
     {
         constexpr auto sleep = std::chrono::milliseconds(10);
@@ -32,6 +37,11 @@ namespace delays
         constexpr auto sleep = std::chrono::milliseconds(10);
         constexpr auto keyPressTime = std::chrono::milliseconds(10);
     }
+}
+
+namespace modules
+{
+    constexpr auto client = L"client.dll";
 }
 
 namespace errors

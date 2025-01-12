@@ -12,8 +12,10 @@
 #include "./lib/pch.h"
 
 void connectToCS2(Memory** mem) {
+    const std::vector<const wchar_t*> requiredModules{ modules::client };
+
     while (!*mem) {
-        Memory* temp = new Memory(L"cs2.exe");
+        Memory* temp = new Memory(L"cs2.exe", requiredModules);
 
         if (!temp->getProcessId() || !temp->getProcessHandle())
         {

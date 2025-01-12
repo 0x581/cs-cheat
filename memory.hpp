@@ -8,6 +8,8 @@
 #include <TlHelp32.h>
 #include <unordered_map>
 
+#include "defines.hpp"
+
 struct WCharHash
 {
     size_t operator()(const wchar_t *const str) const noexcept
@@ -45,8 +47,45 @@ private:
 
     std::unordered_map<const wchar_t *, uintptr_t, WCharHash, WCharEqual> modules{};
 
+    void updateModuleMap() {
+
+        if (!this->id || !this->process) {
+            std::cout << "Tried to read modules of invalid process." << std::endl;
+            exit(-1);
+        }
+
+        MODULEENTRY32W moduleEntry{};
+        moduleEntry.dwSize = sizeof(MODULEENTRY32W);
+
+        const auto moduleSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, this->id);
+
+        if (moduleSnapShot == INVALID_HANDLE_VALUE)
+        {
+            DWORD error = GetLastError();
+            std::cout << "Module snapshot failed: " << error << std::endl;
+            return;
+        }
+
+        while (Module32NextW(moduleSnapShot, &moduleEntry))
+        {
+            if (this->modules.contains(moduleEntry.szModule))
+                continue;
+
+            auto len = wcslen(moduleEntry.szModule) + 1;
+            wchar_t* mNameCopy = new wchar_t[len];
+
+            if (!wcscpy_s(mNameCopy, len, moduleEntry.szModule))
+                modules[mNameCopy] = reinterpret_cast<uintptr_t>(moduleEntry.modBaseAddr);
+            else
+                delete[] mNameCopy;
+        }
+
+        if (moduleSnapShot)
+            CloseHandle(moduleSnapShot);
+    }
+
 public:
-    Memory(const wchar_t *processName)
+    Memory(const wchar_t* processName, const std::vector<const wchar_t *> &requiredModules)
     {
         PROCESSENTRY32W processEntry{};
         processEntry.dwSize = sizeof(PROCESSENTRY32W);
@@ -73,34 +112,33 @@ public:
         if (processSnapShot)
             CloseHandle(processSnapShot);
 
-        if (!this->id || !this->process)
-            return;
+        this->updateModuleMap();
+        size_t try_num = 1;
 
-        MODULEENTRY32W moduleEntry{};
-        moduleEntry.dwSize = sizeof(MODULEENTRY32W);
-
-        const auto moduleSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, this->id);
-
-        if (moduleSnapShot == INVALID_HANDLE_VALUE)
+        for (size_t i = 0; i < requiredModules.size();)
         {
-            DWORD error = GetLastError();
-            std::cout << "Module snapshot failed: " << error << std::endl;
-            return;
+            auto module = requiredModules[i];
+
+            if (this->modules.contains(module)) {
+                ++i;
+                continue;
+            }
+
+            ++try_num;
+
+            if (try_num < 10) {
+                std::this_thread::sleep_for(delays::memory::moduleFetchWaitTime);
+                this->updateModuleMap();
+            } else {
+                // 10 attempts to get the modules failed, clear process
+                std::cout << "Failed to fetch required Modules." << std::endl;
+                CloseHandle(this->process);
+                this->process = nullptr;
+                this->id = 0;
+
+                return;
+            }
         }
-
-        while (Module32NextW(moduleSnapShot, &moduleEntry))
-        {
-            auto len = wcslen(moduleEntry.szModule) + 1;
-            wchar_t *mNameCopy = new wchar_t[len];
-
-            if (!wcscpy_s(mNameCopy, len, moduleEntry.szModule))
-                modules[mNameCopy] = reinterpret_cast<uintptr_t>(moduleEntry.modBaseAddr);
-            else
-                delete[] mNameCopy;
-        }
-
-        if (moduleSnapShot)
-            CloseHandle(moduleSnapShot);
     }
 
     ~Memory()
@@ -122,9 +160,7 @@ public:
     uintptr_t GetModuleAddress(const wchar_t *moduleName) const
     {
         if (!modules.contains(moduleName))
-        {
             std::wcout << "Failed to find module: " << moduleName << std::endl;
-        }
 
         return modules.at(moduleName);
     }
