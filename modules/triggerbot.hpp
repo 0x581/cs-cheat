@@ -11,50 +11,55 @@
 
 void runTriggerBot(const Memory &mem, const uintptr_t client)
 {
-    const auto entityList = mem.Read<uintptr_t>(client + offsets::entityList);
     const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
-    uintptr_t listEntry = mem.Read<uintptr_t>(entityList + 0x10);
+    // Get the local player's team and entity index
+    const auto team = mem.Read<uint8_t>(localPlayer + offsets::teamNum);
+    const auto entIndex = mem.Read<CEntityIndex>(localPlayer + offsets::IDEntIndex);
 
-    if (listEntry == 0) // skip if invalid
+    if (entIndex == -1)
         return;
 
-    for (size_t i = 0; i < 64; i++) {
-        // Get current controller
-        uintptr_t currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
+    const auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
+    //first entry 
+    const auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
 
-        if (currentController == 0)
-            continue; // if invalid skip
+    if (!listEntry) // skip if invalid
+        return;
 
-        auto pawnHandle = mem.Read<int>(currentController + offsets::playerPawn);
 
-        if (pawnHandle == 0)
-            continue;
+    std::cout << "V3 Entity index: " << entIndex << std::endl;
 
-        auto listEntry2 = mem.Read<uintptr_t>(entityList + 0x8 * ((pawnHandle & 0x7FFF) >> 9) + 0x10);
-        auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
 
-        // Get the local player's team and entity index
-        auto team = mem.Read<int>(localPlayer + offsets::teamNum);
-        auto entIndex = mem.Read<int>(localPlayer + offsets::IDEntIndex);
+    // Get current controller
+    auto currentController = mem.Read<uintptr_t>(listEntry + (entIndex & 0x3F) * 0x78);
 
-        if (entIndex == -1)
-            continue;
+    mem.Inspect(listEntry + (entIndex & 0x3F) * 0x78, 32);
 
-        // Get the enemy's team (target entity)
-        auto otherTeam = mem.Read<int>(currentPawn + offsets::teamNum);
+    if (currentController == 0)
+        return;
 
-        std::cout << "Own team: " << team << ", Other team: " << otherTeam << " (" << entIndex << ")" << std::endl;
+    auto pawnHandle = mem.Read<uintptr_t>(currentController + offsets::playerPawn);
 
-        // Check if the target is an enemy (i.e. not on the same team)
-        if (team != otherTeam) { // if entity is an enemy
-            std::cout << "Gegner im Fadenkreuz! Triggerbot wird ausgelöst." << std::endl;
+    if (pawnHandle == 0)
+        return;
 
-            // Angriff auslösen
-            mem.Write<int>(client + offsets::attack, 65537); // + attack (Maus1 drücken)
-            std::this_thread::sleep_for(delays::triggerBot::keyPressTime); // Warten
-            mem.Write<int>(client + offsets::attack, 256); // - attack (Maus1 loslassen)
-        }
+    auto listEntry2 = mem.Read<uintptr_t>(entityListPtr + 0x8 * ((pawnHandle & 0x7FFF) >> 9) + 0x10);
+    auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
+
+    // Get the enemy's team (target entity)
+    auto otherTeam = mem.Read<uint8_t>(currentPawn + offsets::teamNum);
+
+    std::cout << "Own team: " << (int)team << ", Other team: " << (int)otherTeam << " (" << entIndex << ")" << std::endl;
+
+    // Check if the target is an enemy (i.e. not on the same team)
+    if (team != otherTeam) { // if entity is an enemy
+        std::cout << "Gegner im Fadenkreuz! Triggerbot wird ausgelöst." << std::endl;
+
+        // Angriff auslösen
+        mem.Write<int>(client + offsets::attack, 65537); // + attack (Maus1 drücken)
+        std::this_thread::sleep_for(delays::triggerBot::keyPressTime); // Warten
+        mem.Write<int>(client + offsets::attack, 256); // - attack (Maus1 loslassen)
     }
 
 }
