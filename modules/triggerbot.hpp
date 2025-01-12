@@ -47,7 +47,7 @@ void runTriggerBot(const Memory &mem, const uintptr_t client)
         std::cout << "Own team: " << team << ", Other team: " << otherTeam << " (" << entIndex << ")" << std::endl;
 
         // Check if the target is an enemy (i.e. not on the same team)
-        if (team != enemyTeam) { // if entity is an enemy
+        if (team != otherTeam) { // if entity is an enemy
             std::cout << "Gegner im Fadenkreuz! Triggerbot wird ausgelöst." << std::endl;
 
             // Angriff auslösen
