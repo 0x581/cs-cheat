@@ -45,13 +45,16 @@ void runRadarLoop(Memory **mem)
 	while (activeCheats.radar.load())
 	{
 		if (!*mem) {
-			std::this_thread::sleep_for(std::chrono::seconds(1));
+			std::this_thread::sleep_for(delays::memConnectionWaitTime);
 			continue;
 		}
 
+		std::this_thread::sleep_for(delays::radarHack::sleep);
+
 		const auto client = (*mem)->GetModuleAddress(L"client.dll");
 
-		std::this_thread::sleep_for(std::chrono::seconds(1));
+		if (!client)
+			continue;
 
 		const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 

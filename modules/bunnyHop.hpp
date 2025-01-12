@@ -6,7 +6,7 @@
 
 #include "../memory.hpp"
 #include "../offset/offsets.hpp"
-#include "../keybinds.hpp"
+#include "../defines.hpp"
 
 static void runBunnyHopLoop(Memory **mem)
 {
@@ -14,15 +14,17 @@ static void runBunnyHopLoop(Memory **mem)
 
     while (activeCheats.bunnyHop.load())
     {
-
         if (!*mem) {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
+        std::this_thread::sleep_for(delays::bunnyHop::sleep);
+
         const auto client = (*mem)->GetModuleAddress(L"client.dll");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (!client)
+            continue;
 
         const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 
@@ -34,7 +36,7 @@ static void runBunnyHopLoop(Memory **mem)
             continue;
 
         (*mem)->Write<int>(client + offsets::jump, 256);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        std::this_thread::sleep_for(delays::bunnyHop::keyPressTime);
         (*mem)->Write<int>(client + offsets::jump, 65537);
     }
 }

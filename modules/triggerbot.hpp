@@ -6,7 +6,7 @@
 
 #include "../memory.hpp"
 #include "../offset/offsets.hpp"
-#include "../keybinds.hpp"
+#include "../defines.hpp"
 
 
 void runTriggerBot(const Memory &mem, const uintptr_t client)
@@ -50,7 +50,7 @@ void runTriggerBot(const Memory &mem, const uintptr_t client)
 
             // Angriff auslösen
             mem.Write<int>(client + offsets::attack, 65537); // + attack (Maus1 drücken)
-            std::this_thread::sleep_for(std::chrono::milliseconds(10)); // Warten
+            std::this_thread::sleep_for(delays::triggerBot::keyPressTime); // Warten
             mem.Write<int>(client + offsets::attack, 256); // - attack (Maus1 loslassen)
         }
     }
@@ -62,13 +62,16 @@ void runTriggerBotLoop(Memory **mem)
     while (activeCheats.triggerBot.load())
     {
         if (!*mem) {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
+        std::this_thread::sleep_for(delays::triggerBot::sleep);
+
         const auto client = (*mem)->GetModuleAddress(L"client.dll");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (!client)
+            continue;
 
         const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 

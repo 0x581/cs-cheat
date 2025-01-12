@@ -6,19 +6,23 @@
 
 #include "memory.hpp"
 #include "../offset/offsets.hpp"
+#include "../defines.hpp"
 
 void runAntiFlashLoop(Memory **mem)
 {
     while (activeCheats.antiFlash.load())
     {
         if (!*mem) {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
+        std::this_thread::sleep_for(delays::antiFlash::sleep);
+
         const auto client = (*mem)->GetModuleAddress(L"client.dll");
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        if (!client)
+            continue;
 
         const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 

@@ -24,7 +24,7 @@ void connectToCS2(Memory** mem) {
             std::cout << "Connection to CS2 established." << std::endl;
             *mem = temp;
         }
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(delays::memConnectionWaitTime);
     }
 }
 

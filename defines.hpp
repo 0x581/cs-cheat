@@ -1,0 +1,40 @@
+#pragma once
+
+namespace keybinds
+{
+    constexpr auto slowMode = VK_MENU;
+    constexpr auto bunnyHop = VK_SPACE;
+    constexpr auto triggerbot = VK_RBUTTON;
+}
+
+namespace delays
+{
+    constexpr auto memConnectionWaitTime = std::chrono::seconds(1);
+
+    namespace antiFlash
+    {
+        constexpr auto sleep = std::chrono::milliseconds(10);
+    }
+
+    namespace bunnyHop
+    {
+        constexpr auto sleep = std::chrono::milliseconds(10);
+        constexpr auto keyPressTime = std::chrono::milliseconds(10);
+    }
+
+    namespace radarHack
+    {
+        constexpr auto sleep = std::chrono::seconds(1);
+    }
+
+    namespace triggerBot
+    {
+        constexpr auto sleep = std::chrono::milliseconds(10);
+        constexpr auto keyPressTime = std::chrono::milliseconds(10);
+    }
+}
+
+namespace errors
+{
+
+}
