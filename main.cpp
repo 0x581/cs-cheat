@@ -11,15 +11,28 @@
 
 #include "./lib/pch.h"
 
+void connectToCS2(Memory** mem) {
+    while (!*mem) {
+        Memory* temp = new Memory(L"cs2.exe");
+
+        if (!temp->getProcessId() || !temp->getProcessHandle())
+        {
+            delete temp;
+            temp = nullptr;
+        }
+        else {
+            std::cout << "Connection to CS2 established." << std::endl;
+            *mem = temp;
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+}
+
 int main()
 {
-    auto mem = new Memory(L"cs2.exe");
+    Memory *mem = nullptr;
 
-    if (!mem->getProcessId() || !mem->getProcessHandle())
-    {
-        delete mem;
-        mem = nullptr;
-    }
+    std::thread conn{connectToCS2, &mem};
 
     std::thread triggerBot{runTriggerBotLoop, &mem};
     std::thread antiFlash{runAntiFlashLoop, &mem};
