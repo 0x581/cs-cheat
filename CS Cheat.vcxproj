@@ -152,6 +152,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="keybinds.hpp" />
     <ClInclude Include="lib\dx11\overlay.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />

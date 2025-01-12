@@ -218,7 +218,13 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		return;
 
 	// imgui menu itself
-	ImGui::Begin("Misc", 0, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize);
+	ImGui::Begin(
+		"Misc",
+		0,
+		ImGuiWindowFlags_NoTitleBar
+		| ImGuiWindowFlags_NoResize
+		| ImGuiWindowFlags_NoSavedSettings
+	);
 	ImGui::Checkbox("Enable Crosshair", &l_crosshair);
 	ImGui::Checkbox("Enable FPS Counter", &l_show_fps);
 	ImGui::End();
