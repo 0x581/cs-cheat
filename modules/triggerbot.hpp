@@ -5,7 +5,7 @@
 #include "activeCheats.hpp"
 
 #include "../memory.hpp"
-#include "../offset/offsets.hpp"
+#include "../offsets/offsets.hpp"
 #include "../defines.hpp"
 
 

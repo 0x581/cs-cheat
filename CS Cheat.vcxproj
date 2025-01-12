@@ -171,13 +171,13 @@
     <ClInclude Include="modules\antiflash.hpp" />
     <ClInclude Include="modules\triggerbot.hpp" />
     <ClInclude Include="modules\radarHack.hpp" />
-    <ClInclude Include="offset\offsets.hpp" />
+    <ClInclude Include="offsets\offsets.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini" />
     <None Include="lib\imgui\imgui_impl_metal.mm" />
     <None Include="lib\imgui\imgui_impl_osx.mm" />
-    <None Include="offset\fetchOffsets.py" />
+    <None Include="offsets\fetchOffsets.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

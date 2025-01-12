@@ -81,7 +81,7 @@
     <ClInclude Include="modules\activeCheats.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="offset\offsets.hpp">
+    <ClInclude Include="offsets\offsets.hpp">
       <Filter>offsets</Filter>
     </ClInclude>
     <ClInclude Include="lib\imgui\imconfig.h">
@@ -123,9 +123,10 @@
     <ClInclude Include="lib\pch.h">
       <Filter>lib</Filter>
     </ClInclude>
+    <ClInclude Include="defines.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="offset\fetchOffsets.py">
+    <None Include="offsets\fetchOffsets.py">
       <Filter>offsets</Filter>
     </None>
     <None Include="lib\imgui\imgui.ini">

@@ -153,7 +153,7 @@ def get_offset(offset: Offset) -> str:
 
 def get_all_offsets() -> str:
     """This function gets the offsets from the github repo."""
-    offsets = "#pragma once\n\nnamespace offsets {\n"
+    offsets = "#pragma once\n\nnamespace offsets\n{\n"
 
     longest = max(len(offset.alias) for offset in OFFSETS) + 40
 
@@ -174,5 +174,5 @@ def get_all_offsets() -> str:
 
 
 if __name__ == "__main__":
-    with open("offsets.hpp", "w") as file:
+    with open("offsets/offsets.hpp", "w") as file:
         file.write(get_all_offsets())
