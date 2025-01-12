@@ -1,6 +1,6 @@
 #include "memory.hpp"
-#include "offsets.hpp"
-
+#include "../cs-cheat/offset/offsets.hpp"
+#include "../cs-cheat/gui/gui.h"
 #include <thread>
 #include <iostream>
 
@@ -8,7 +8,33 @@
 #include "modules/antiflash.hpp"
 #include "modules/triggerbot.hpp"
 #include "modules/radarHack.hpp"
+int __stdcall wWinMain(
+    HINSTANCE instance,
+    HINSTANCE previousInstance,
+    PWSTR arguments,
+    int commandShow)
+{
+    // create gui
+    gui::CreateHWindow("Cheat Menu");
+    gui::CreateDevice();
+    gui::CreateImGui();
 
+    while (gui::isRunning)
+    {
+        gui::BeginRender();
+        gui::Render();
+        gui::EndRender();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    }
+
+    // destroy gui
+    gui::DestroyImGui();
+    gui::DestroyDevice();
+    gui::DestroyHWindow();
+
+    return EXIT_SUCCESS;
+}
 int main()
 {
     const auto mem = Memory(L"cs2.exe");
@@ -32,7 +58,10 @@ int main()
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        /*
+        
+	}
+}
+/*
         const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
@@ -78,5 +107,3 @@ int main()
         }
         std::cout << std::endl;
         */
-	}
-}

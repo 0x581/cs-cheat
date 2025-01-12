@@ -5,7 +5,7 @@
 #include "activeCheats.hpp"
 
 #include "memory.hpp"
-#include "offsets.hpp"
+#include "../offset/offsets.hpp"
 
 void runAntiFlashLoop(const Memory &mem)
 {
