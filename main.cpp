@@ -1,42 +1,20 @@
 #include "memory.hpp"
 #include "../cs-cheat/offset/offsets.hpp"
-#include "../cs-cheat/gui/gui.h"
 #include <thread>
 #include <iostream>
-
+#include "../cs-cheat/lib/pch.h"
 #include "modules/bunnyHop.hpp"
 #include "modules/antiflash.hpp"
 #include "modules/triggerbot.hpp"
 #include "modules/radarHack.hpp"
-int __stdcall wWinMain(
-    HINSTANCE instance,
-    HINSTANCE previousInstance,
-    PWSTR arguments,
-    int commandShow)
-{
-    // create gui
-    gui::CreateHWindow("Cheat Menu");
-    gui::CreateDevice();
-    gui::CreateImGui();
 
-    while (gui::isRunning)
-    {
-        gui::BeginRender();
-        gui::Render();
-        gui::EndRender();
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
-    }
-
-    // destroy gui
-    gui::DestroyImGui();
-    gui::DestroyDevice();
-    gui::DestroyHWindow();
-
-    return EXIT_SUCCESS;
-}
 int main()
 {
+    c_overlay overlay;
+
+    while (overlay.msg_loop() && !overlay.ready) {}
+
+    return 1;
     const auto mem = Memory(L"cs2.exe");
 
     if (!mem.getProcessId() || !mem.getProcessHandle())
