@@ -57,21 +57,26 @@ void runTriggerBot(const Memory &mem, const uintptr_t client)
 
 }
 
-void runTriggerBotLoop(const Memory &mem)
+void runTriggerBotLoop(Memory **mem)
 {
-    const auto client = mem.GetModuleAddress(L"client.dll");
-
     while (activeCheats.triggerBot.load())
     {
+        if (!*mem) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            continue;
+        }
+
+        const auto client = (*mem)->GetModuleAddress(L"client.dll");
+
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
             continue;
 
         if (GetAsyncKeyState(keybinds::triggerbot))
-            runTriggerBot(mem, client);
+            runTriggerBot(**mem, client);
     }
 }

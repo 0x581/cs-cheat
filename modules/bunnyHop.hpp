@@ -8,17 +8,23 @@
 #include "../offset/offsets.hpp"
 #include "../keybinds.hpp"
 
-static void runBunnyHopLoop(const Memory &mem)
+static void runBunnyHopLoop(Memory **mem)
 {
-    const auto client = mem.GetModuleAddress(L"client.dll");
-
     // const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 
     while (activeCheats.bunnyHop.load())
     {
+
+        if (!*mem) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            continue;
+        }
+
+        const auto client = (*mem)->GetModuleAddress(L"client.dll");
+
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
 
-        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
@@ -27,8 +33,8 @@ static void runBunnyHopLoop(const Memory &mem)
         if (!GetAsyncKeyState(keybinds::bunnyHop))
             continue;
 
-        mem.Write<int>(client + offsets::jump, 256);
+        (*mem)->Write<int>(client + offsets::jump, 256);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        mem.Write<int>(client + offsets::jump, 65537);
+        (*mem)->Write<int>(client + offsets::jump, 65537);
     }
 }

@@ -10,24 +10,18 @@
 
 int main()
 {
-    
-    const auto mem = Memory(L"cs2.exe");
+    auto mem = new Memory(L"cs2.exe");
 
-    if (!mem.getProcessId() || !mem.getProcessHandle())
+    if (!mem->getProcessId() || !mem->getProcessHandle())
     {
-        std::cout << "Failed to find Counter Strike: 2\nPress any key to exit." << std::endl;
-        (void)getchar();
-        exit(-1);
+        delete mem;
+        mem = nullptr;
     }
 
-    const auto client = mem.GetModuleAddress(L"client.dll");
-
-    std::cout << "Simple CS2 cheat running (PID: " << mem.getProcessId() << ")" << std::endl;
-
-    std::thread triggerBot{runTriggerBotLoop, mem};
-    std::thread antiFlash{runAntiFlashLoop, mem};
-    std::thread bunnyHop{runBunnyHopLoop, mem};
-    std::thread radar{runRadarLoop, mem};
+    std::thread triggerBot{runTriggerBotLoop, &mem};
+    std::thread antiFlash{runAntiFlashLoop, &mem};
+    std::thread bunnyHop{runBunnyHopLoop, &mem};
+    std::thread radar{runRadarLoop, &mem};
     c_overlay overlay;
 
     while (overlay.msg_loop() && !overlay.ready) {}
