@@ -1,12 +1,15 @@
-#include "memory.hpp"
-#include "./offset/offsets.hpp"
+
 #include <thread>
 #include <iostream>
-#include "./lib/pch.h"
+
+#include "memory.hpp"
+
 #include "modules/bunnyHop.hpp"
 #include "modules/antiflash.hpp"
 #include "modules/triggerbot.hpp"
 #include "modules/radarHack.hpp"
+
+#include "./lib/pch.h"
 
 int main()
 {
@@ -22,17 +25,11 @@ int main()
     std::thread antiFlash{runAntiFlashLoop, &mem};
     std::thread bunnyHop{runBunnyHopLoop, &mem};
     std::thread radar{runRadarLoop, &mem};
-    c_overlay overlay;
 
+    c_overlay overlay;
     while (overlay.msg_loop() && !overlay.ready) {}
 
-    return 1;
-    while (true)
-    {
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-        
-	}
-    
+    return 0;
 }
 /*
         const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
