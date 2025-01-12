@@ -42,7 +42,9 @@ void runTriggerBot(const Memory &mem, const uintptr_t client)
             continue;
 
         // Get the enemy's team (target entity)
-        auto enemyTeam = mem.Read<int>(currentPawn + offsets::teamNum);
+        auto otherTeam = mem.Read<int>(currentPawn + offsets::teamNum);
+
+        std::cout << "Own team: " << team << ", Other team: " << otherTeam << " (" << entIndex << ")" << std::endl;
 
         // Check if the target is an enemy (i.e. not on the same team)
         if (team != enemyTeam) { // if entity is an enemy
