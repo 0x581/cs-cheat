@@ -5,33 +5,35 @@
 #include "activeCheats.hpp"
 
 #include "../memory.hpp"
-#include "./offsets/offsets.hpp"
+#include "../offsets/offsets.hpp"
+
+
+
 void runRadarHack(const Memory& mem, const uintptr_t client)
 {
-	const auto localPlayer = mem.Read<std::uintptr_t>(client + offsets::localPlayerPawn);
-	//get entity list
-	auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
+	const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+
+	const auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
 	//first entry 
-	auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
+	const auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
 
 	if (!listEntry)
 		return;
 
 	for (size_t i = 0; i < 64; i++)
 	{
-		//get current controller
+		// Get current controller
 		auto currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
 
 		if (currentController == 0)
-			continue; // if invalid skip
+			continue;
 
 		auto pawnHandle = mem.Read<uintptr_t>(currentController + offsets::playerPawn);
 
 		if (pawnHandle == 0)
-			continue; //if invalid skip
+			continue;
 
 		auto listEntry2 = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * ((pawnHandle & 0x7FFF) >> 9));
-
 		auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
 
 		mem.Write<bool>(currentPawn + offsets::entitySpottedState + offsets::spotted, true);
@@ -51,7 +53,7 @@ void runRadarLoop(Memory **mem)
 
 		std::this_thread::sleep_for(delays::radarHack::sleep);
 
-		const auto client = (*mem)->GetModuleAddress(L"client.dll");
+		const auto client = (*mem)->GetModuleAddress(modules::client);
 
 		if (!client)
 			continue;
