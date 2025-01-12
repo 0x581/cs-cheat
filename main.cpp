@@ -1,8 +1,8 @@
 #include "memory.hpp"
-#include "../cs-cheat/offset/offsets.hpp"
+#include "./offset/offsets.hpp"
 #include <thread>
 #include <iostream>
-#include "../cs-cheat/lib/pch.h"
+#include "./lib/pch.h"
 #include "modules/bunnyHop.hpp"
 #include "modules/antiflash.hpp"
 #include "modules/triggerbot.hpp"
