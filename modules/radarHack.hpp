@@ -5,7 +5,7 @@
 #include "activeCheats.hpp"
 
 #include "../memory.hpp"
-#include "../cs-cheat/offset/offsets.hpp"
+#include "./offset/offsets.hpp"
 void runRadarHack(const Memory& mem, const uintptr_t client)
 {
 	const auto localPlayer = mem.Read<std::uintptr_t>(client + offsets::localPlayerPawn);

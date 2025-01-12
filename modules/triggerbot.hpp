@@ -5,7 +5,7 @@
 #include "activeCheats.hpp"
 
 #include "../memory.hpp"
-#include "../cs-cheat/offset/offsets.hpp"
+#include "../offset/offsets.hpp"
 #include "../keybinds.hpp"
 
 
