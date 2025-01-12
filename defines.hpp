@@ -1,5 +1,7 @@
 #pragma once
 
+typedef int CEntityIndex;
+
 namespace keybinds
 {
     constexpr auto slowMode = VK_MENU;

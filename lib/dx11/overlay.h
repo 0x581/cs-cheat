@@ -52,7 +52,9 @@ public:
 	BOOL in_screen(const ImVec2& pos);
 public:
 	FLOAT window_width, window_height;
-	bool exit, ready, show_menu = true;
+	bool exit = true;
+	bool ready = true;
+	bool show_menu = false;
 	INT breath, menu_ticks;
 	s_font* font;
 };
