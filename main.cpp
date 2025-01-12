@@ -1,8 +1,8 @@
 #include "memory.hpp"
-#include "../cs-cheat/offset/offsets.hpp"
+#include "./offset/offsets.hpp"
 #include <thread>
 #include <iostream>
-#include "../cs-cheat/lib/pch.h"
+#include "./lib/pch.h"
 #include "modules/bunnyHop.hpp"
 #include "modules/antiflash.hpp"
 #include "modules/triggerbot.hpp"
@@ -10,11 +10,7 @@
 
 int main()
 {
-    c_overlay overlay;
-
-    while (overlay.msg_loop() && !overlay.ready) {}
-
-    return 1;
+    
     const auto mem = Memory(L"cs2.exe");
 
     if (!mem.getProcessId() || !mem.getProcessHandle())
@@ -32,12 +28,17 @@ int main()
     std::thread antiFlash{runAntiFlashLoop, mem};
     std::thread bunnyHop{runBunnyHopLoop, mem};
     std::thread radar{runRadarLoop, mem};
+    c_overlay overlay;
 
+    while (overlay.msg_loop() && !overlay.ready) {}
+
+    return 1;
     while (true)
     {
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
         
 	}
+    
 }
 /*
         const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
