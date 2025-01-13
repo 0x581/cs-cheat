@@ -12,6 +12,28 @@ const uintptr_t getEntityListPtr(const Memory& mem)
 }
 
 
+const uintptr_t getObjectPtrFromHandle(const Memory& mem, uintptr_t handle)
+{
+    if (handle == 0)
+        return 0;
+
+    const auto entityListPtr = getEntityListPtr(mem);
+
+    // The handle's 15 lower bits are used to get its pointer.
+    // The higher 6 bits are used to get the index into the entity lists
+    const auto entityListIndex = (handle & 0x7FFF) >> 9;
+
+    // The lower 9 bits are used to get the index into the sub list
+    const auto subListIndex = handle & 0x1FF;
+
+    // Multiply by 8 because pointers have a size of 8 bytes
+    const auto subList = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * entityListIndex);
+
+    // The index is multiplied by 0x78 as that is the distance from one Ptr to the next
+    return mem.Read<uintptr_t>(subList + 0x78 * subListIndex);
+}
+
+
 const uintptr_t getPawnPtrFromControllerPtr(const Memory& mem, uintptr_t controllerPtr)
 {
     if (!controllerPtr)
@@ -57,28 +79,6 @@ const uintptr_t getPlayerPawnPtr(const Memory& mem, uintptr_t index)
 {
     const auto controller = getPlayerControllerPtr(mem, index);
     return getPawnPtrFromControllerPtr(mem, controller);
-}
-
-
-const uintptr_t getObjectPtrFromHandle(const Memory& mem, uintptr_t handle)
-{
-    if (handle == 0)
-        return 0;
-
-    const auto entityListPtr = getEntityListPtr(mem);
-
-    // The handle's 15 lower bits are used to get its pointer.
-    // The higher 6 bits are used to get the index into the entity lists
-    const auto entityListIndex = (handle & 0x7FFF) >> 9;
-
-    // The lower 9 bits are used to get the index into the sub list
-    const auto subListIndex = handle & 0x1FF;
-
-    // Multiply by 8 because pointers have a size of 8 bytes
-    const auto subList = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * entityListIndex);
-
-    // The index is multiplied by 0x78 as that is the distance from one Ptr to the next
-    return mem.Read<uintptr_t>(subList + 0x78 * subListIndex);
 }
 
 
