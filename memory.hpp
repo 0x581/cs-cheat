@@ -173,6 +173,12 @@ public:
         return value;
     }
 
+
+    bool ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
+    {
+        return ReadProcessMemory(this->process, (LPCVOID)address, buffer, nBytes, NULL);
+    }
+
     template <typename T>
     bool Write(uintptr_t address, T value) const
     {
@@ -207,6 +213,9 @@ public:
                     std::cout << "Read over the limit." << std::endl;
                     exit(-1);
                 }
+
+                if (j % 8 == 0 && j != 0)
+                    byteString << " ";
 
                 byteString << std::setw(2) << std::setfill('0') << (unsigned int)data[i + j] << " ";
             }
