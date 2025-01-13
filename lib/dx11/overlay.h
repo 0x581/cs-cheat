@@ -54,7 +54,7 @@ public:
 	FLOAT window_width, window_height;
 	bool exit = true;
 	bool ready = true;
-	bool show_menu = false;
+	bool show_menu = true;
 	INT breath, menu_ticks;
 	s_font* font;
 };
