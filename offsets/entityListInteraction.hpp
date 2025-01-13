@@ -12,7 +12,28 @@ const uintptr_t getEntityListPtr(const Memory& mem)
 }
 
 
-uintptr_t getControllerPtr(const Memory& mem, uintptr_t index)
+const uintptr_t getPawnPtrFromControllerPtr(const Memory& mem, uintptr_t controllerPtr)
+{
+    if (!controllerPtr)
+        return 0;
+
+    const auto pawnHandle = mem.Read<uintptr_t>(controllerPtr + offsets::pawnOfController);
+
+    return getObjectPtrFromHandle(mem, pawnHandle);
+}
+
+const uintptr_t getControllerPtrFromPawnPtr(const Memory& mem, uintptr_t pawnPtr)
+{
+    if (!pawnPtr)
+        return 0;
+
+    const auto controllerHandle = mem.Read<uintptr_t>(pawnPtr + offsets::controllerOfPawn);
+
+    return getObjectPtrFromHandle(mem, controllerHandle);
+}
+
+
+const uintptr_t getPlayerControllerPtr(const Memory& mem, uintptr_t index)
 {
     if (index >= 64)
         exit(-1);
@@ -32,7 +53,14 @@ uintptr_t getControllerPtr(const Memory& mem, uintptr_t index)
     return mem.Read<uintptr_t>(controllerList + index * 0x78);
 }
 
-uintptr_t getObjectPtrFromHandle(const Memory& mem, uintptr_t handle)
+const uintptr_t getPlayerPawnPtr(const Memory& mem, uintptr_t index)
+{
+    const auto controller = getPlayerControllerPtr(mem, index);
+    return getPawnPtrFromControllerPtr(mem, controller);
+}
+
+
+const uintptr_t getObjectPtrFromHandle(const Memory& mem, uintptr_t handle)
 {
     if (handle == 0)
         return 0;
@@ -53,28 +81,8 @@ uintptr_t getObjectPtrFromHandle(const Memory& mem, uintptr_t handle)
     return mem.Read<uintptr_t>(subList + 0x78 * subListIndex);
 }
 
-uintptr_t getPawnPtrFromControllerPtr(const Memory& mem, uintptr_t controllerPtr)
-{
-    if (!controllerPtr)
-        return 0;
 
-    const auto pawnHandle = mem.Read<uintptr_t>(controllerPtr + offsets::pawnOfController);
-
-    return getObjectPtrFromHandle(mem, pawnHandle);
-}
-
-uintptr_t getControllerPtrFromPawnPtr(const Memory& mem, uintptr_t pawnPtr)
-{
-    if (!pawnPtr)
-        return 0;
-
-    const auto controllerHandle = mem.Read<uintptr_t>(pawnPtr + offsets::controllerOfPawn);
-
-    return getObjectPtrFromHandle(mem, controllerHandle);
-}
-
-
-uintptr_t getCurrentLookatEnemyPawn(const Memory& mem)
+const uintptr_t getCurrentLookatEnemyPawn(const Memory& mem)
 {
     const auto client = mem.GetModuleAddress(modules::client);
 
@@ -102,14 +110,14 @@ uintptr_t getCurrentLookatEnemyPawn(const Memory& mem)
     return 0;
 }
 
-uintptr_t getCurrentLookatEnemyController(const Memory& mem)
+const uintptr_t getCurrentLookatEnemyController(const Memory& mem)
 {
     const auto pawn = getCurrentLookatEnemyPawn(mem);
     return getControllerPtrFromPawnPtr(mem, pawn);
 }
 
 
-uintptr_t getCurrentLookatPlayerPawn(const Memory& mem)
+const uintptr_t getCurrentLookatPlayerPawn(const Memory& mem)
 {
     const auto client = mem.GetModuleAddress(modules::client);
 
@@ -128,7 +136,7 @@ uintptr_t getCurrentLookatPlayerPawn(const Memory& mem)
     return getObjectPtrFromHandle(mem, entIndex);
 }
 
-uintptr_t getCurrentLookatPlayerController(const Memory& mem)
+const uintptr_t getCurrentLookatPlayerController(const Memory& mem)
 {
     const auto pawn = getCurrentLookatPlayerPawn(mem);
     return getControllerPtrFromPawnPtr(mem, pawn);
