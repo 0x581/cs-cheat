@@ -28,12 +28,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="modules\activeCheats.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="modules\bunnyHop.hpp">
-      <Filter>modules</Filter>
-    </ClCompile>
     <ClCompile Include="lib\imgui\imgui.cpp">
       <Filter>lib\imgui</Filter>
     </ClCompile>
@@ -64,21 +58,12 @@
     <ClCompile Include="lib\pch.cpp">
       <Filter>lib</Filter>
     </ClCompile>
+    <ClCompile Include="modules\activeCheats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="modules\triggerbot.hpp">
-      <Filter>modules</Filter>
-    </ClInclude>
-    <ClInclude Include="modules\radarHack.hpp">
-      <Filter>modules</Filter>
-    </ClInclude>
-    <ClInclude Include="modules\antiflash.hpp">
-      <Filter>modules</Filter>
-    </ClInclude>
     <ClInclude Include="memory.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="modules\activeCheats.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="offsets\offsets.hpp">
@@ -124,6 +109,14 @@
       <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="defines.hpp" />
+    <ClInclude Include="modules\activeCheats.hpp" />
+    <ClInclude Include="modules\antiflash.hpp" />
+    <ClInclude Include="modules\bunnyHop.hpp" />
+    <ClInclude Include="modules\radarHack.hpp" />
+    <ClInclude Include="modules\triggerbot.hpp" />
+    <ClInclude Include="offsets\entityListInteraction.hpp">
+      <Filter>offsets</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="offsets\fetchOffsets.py">

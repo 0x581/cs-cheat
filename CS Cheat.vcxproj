@@ -147,9 +147,8 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="lib\pch.cpp" />
     <ClCompile Include="lib\timer\timer.cpp" />
-    <ClCompile Include="modules\activeCheats.cpp" />
-    <ClCompile Include="modules\bunnyHop.hpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="modules\activeCheats.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="defines.hpp" />
@@ -169,8 +168,10 @@
     <ClInclude Include="memory.hpp" />
     <ClInclude Include="modules\activeCheats.hpp" />
     <ClInclude Include="modules\antiflash.hpp" />
-    <ClInclude Include="modules\triggerbot.hpp" />
+    <ClInclude Include="modules\bunnyHop.hpp" />
     <ClInclude Include="modules\radarHack.hpp" />
+    <ClInclude Include="modules\triggerbot.hpp" />
+    <ClInclude Include="offsets\entityListInteraction.hpp" />
     <ClInclude Include="offsets\offsets.hpp" />
   </ItemGroup>
   <ItemGroup>

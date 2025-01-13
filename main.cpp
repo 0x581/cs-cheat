@@ -41,54 +41,68 @@ int main()
     std::thread bunnyHop{runBunnyHopLoop, &mem};
     std::thread radar{runRadarLoop, &mem};
 
-    c_overlay overlay;
-    while (overlay.msg_loop() && !overlay.ready) {}
+    while (mem == nullptr)
+        std::this_thread::sleep_for(delays::memConnectionWaitTime);
 
-    return 0;
-}
-/*
-        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+    const auto client = mem->GetModuleAddress(modules::client);
+
+    while (true)
+    {
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        const auto localPlayer = mem->Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
             continue;
 
-        // get entity list
-        auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
+        const auto currentController = getCurrentLookatPlayerController(*mem);
 
-        // first entry
-        auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
 
-        if (!listEntry)
+        if (!currentController)
             continue;
 
-        for (size_t i = 0; i < 64; i++)
+        char name[129]{ 0 };
+
+        mem->ReadBytes(currentController + offsets::playerName, (byte*)name, 128);
+
+        for (size_t i = 0; i < 128; i++)
         {
-            // get current controller
-            auto currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
-
-            if (currentController == 0)
-                continue; // if invalid skip
-
-            auto pawnHandle = mem.Read<uintptr_t>(currentController + offsets::playerPawn);
-
-            if (pawnHandle == 0)
-                continue;
-
-            auto listEntry2 = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * ((pawnHandle & 0x7FFF) >> 9));
-
-            auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
-
-            // reads any health
-            auto health = mem.Read<int>(currentPawn + offsets::health);
-
-            // shows health
-            std::cout << health << "hp ";
-
-            // string name = mem.Read<string>(currentController + offsets::playerName);
-
-            // bool spotted = mem.Read<bool>(currentPawn + offsets::m_entitySpottedState + offsets::spotted);
-            // string spottedStatus = spotted == true ? "spotted" : " ";
+            if (name[i] == 0x0d)
+                name[i] = '?';
         }
-        std::cout << std::endl;
-        */
+
+        const auto lifeState = mem->Read<uint8_t>(localPlayer + offsets::teamNum);
+
+        std::cout << "Name: " << name << std::endl;
+        std::cout << "Life state: " << (int)lifeState << std::endl;
+
+
+        //for (size_t i = 0; i < 64; i++)
+        //{
+        //    const auto entityController = getControllerPtr(*mem, i);
+
+        //    if (!entityController)
+        //        continue;
+
+        //    char name[129]{ 0 };
+
+        //    mem->ReadBytes(entityController + offsets::playerName, (byte*)name, 128);
+
+        //    for (size_t i = 0; i < 128; i++)
+        //    {
+        //        if (name[i] == 0x0d)
+        //            name[i] = '?';
+        //    }
+
+        //    std::cout << "Name: " << name << std::endl;
+        //}
+        //std::cout << std::endl;
+    }
+
+
+    c_overlay overlay;
+    while (overlay.msg_loop() && !overlay.ready) {}
+
+    return 0;
+}

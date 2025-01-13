@@ -1,6 +1,6 @@
 #pragma once
 
-typedef int CEntityIndex;
+typedef unsigned int CEntityIndex;
 
 namespace keybinds
 {
