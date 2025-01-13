@@ -14,9 +14,9 @@ void runRadarHack(const Memory& mem, const uintptr_t client)
 {
 	for (size_t i = 0; i < 64; i++)
 	{
-		const auto entityPawnPtr = getPawnPtrFromControllerPtr(mem, i);
+		const auto entityPawnPtr = getPlayerPawnPtr(mem, i);
 
-		if (entityPawnPtr == 0)
+		if (!entityPawnPtr)
 			continue;
 
 		mem.Write<bool>(entityPawnPtr + offsets::entitySpottedState + offsets::spotted, true);
