@@ -112,6 +112,9 @@ public:
         if (processSnapShot)
             CloseHandle(processSnapShot);
 
+        if (!this->process || !this->id)
+            return;
+
         this->updateModuleMap();
         size_t try_num = 1;
 
