@@ -30,19 +30,19 @@ OFFSETS: list[Offset] = [
         "onGroundLastTick",
         "client_dll.hpp",
         "m_bOnGroundLastTick",
-        "Member of localPlayerPawn",
+        "Member of localPlayerPawn, bool",
     ),
     Offset(
         "movementServices",
         "client_dll.hpp",
         "m_pMovementServices",
-        "Should be relative to localPlayerPawn, but idk",
+        "Member of C_BasePlayerPawn, CPlayer_MovementServices *",
     ),
     Offset(
         "buttons",
         "client_dll.hpp",
         "m_nButtons",
-        "Button State struct",
+        "Member of CPlayer_MovementServices, CInButtonState",
     ),
     Offset(
         "jump",
@@ -60,29 +60,37 @@ OFFSETS: list[Offset] = [
         "teamNum",
         "client_dll.hpp",
         "m_iTeamNum",
-        "Member of C_BaseEntity",
+        "Member of C_BaseEntity, uint8",
     ),
     Offset(
         "spotted",
         "client_dll.hpp",
         "m_bSpotted",
-        "Member of EntitySpottedState_t",
+        "Member of EntitySpottedState_t, bool",
     ),
     Offset(
         "flashDuration",
         "client_dll.hpp",
         "m_flFlashDuration",
-        "Member of localPlayerPawn",
+        "Member of localPlayerPawn, float",
     ),
     Offset(
-        "playerPawn",
+        "pawnOfController",
         "client_dll.hpp",
         "m_hPlayerPawn",
+        "Member of CCSPlayerController, Handle"
+    ),
+    Offset(
+        "controllerOfPawn",
+        "client_dll.hpp",
+        "m_hController",
+        "Member of C_BasePlayerPawn, Handle"
     ),
     Offset(
         "playerName",
         "client_dll.hpp",
         "m_iszPlayerName",
+        "Member of CBasePlayerController, char[128]"
     ),
     Offset(
         "entitySpottedState",
@@ -94,7 +102,7 @@ OFFSETS: list[Offset] = [
         "health",
         "client_dll.hpp",
         "m_iHealth",
-        "Member of C_BaseEntity",
+        "Member of C_BaseEntity, int32",
     ),
     Offset(
         "attack",
