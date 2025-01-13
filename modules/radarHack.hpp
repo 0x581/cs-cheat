@@ -7,38 +7,19 @@
 #include "../memory.hpp"
 #include "../offsets/offsets.hpp"
 
+#include "../offsets/entityListInteraction.hpp"
 
 
 void runRadarHack(const Memory& mem, const uintptr_t client)
 {
-	const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
-
-	const auto entityListPtr = mem.Read<uintptr_t>(client + offsets::entityList);
-	//first entry 
-	const auto listEntry = mem.Read<uintptr_t>(entityListPtr + 0x10);
-
-	if (!listEntry)
-		return;
-
 	for (size_t i = 0; i < 64; i++)
 	{
-		// Get current controller
-		auto currentController = mem.Read<uintptr_t>(listEntry + i * 0x78);
+		const auto entityPawnPtr = getPawnPtrFromControllerPtr(mem, i);
 
-		if (currentController == 0)
+		if (entityPawnPtr == 0)
 			continue;
 
-		auto pawnHandle = mem.Read<uintptr_t>(currentController + offsets::playerPawn);
-
-		if (pawnHandle == 0)
-			continue;
-
-		auto listEntry2 = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * ((pawnHandle & 0x7FFF) >> 9));
-		auto currentPawn = mem.Read<uintptr_t>(listEntry2 + 0x78 * (pawnHandle & 0x1FF));
-
-		mem.Write<bool>(currentPawn + offsets::entitySpottedState + offsets::spotted, true);
-
-		//auto health = mem.Read<int>(currentPawn + offsets::health); for later if  needed
+		mem.Write<bool>(entityPawnPtr + offsets::entitySpottedState + offsets::spotted, true);
 	}
 }
 
