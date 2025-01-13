@@ -114,6 +114,22 @@ OFFSETS: list[Offset] = [
         "client_dll.hpp",
         "m_iIDEntIndex",
     ),
+    Offset(
+       "CameraServices",
+       "client_dll.hpp",
+       "m_pCameraServices"
+       
+   ),
+   Offset(
+       "FOV",
+       "client_dll.hpp",
+       "m_iFOV"
+       
+   ),
+   Offset(
+       "IsScoped",
+       "client_dll.hpp",
+       "m_bIsScoped"
 ]
 
 

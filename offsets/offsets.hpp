@@ -18,4 +18,7 @@ namespace offsets
     constexpr auto health = 0x344;                        // Member of C_BaseEntity, int32
     constexpr auto attack = 0x18625A0;
     constexpr auto IDEntIndex = 0x1458;
+    constexpr auto CameraServices = 0x10E0;
+    constexpr auto FOV = 0x210;
+    constexpr auto IsScoped = 0x13A8;
 }

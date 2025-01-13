@@ -98,6 +98,15 @@ int main()
         //    std::cout << "Name: " << name << std::endl;
         //}
         //std::cout << std::endl;
+        /*auto desiredFov = 120;
+        auto localPlayerPawn = mem->Read<uintptr_t>(client + offsets::localPlayerPawn);
+        auto cameraservices = mem->Read<uintptr_t>(client + offsets::CameraServices);
+        auto currentFov = mem->Read<UINT>(offsets::CameraServices + offsets::FOV);
+        bool isScoped = mem->Read<bool>(localPlayerPawn + offsets::IsScoped);
+        if (!isScoped && currentFov != desiredFov)
+        {
+            UINT mem->Write<UINT>(offsets::CameraServices + offsets::FOV + desiredFov);
+        }*/
     }
 
 
