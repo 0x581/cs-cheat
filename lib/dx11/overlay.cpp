@@ -196,7 +196,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	ImGui::SetNextWindowSize(ImVec2(400, 300));
 	
 	
-
+	
 	init_draw_list(); // we only do this once a loop
 
 	// a double value between 0 && 1 based on the anim time
@@ -341,20 +341,20 @@ VOID c_overlay::init_draw_list() {
 }
 
 
-
+//to make esp box
 VOID c_overlay::box(const ImVec2& pos, const FLOAT width, const FLOAT height, ImU32 color, const FLOAT line_width) {
 	std::array<ImVec2, 4> box_lines{ pos,ImVec2{pos.x + width,pos.y},ImVec2{pos.x + width,pos.y + height},ImVec2{pos.x,pos.y + height} };
 	draw_list->AddPolyline(box_lines.data(), box_lines.size(), color, true, 2);
 }
-
+//esp tracer
 VOID c_overlay::line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width) {
 	draw_list->AddLine(point1, point2, color, line_width);
 }
-
+//aimbot fov circle
 VOID c_overlay::circle(const ImVec2& point, const FLOAT radius, ImU32 color) {
 	draw_list->AddCircleFilled(point, radius, color, 200); // num segments is how circular the circle actually is
 }
-
+//esp names
 VOID c_overlay::text(const ImVec2& pos, const std::string& text, ImU32 color, bool outline) {
 	if (outline) {
 		draw_list->AddText(font->im_font, 18.f, { pos.x + 1, pos.y }, IM_COL32_BLACK, text.c_str());
@@ -364,7 +364,7 @@ VOID c_overlay::text(const ImVec2& pos, const std::string& text, ImU32 color, bo
 	}
 	draw_list->AddText(font->im_font, 18.f, pos, color, text.c_str());
 }
-
+//?
 VOID c_overlay::radial_gradient(const ImVec2& center, float radius, ImU32 col_in, ImU32 col_out) {
 	if (((col_in | col_out) & IM_COL32_A_MASK) == 0 || radius < 0.5f)
 		return;
