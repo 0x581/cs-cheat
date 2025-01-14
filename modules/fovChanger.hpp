@@ -50,7 +50,7 @@ static void runBunnyHopLoop(Memory** mem)
 
         if (!isScoped && currentFov != desiredFov)
         {
-            mem->Write<UINT>(cameraservices + offsets::FOV, desiredFov);
+            (*mem)->Write<UINT>(cameraservices + offsets::FOV, desiredFov);
         }
     }
 }
