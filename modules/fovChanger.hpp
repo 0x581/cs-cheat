@@ -39,7 +39,7 @@ static void runFovChangerLoop(Memory** mem)
         (*mem)->Write<UINT>(cameraservices + offsets::FOV, desiredFov);
         bool isScoped = (*mem)->Read<bool>(localPlayer + offsets::IsScoped);
 
-        if (isScoped = true) {
+        if (isScoped == true) {
             std::cout << "is scoped" << std::endl;
         }
         else {
