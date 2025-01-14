@@ -2,7 +2,7 @@
 
 #include <thread>
 
-#include "activeCheats.hpp"
+#include "sharedVariables.hpp"
 
 #include "../memory.hpp"
 #include "../offsets/offsets.hpp"
