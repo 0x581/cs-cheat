@@ -12,10 +12,31 @@
 
 #include "./lib/pch.h"
 
-void connectToCS2(Memory** mem) {
+static void connectionHandler(Memory** mem) {
     const std::vector<const wchar_t*> requiredModules{ modules::client };
 
-    while (!*mem) {
+    while (true) {
+        if (*mem) {
+            DWORD exit_code = 0;
+
+            if (!GetExitCodeProcess((*mem)->getProcessHandle(), &exit_code)) {
+                auto error = GetLastError();
+                std::cout << "CS2 Memory Connection handler failed to fetch status of CS2: " << error << std::endl;
+            }
+
+            if (exit_code != STILL_ACTIVE) {
+                std::cout << "Connection to CS2 lost." << std::endl;
+                auto temp = *mem;
+                *mem = nullptr;
+
+                delete temp;
+                temp = nullptr;
+            }
+
+            std::this_thread::sleep_for(delays::memConnectionWaitTime);
+            continue;
+        }
+
         Memory* temp = new Memory(L"cs2.exe", requiredModules);
 
         if (!temp->getProcessId() || !temp->getProcessHandle())
@@ -35,7 +56,7 @@ int main()
 {
     Memory *mem = nullptr;
 
-    std::thread conn{connectToCS2, &mem};
+    std::thread conn{connectionHandler, &mem};
 
     std::thread triggerBot{runTriggerBotLoop, &mem};
     std::thread antiFlash{runAntiFlashLoop, &mem};
