@@ -1,5 +1,5 @@
 #include "../pch.h"
-#include "../../modules/activeCheats.hpp"
+#include "../../modules/sharedVariables.hpp"
 
 
 // microsoft safe release of pointers
