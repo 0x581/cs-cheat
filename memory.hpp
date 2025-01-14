@@ -40,14 +40,13 @@ constexpr auto BYTES_PER_ROW = 32;
 
 class Memory
 {
-
 private:
     DWORD id = 0;          // PID
     HANDLE process = NULL; // Process handle
 
     std::unordered_map<const wchar_t *, uintptr_t, WCharHash, WCharEqual> modules{};
 
-    void updateModuleMap() {
+    bool updateModuleMap() {
 
         if (!this->id || !this->process) {
             std::cout << "Tried to read modules of invalid process." << std::endl;
@@ -63,7 +62,7 @@ private:
         {
             DWORD error = GetLastError();
             std::cout << "Module snapshot failed: " << error << std::endl;
-            return;
+            return false;
         }
 
         while (Module32NextW(moduleSnapShot, &moduleEntry))
@@ -82,11 +81,24 @@ private:
 
         if (moduleSnapShot)
             CloseHandle(moduleSnapShot);
+
+        return true;
+    }
+
+    void clearModuleMap() {
+        for (auto& module : this->modules)
+        {
+            delete[] module.first;
+        }
+
+        this->modules.clear();
     }
 
 public:
     Memory(const wchar_t* processName, const std::vector<const wchar_t *> &requiredModules)
     {
+        // Get the process handle
+
         PROCESSENTRY32W processEntry{};
         processEntry.dwSize = sizeof(PROCESSENTRY32W);
 
@@ -115,6 +127,7 @@ public:
         if (!this->process || !this->id)
             return;
 
+        // Initialize the module hashmap
         this->updateModuleMap();
         size_t try_num = 1;
 
@@ -136,6 +149,7 @@ public:
                 // 10 attempts to get the modules failed, clear process
                 std::cout << "Failed to fetch required Modules." << std::endl;
                 CloseHandle(this->process);
+
                 this->process = nullptr;
                 this->id = 0;
 
@@ -149,12 +163,7 @@ public:
         if (this->process)
             CloseHandle(this->process);
 
-        for (auto &module : this->modules)
-        {
-            delete[] module.first;
-        }
-
-        this->modules.clear();
+        clearModuleMap();
     }
 
     DWORD getProcessId() const { return this->id; }
