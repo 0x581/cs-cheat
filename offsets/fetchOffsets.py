@@ -130,6 +130,14 @@ OFFSETS: list[Offset] = [
        "IsScoped",
        "client_dll.hpp",
        "m_bIsScoped"
+] Offset(
+       "VoewAngels",
+       "offsets.hpp",
+       "dwViewAngles"
+] Offset(
+       "ViewMatrix",
+       "offsets.hpp",
+       "dwViewMatrix"
 ]
 
 

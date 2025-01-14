@@ -21,4 +21,6 @@ namespace offsets
     constexpr auto CameraServices = 0x10E0;
     constexpr auto FOV = 0x210;
     constexpr auto IsScoped = 0x13A8;
+    constexpr auto ViewMatrix = 0x1A80870;
+    constexpr auto ViewAngles = 0x1A8A810;
 }
