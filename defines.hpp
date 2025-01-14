@@ -37,6 +37,7 @@ namespace delays
     namespace triggerBot
     {
         constexpr auto sleep = std::chrono::milliseconds(10);
+        constexpr auto keyPressDelay = std::chrono::milliseconds(10);
         constexpr auto keyPressTime = std::chrono::milliseconds(10);
     }
 }
