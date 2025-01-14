@@ -25,23 +25,30 @@ void runRadarHack(const Memory& mem, const uintptr_t client)
 
 void runRadarLoop(Memory **mem)
 {
-	while (activeCheats.radar.load())
+	while (true)
 	{
-		if (!*mem) {
-			std::this_thread::sleep_for(delays::memConnectionWaitTime);
-			continue;
+		if (activeCheats.radar.load())
+		{
+			if (!*mem) {
+				std::this_thread::sleep_for(delays::memConnectionWaitTime);
+				continue;
+			}
+
+			std::this_thread::sleep_for(delays::radarHack::sleep);
+
+			const auto client = (*mem)->GetModuleAddress(modules::client);
+
+			const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+
+			// No local player -> No match currently going on
+			if (!localPlayer)
+				continue;
+
+			runRadarHack(**mem, client);
 		}
-
-		std::this_thread::sleep_for(delays::radarHack::sleep);
-
-		const auto client = (*mem)->GetModuleAddress(modules::client);
-		
-		const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
-
-		// No local player -> No match currently going on
-		if (!localPlayer)
-			continue;
-
-		runRadarHack(**mem, client);
+		else
+		{
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		}
 	}
 }

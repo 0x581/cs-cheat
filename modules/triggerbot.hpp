@@ -46,6 +46,10 @@ void runTriggerBotLoop(Memory **mem)
 
             if (GetAsyncKeyState(keybinds::triggerbot))
                 runTriggerBot(**mem, client);
-        }   
+        }
+        else
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+        }
     }
 }
