@@ -42,7 +42,6 @@ public:
 	BOOL msg_loop();
 	
 	VOID init_draw_list();
-	VOID crosshair(const FLOAT aSize, ImU32 color);
 	VOID box(const ImVec2& pos, const FLOAT width, const FLOAT height, ImU32 color, const FLOAT line_width = 2.f);
 	VOID line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width = 2.f);
 	VOID circle(const ImVec2& point, const FLOAT radius, ImU32 color);
