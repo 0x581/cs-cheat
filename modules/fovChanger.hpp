@@ -8,7 +8,7 @@
 #include "../offsets/offsets.hpp"
 #include "../defines.hpp"
 
-static void runBunnyHopLoop(Memory** mem)
+static void runFovChangerLoop(Memory** mem)
 {
     // const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 
@@ -21,10 +21,7 @@ static void runBunnyHopLoop(Memory** mem)
 
         std::this_thread::sleep_for(delays::bunnyHop::sleep);
 
-        const auto client = (*mem)->GetModuleAddress(L"client.dll");
-
-        if (!client)
-            continue;
+        const auto client = (*mem)->GetModuleAddress(modules::client);
 
         const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 
@@ -38,19 +35,20 @@ static void runBunnyHopLoop(Memory** mem)
 
         auto currentFov = (*mem)->Read<UINT>(cameraservices + offsets::FOV);
 
-        std::cout << currentFov;
+        std::cout << "FOV: " << currentFov << std::endl;
         (*mem)->Write<UINT>(cameraservices + offsets::FOV, desiredFov);
         bool isScoped = (*mem)->Read<bool>(localPlayer + offsets::IsScoped);
+
         if (isScoped = true) {
-            std::cout << "is scoped";
+            std::cout << "is scoped" << std::endl;
         }
         else {
-            std::cout << "is not scoped";
+            std::cout << "is not scoped" << std::endl;
         }
 
-        if (!isScoped && currentFov != desiredFov)
-        {
-            (*mem)->Write<UINT>(cameraservices + offsets::FOV, desiredFov);
-        }
+        //if (!isScoped && currentFov != desiredFov)
+        //{
+        //    (*mem)->Write<UINT>(cameraservices + offsets::FOV, desiredFov);
+        //}
     }
 }

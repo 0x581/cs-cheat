@@ -33,10 +33,7 @@ void runTriggerBotLoop(Memory **mem)
 
         std::this_thread::sleep_for(delays::triggerBot::sleep);
 
-        const auto client = (*mem)->GetModuleAddress(L"client.dll");
-
-        if (!client)
-            continue;
+        const auto client = (*mem)->GetModuleAddress(modules::client);
 
         const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 

@@ -35,10 +35,7 @@ void runRadarLoop(Memory **mem)
 		std::this_thread::sleep_for(delays::radarHack::sleep);
 
 		const auto client = (*mem)->GetModuleAddress(modules::client);
-
-		if (!client)
-			continue;
-
+		
 		const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 
 		// No local player -> No match currently going on
