@@ -58,7 +58,10 @@
     <ClCompile Include="lib\pch.cpp">
       <Filter>lib</Filter>
     </ClCompile>
-    <ClCompile Include="modules\activeCheats.cpp">
+    <ClCompile Include="modules\sharedVariables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="modules\fovChanger.hpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -109,7 +112,7 @@
       <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="defines.hpp" />
-    <ClInclude Include="modules\activeCheats.hpp" />
+    <ClInclude Include="modules\sharedVariables.hpp" />
     <ClInclude Include="modules\antiflash.hpp" />
     <ClInclude Include="modules\bunnyHop.hpp" />
     <ClInclude Include="modules\radarHack.hpp" />

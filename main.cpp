@@ -98,25 +98,6 @@ int main()
         //    std::cout << "Name: " << name << std::endl;
         //}
         //std::cout << std::endl;
-        int desiredFov = 60;
-
-        auto cameraservices = mem->Read<uintptr_t>(localPlayer + offsets::CameraServices);
-
-        auto currentFov = mem->Read<UINT>(cameraservices + offsets::FOV);
-        std::cout << currentFov;
-        mem->Write<UINT>(cameraservices + offsets::FOV, desiredFov);
-        bool isScoped = mem->Read<bool>(localPlayer + offsets::IsScoped);
-        if (isScoped = true) {
-            std::cout << "is scoped";
-        }
-        else {
-            std::cout << "is not scoped";
-        }
-
-        if (!isScoped && currentFov != desiredFov)
-        {
-            mem->Write<UINT>(cameraservices + offsets::FOV, desiredFov);
-        }
     }
 
 
