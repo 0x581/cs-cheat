@@ -193,9 +193,8 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	}
 
 	ImGuiStyle& style = ImGui::GetStyle();
-
-	static bool l_crosshair = false;
-	static bool l_test = false;
+	ImGui::SetNextWindowSize(ImVec2(400, 300));
+	
 	
 
 	init_draw_list(); // we only do this once a loop
@@ -211,19 +210,19 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	//auto io = &ImGui::GetIO();
 	//overlay.text({io->MousePos.x, io->MousePos.y + 10}, "CURSOR IS RIGHT HERE");
 
-	std::string version = "exorite.cc"; // Beispiel für eine Versionsnummer
-	text({ window_width - ImGui::CalcTextSize(version.c_str()).x, 0 }, version);
+	std::string name = "0x581 cheat"; // Beispiel für eine Versionsnummer
+	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
 	if (menu_ticks == 1)
 		return;
-	if (l_test)
-	{
-		std::cout << "t";
-		//activeCheats.triggerBot.store(true);
-	}
-	/*else
-	{
-		activeCheats.triggerBot.store(false);
-	}*/
+	static bool triggerbot = false;
+	static bool radar = false;
+	static bool antiflash = false;
+	static bool l_test = false;
+	activeCheats.triggerBot.store(triggerbot);
+	activeCheats.radar.store(radar);
+	activeCheats.antiFlash.store(antiflash);
+	
+	
 	// imgui menu itself
 	ImGui::Begin(
 		"Misc",
@@ -232,10 +231,29 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoSavedSettings
 	);
+	ImGui::Text("0x581 cheat(bisher keinen namen)");
+	if (ImGui::BeginTabBar("MyTabBar")) {
+		if (ImGui::BeginTabItem("aim")) {
+			ImGui::Checkbox("triggerbot", &triggerbot);
+			ImGui::Checkbox("soon", &l_test);
+			ImGui::Checkbox("soon", &l_test);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("visuals")) {
+			ImGui::Checkbox("radar", &radar);
+			ImGui::Checkbox("antiflash", &antiflash);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("misc")) {
+			ImGui::Checkbox("soon", &l_test);
+			ImGui::Checkbox("soon", &l_test);
+			ImGui::Checkbox("soon", &l_test);
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
 
-	ImGui::Checkbox("triggerbot", &l_test);
-	ImGui::Checkbox("radar", &l_test);
-	ImGui::Checkbox("antiflash", &l_test);
+
 	ImGui::End();
 }
 
