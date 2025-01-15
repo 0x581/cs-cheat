@@ -345,7 +345,11 @@ VOID c_overlay::init_draw_list() {
 	draw_list = ImGui::GetBackgroundDrawList();
 }
 
-
+//to make esp box
+VOID c_overlay::box(const ImVec2& pos, const FLOAT width, const FLOAT height, ImU32 color, const FLOAT line_width) {
+	std::array<ImVec2, 4> box_lines{ pos,ImVec2{pos.x + width,pos.y},ImVec2{pos.x + width,pos.y + height},ImVec2{pos.x,pos.y + height} };
+	draw_list->AddPolyline(box_lines.data(), box_lines.size(), color, true, 2);
+}
 
 //esp tracer
 VOID c_overlay::line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width) {
