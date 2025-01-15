@@ -9,6 +9,7 @@ struct CheatController
     std::atomic<bool> triggerBot{true};
     std::atomic<bool> radar{true};
     std::atomic<bool> fovChanger{true};
+    std::atomic<bool> esp{true};
 };
 
 struct FOVController

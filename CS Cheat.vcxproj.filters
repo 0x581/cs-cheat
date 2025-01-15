@@ -23,6 +23,9 @@
     <Filter Include="lib\timer">
       <UniqueIdentifier>{b0ff3733-d3f9-4fd1-a99e-270e01fb94e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="math">
+      <UniqueIdentifier>{5cc33ff1-269c-4f34-9b61-091322300f58}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -119,6 +122,12 @@
     <ClInclude Include="modules\triggerbot.hpp" />
     <ClInclude Include="offsets\entityListInteraction.hpp">
       <Filter>offsets</Filter>
+    </ClInclude>
+    <ClInclude Include="modules\esp.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="math\math.hpp">
+      <Filter>math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

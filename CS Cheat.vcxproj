@@ -166,7 +166,9 @@
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="lib\pch.h" />
     <ClInclude Include="lib\timer\timer.h" />
+    <ClInclude Include="math\math.hpp" />
     <ClInclude Include="memory.hpp" />
+    <ClInclude Include="modules\esp.hpp" />
     <ClInclude Include="modules\sharedVariables.hpp" />
     <ClInclude Include="modules\antiflash.hpp" />
     <ClInclude Include="modules\bunnyHop.hpp" />

@@ -219,11 +219,13 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	static bool triggerbot = false;
 	static bool radar = false;
 	static bool antiflash = false;
+	static bool esp = false;
 	static bool l_test = false;
 
 	activeCheats.triggerBot.store(triggerbot);
 	activeCheats.radar.store(radar);
 	activeCheats.antiFlash.store(antiflash);
+	activeCheats.esp.store(esp);
 	
 	
 	// imgui menu itself
@@ -238,7 +240,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	if (ImGui::BeginTabBar("MyTabBar")) {
 		if (ImGui::BeginTabItem("aim")) {
 			ImGui::Checkbox("triggerbot", &triggerbot);
-			ImGui::Checkbox("soon", &l_test);
+			ImGui::Checkbox("esp", &esp);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
 		}
@@ -344,11 +346,7 @@ VOID c_overlay::init_draw_list() {
 }
 
 
-//to make esp box
-VOID c_overlay::box(const ImVec2& pos, const FLOAT width, const FLOAT height, ImU32 color, const FLOAT line_width) {
-	std::array<ImVec2, 4> box_lines{ pos,ImVec2{pos.x + width,pos.y},ImVec2{pos.x + width,pos.y + height},ImVec2{pos.x,pos.y + height} };
-	draw_list->AddPolyline(box_lines.data(), box_lines.size(), color, true, 2);
-}
+
 //esp tracer
 VOID c_overlay::line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width) {
 	draw_list->AddLine(point1, point2, color, line_width);
