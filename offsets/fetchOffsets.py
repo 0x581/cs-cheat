@@ -130,14 +130,22 @@ OFFSETS: list[Offset] = [
        "IsScoped",
        "client_dll.hpp",
        "m_bIsScoped"
-] Offset(
+    ),
+ Offset(
        "VoewAngels",
        "offsets.hpp",
        "dwViewAngles"
-] Offset(
+),
+ Offset(
        "ViewMatrix",
        "offsets.hpp",
        "dwViewMatrix"
+),
+ Offset(
+       "OldOrigin",
+       "client_dll.hpp",
+      "m_vOldOrigin"
+),
 ]
 
 
@@ -206,5 +214,5 @@ def get_all_offsets() -> str:
 
 
 if __name__ == "__main__":
-    with open("offsets/offsets.hpp", "w") as file:
+    with open("offsets.hpp", "w") as file:
         file.write(get_all_offsets())
