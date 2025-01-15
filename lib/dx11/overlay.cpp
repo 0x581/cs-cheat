@@ -193,7 +193,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	}
 
 	ImGuiStyle& style = ImGui::GetStyle();
-	ImGui::SetNextWindowSize(ImVec2(400, 300));
+	
 	
 	
 	
@@ -207,17 +207,20 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 
 	
 
-	//auto io = &ImGui::GetIO();
-	//overlay.text({io->MousePos.x, io->MousePos.y + 10}, "CURSOR IS RIGHT HERE");
+	
+	ImGui::SetNextWindowSize(ImVec2(400, 300));
 
 	std::string name = "0x581 cheat"; // Beispiel für eine Versionsnummer
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
+
 	if (menu_ticks == 1)
 		return;
+
 	static bool triggerbot = false;
 	static bool radar = false;
 	static bool antiflash = false;
 	static bool l_test = false;
+
 	activeCheats.triggerBot.store(triggerbot);
 	activeCheats.radar.store(radar);
 	activeCheats.antiFlash.store(antiflash);
