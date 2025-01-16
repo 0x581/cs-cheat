@@ -220,13 +220,15 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	static bool radar = false;
 	static bool antiflash = false;
 	static bool esp = false;
+	static bool fov = false;
 	static bool l_test = false;
 		
 	activeCheats.triggerBot.store(triggerbot);
 	activeCheats.radar.store(radar);
 	activeCheats.antiFlash.store(antiflash);
 	activeCheats.esp.store(esp);
-
+	activeCheats.fovChanger.store(fov);
+	
 	
 	fovController.desiredFov.store(sliderValue);
 
@@ -252,9 +254,11 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("misc")) {
-			ImGui::Text("fov changer");
-			(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
-			
+			ImGui::Checkbox("Fov changer", &fov);
+			if (fov == true) 
+			{
+				(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
+			}
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
