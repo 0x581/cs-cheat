@@ -32,6 +32,11 @@ namespace delays
         constexpr auto keyPressTime = std::chrono::milliseconds(10);
     }
 
+    namespace fovChanger
+    {
+        constexpr auto sleep = std::chrono::milliseconds(5);
+    }
+
     namespace radarHack
     {
         constexpr auto sleep = std::chrono::seconds(1);

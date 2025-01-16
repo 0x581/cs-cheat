@@ -118,13 +118,13 @@ OFFSETS: list[Offset] = [
        "CameraServices",
        "client_dll.hpp",
        "m_pCameraServices"
-       
+       "Member of C_BasePlayerPawn, CPlayer_CameraServices *",
    ),
    Offset(
        "FOV",
        "client_dll.hpp",
-       "m_iFOV"
-       
+       "m_iFOV",
+       "Member of CCSPlayerBase_CameraServices, uint32",
    ),
    Offset(
        "IsScoped",
