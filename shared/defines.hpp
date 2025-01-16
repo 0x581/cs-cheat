@@ -48,6 +48,11 @@ namespace delays
         constexpr auto keyPressDelay = std::chrono::milliseconds(10);
         constexpr auto keyPressTime = std::chrono::milliseconds(10);
     }
+
+    namespace esp
+    {
+        constexpr auto sleep = std::chrono::milliseconds(10);
+    }
 }
 
 namespace modules

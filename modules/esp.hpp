@@ -30,66 +30,47 @@ ImU32 Color(RGB color)
 RGB red = { 255, 0, 0 };
 
 
-void DrawRect(float x, float y, float w, float h, RGB color, float thickness)
+void DrawRect(ImVec2 &min, ImVec2& max, RGB color, float thickness)
 {
-    ImGui::GetBackgroundDrawList()->AddRect(ImVec2(x, y), ImVec2(x + w, y + h), Color(color), 0, 0, thickness);
+    ImGui::GetBackgroundDrawList()->AddRect(min, max, Color(color), 0, 0, thickness);
 }
 
 
 void runEsp(const Memory& mem, const uintptr_t client)
 {
-    const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
-    int localTeam = mem.Read<int>(client + offsets::teamNum);
-    const auto entList = mem.Read<uintptr_t>(client + offsets::entityList);
-    view_matrix_t view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
+    const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+    const auto localPlayerTeam = mem.Read<uint8_t>(localPlayerPawn + offsets::teamNum);
 
-
+    const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
 
     for (int i = 0; i < 64; i++) {
-        uintptr_t listEntry = mem.Read<uintptr_t>(entList + (8 * (i & 0x7FFF) >> 9) + 16);
-        if (!listEntry)
+        const auto playerPawn = getPlayerPawnPtr(mem, i);
+
+        if (!playerPawn)
             continue;
 
-        const auto player = mem.Read<uintptr_t>(listEntry + 120 * (i & 0x1FF));
-        if (!player)
+        const auto playerTeam = mem.Read<uint8_t>(playerPawn + offsets::teamNum);
+
+        if (localPlayerTeam == playerTeam)
             continue;
 
-        uintptr_t playerPawn = mem.Read<uintptr_t>(player + offsets::localPlayerPawn);
-
-        uintptr_t listEntry2 = mem.Read<uintptr_t>(entList + 0x8 * ((playerPawn & 0x7FFF) >> 9) + 16);
-        if (!listEntry2)
-            continue;
-
-
-        uintptr_t pcsplayerPawn = mem.Read<uintptr_t>(listEntry2 + 120 * (playerPawn & 0x1FF));
-
-
-        int health = mem.Read<int>(pcsplayerPawn + offsets::health);
+        const int health = mem.Read<int>(playerPawn + offsets::health);
         if (health <= 0 || health > 100)
             continue;
 
-        Vector3 origin = mem.Read<Vector3>(pcsplayerPawn + offsets::OldOrigin);
+        Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
+        Vector3 headPos = { footPos.x, footPos.y, footPos.z + 75.f };
 
-        Vector3 head = { origin.x, origin.y, origin.z + 75.f };
+        Vector3 screenFootPos = footPos.WorldToScreen(view_matrix);
+        Vector3 screenHeadPos = headPos.WorldToScreen(view_matrix);
 
-        Vector3 localOrigin = mem.Read<Vector3>(localPlayer + offsets::OldOrigin);
-
-
-
-        Vector3 screenPos = origin.WorldToScreen(view_matrix);
-        Vector3 screenHead = head.WorldToScreen(view_matrix);
-
-        float height = (screenPos.y - screenHead.y) / 8;
+        float height = (screenFootPos.y - screenHeadPos.y) / 8;
         float width = height / 2.4F;
 
-        DrawRect(
-            screenHead.x - width / 2,
-            screenHead.y,
-            width,
-            height,
-            red,
-            1.5f
-        );
+        ImVec2 min{ screenHeadPos.x - width / 2,  screenHeadPos.y };
+        ImVec2 max{ min.x + width, min.y + height };
+
+        DrawRect(min, max, red, 1.5f);
     }
 }
 
@@ -100,28 +81,25 @@ void runEspLoop(Memory** mem)
     {
         if (activeCheats.esp.load())
         {
-            if (!*mem) {
-                std::this_thread::sleep_for(delays::memConnectionWaitTime);
-                continue;
-            }
-
-            std::this_thread::sleep_for(delays::radarHack::sleep);
-
-            const auto client = (*mem)->GetModuleAddress(modules::client);
-
-            const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
-
-            // No local player . No match currently going on
-            if (!localPlayer)
-                continue;
-
-            runEsp(**mem, client);
-
-
+            std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
+            continue;
         }
-        else
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+
+        if (!*mem) {
+            std::this_thread::sleep_for(delays::memConnectionWaitTime);
+            continue;
         }
+
+        std::this_thread::sleep_for(delays::esp::sleep);
+
+        const auto client = (*mem)->GetModuleAddress(modules::client);
+
+        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+
+        // No local player . No match currently going on
+        if (!localPlayer)
+            continue;
+
+        runEsp(**mem, client);
     }
 }
