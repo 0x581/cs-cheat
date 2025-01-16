@@ -12,8 +12,15 @@ static void runBunnyHopLoop(Memory **mem)
 {
     // const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 
-    while (activeCheats.bunnyHop.load())
+    while (true)
     {
+
+        if (!activeCheats.bunnyHop.load())
+        {
+            std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
+            continue;
+        }
+
         if (!*mem) {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
