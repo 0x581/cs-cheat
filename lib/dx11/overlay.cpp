@@ -222,6 +222,11 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	static bool esp = false;
 	static bool l_test = false;
 		
+	activeCheats.triggerBot.store(triggerbot);
+	activeCheats.radar.store(radar);
+	activeCheats.antiFlash.store(antiflash);
+	activeCheats.esp.store(esp);
+
 	// imgui menu itself
 	ImGui::Begin(
 		"Misc",
