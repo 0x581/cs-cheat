@@ -8,13 +8,13 @@ struct CheatController
     std::atomic<bool> antiFlash{ false };
     std::atomic<bool> triggerBot{ false };
     std::atomic<bool> radar{ false };
-    std::atomic<bool> fovChanger{ false };
+    std::atomic<bool> fovChanger{ true };
     std::atomic<bool> esp{ false };
 };
 
 struct FOVController
 {
-    std::atomic<int> desiredFov{ 90 };
+    std::atomic<unsigned int> desiredFov{ 60 };
 };
 
 

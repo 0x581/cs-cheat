@@ -64,6 +64,7 @@ int main()
     std::thread antiFlash{runAntiFlashLoop, &mem};
     std::thread bunnyHop{runBunnyHopLoop, &mem};
     std::thread radarHack{runRadarLoop, &mem};
+    std::thread fovChanger{runFovChangerLoop, &mem};
     std::thread esp{runEspLoop, &mem};
 
     //std::thread fovChanger{runFovChangerLoop, &mem};
