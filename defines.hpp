@@ -12,6 +12,7 @@ namespace keybinds
 namespace delays
 {
     constexpr auto memConnectionWaitTime = std::chrono::seconds(1);
+    constexpr auto cheatInactiveWaitTime = std::chrono::milliseconds(10);
 
     namespace memory
     {
