@@ -221,7 +221,8 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	static bool antiflash = false;
 	static bool esp = false;
 	static bool l_test = false;
-		
+	int sliderValue = 100;
+
 	// imgui menu itself
 	ImGui::Begin(
 		"Misc",
@@ -244,7 +245,12 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("misc")) {
-			ImGui::Checkbox("soon", &l_test);
+			ImGui::Text("Adjust the integer slider (60 - 140):");
+			if (ImGui::SliderInt("Integer Slider", &sliderValue, 60, 140)) {
+				// Slider wurde verändert
+				// Hier kannst du etwas tun, wenn der Wert aktualisiert wurde
+				printf("Neuer Slider-Wert: %d\n", sliderValue);
+			}
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
