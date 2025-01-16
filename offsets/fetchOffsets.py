@@ -132,7 +132,7 @@ OFFSETS: list[Offset] = [
        "m_bIsScoped"
     ),
  Offset(
-       "VoewAngels",
+       "ViewAngles",
        "offsets.hpp",
        "dwViewAngles"
 ),
