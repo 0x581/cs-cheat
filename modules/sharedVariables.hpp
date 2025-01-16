@@ -4,12 +4,12 @@
 
 struct CheatController
 {
-    std::atomic<bool> bunnyHop{false};
-    std::atomic<bool> antiFlash{true};
-    std::atomic<bool> triggerBot{true};
-    std::atomic<bool> radar{true};
-    std::atomic<bool> fovChanger{true};
-    std::atomic<bool> esp{true};
+    std::atomic<bool> bunnyHop{ false };
+    std::atomic<bool> antiFlash{ false };
+    std::atomic<bool> triggerBot{ false };
+    std::atomic<bool> radar{ false };
+    std::atomic<bool> fovChanger{ false };
+    std::atomic<bool> esp{ false };
 };
 
 struct FOVController
