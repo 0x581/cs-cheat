@@ -8,7 +8,7 @@
 #include <TlHelp32.h>
 #include <unordered_map>
 
-#include "defines.hpp"
+#include "shared/defines.hpp"
 
 struct WCharHash
 {

@@ -17,6 +17,7 @@ struct FOVController
     std::atomic<int> desiredFov{ 90 };
 };
 
+
 extern CheatController activeCheats;
 
 extern FOVController fovController;

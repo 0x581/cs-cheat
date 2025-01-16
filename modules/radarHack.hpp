@@ -2,12 +2,13 @@
 
 #include <thread>
 
-#include "sharedVariables.hpp"
+#include "../shared/defines.hpp"
+#include "../shared/sharedVariables.hpp"
+#include "../shared/offsets.hpp"
 
 #include "../memory.hpp"
-#include "../offsets/offsets.hpp"
 
-#include "../offsets/entityListInteraction.hpp"
+#include "../entityListInteraction.hpp"
 
 
 void runRadarHack(const Memory& mem, const uintptr_t client)

@@ -1,5 +1,5 @@
 #include "../pch.h"
-#include "../../modules/sharedVariables.hpp"
+#include "../../shared/sharedVariables.hpp"
 
 
 // microsoft safe release of pointers

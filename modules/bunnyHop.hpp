@@ -2,11 +2,11 @@
 
 #include <thread>
 
-#include "sharedVariables.hpp"
+#include "../shared/defines.hpp"
+#include "../shared/sharedVariables.hpp"
+#include "../shared/offsets.hpp"
 
 #include "../memory.hpp"
-#include "../offsets/offsets.hpp"
-#include "../defines.hpp"
 
 static void runBunnyHopLoop(Memory **mem)
 {

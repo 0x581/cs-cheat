@@ -148,11 +148,11 @@
     <ClCompile Include="lib\pch.cpp" />
     <ClCompile Include="lib\timer\timer.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="modules\sharedVariables.cpp" />
+    <ClCompile Include="shared\sharedVariables.cpp" />
     <ClCompile Include="modules\fovChanger.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="defines.hpp" />
+    <ClInclude Include="shared\defines.hpp" />
     <ClInclude Include="lib\dx11\overlay.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
@@ -169,19 +169,19 @@
     <ClInclude Include="math\math.hpp" />
     <ClInclude Include="memory.hpp" />
     <ClInclude Include="modules\esp.hpp" />
-    <ClInclude Include="modules\sharedVariables.hpp" />
+    <ClInclude Include="shared\sharedVariables.hpp" />
     <ClInclude Include="modules\antiflash.hpp" />
     <ClInclude Include="modules\bunnyHop.hpp" />
     <ClInclude Include="modules\radarHack.hpp" />
     <ClInclude Include="modules\triggerbot.hpp" />
-    <ClInclude Include="offsets\entityListInteraction.hpp" />
-    <ClInclude Include="offsets\offsets.hpp" />
+    <ClInclude Include="entityListInteraction.hpp" />
+    <ClInclude Include="shared\offsets.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini" />
     <None Include="lib\imgui\imgui_impl_metal.mm" />
     <None Include="lib\imgui\imgui_impl_osx.mm" />
-    <None Include="offsets\fetchOffsets.py" />
+    <None Include="shared\fetchOffsets.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
