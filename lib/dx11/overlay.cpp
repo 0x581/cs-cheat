@@ -10,7 +10,7 @@ inline VOID c_overlay::safe_release(T*& p) {
 		p = NULL;
 	}
 }
-
+int sliderValue = 100; // ignore (fck nicolas das bleib da)
 BOOL c_overlay::init_device() {
 	DXGI_SWAP_CHAIN_DESC vSwapChainDesc;
 	ZeroMemory(&vSwapChainDesc, sizeof(vSwapChainDesc));
@@ -220,12 +220,17 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	static bool radar = false;
 	static bool antiflash = false;
 	static bool esp = false;
+	static bool fov = false;
 	static bool l_test = false;
 		
 	activeCheats.triggerBot.store(triggerbot);
 	activeCheats.radar.store(radar);
 	activeCheats.antiFlash.store(antiflash);
 	activeCheats.esp.store(esp);
+	activeCheats.fovChanger.store(fov);
+	
+	
+	fovController.desiredFov.store(sliderValue);
 
 	// imgui menu itself
 	ImGui::Begin(
@@ -249,7 +254,11 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("misc")) {
-			ImGui::Checkbox("soon", &l_test);
+			ImGui::Checkbox("Fov changer", &fov);
+			if (fov == true) 
+			{
+				(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
+			}
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
