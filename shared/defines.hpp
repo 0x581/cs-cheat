@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Windows.h>
+
 typedef unsigned int CEntityIndex;
 
 namespace keybinds

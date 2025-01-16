@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../memory.hpp"
-#include "../offsets/offsets.hpp"
-#include "../defines.hpp"
+#include "memory.hpp"
+#include "shared/offsets.hpp"
+#include "shared/defines.hpp"
 
 const uintptr_t getEntityListPtr(const Memory& mem)
 {

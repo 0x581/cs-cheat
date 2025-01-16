@@ -1,5 +1,5 @@
 #include "../pch.h"
-#include "../../modules/sharedVariables.hpp"
+#include "../../shared/sharedVariables.hpp"
 
 
 // microsoft safe release of pointers
@@ -221,6 +221,12 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	static bool antiflash = false;
 	static bool esp = false;
 	static bool l_test = false;
+		
+	activeCheats.triggerBot.store(triggerbot);
+	activeCheats.radar.store(radar);
+	activeCheats.antiFlash.store(antiflash);
+	activeCheats.esp.store(esp);
+
 	int sliderValue = 100;
 
 	// imgui menu itself
