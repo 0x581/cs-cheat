@@ -119,33 +119,33 @@ OFFSETS: list[Offset] = [
        "client_dll.hpp",
        "m_pCameraServices"
        "Member of C_BasePlayerPawn, CPlayer_CameraServices *",
-   ),
-   Offset(
-       "FOV",
-       "client_dll.hpp",
-       "m_iFOV",
-       "Member of CCSPlayerBase_CameraServices, uint32",
-   ),
-   Offset(
-       "IsScoped",
-       "client_dll.hpp",
-       "m_bIsScoped"
     ),
- Offset(
-       "ViewAngles",
-       "offsets.hpp",
-       "dwViewAngles"
-),
- Offset(
-       "ViewMatrix",
-       "offsets.hpp",
-       "dwViewMatrix"
-),
- Offset(
-       "OldOrigin",
-       "client_dll.hpp",
-      "m_vOldOrigin"
-),
+    Offset(
+        "FOV",
+        "client_dll.hpp",
+        "m_iFOV",
+        "Member of CCSPlayerBase_CameraServices, uint32",
+    ),
+    Offset(
+        "IsScoped",
+        "client_dll.hpp",
+        "m_bIsScoped",
+    ),
+    Offset(
+        "ViewAngles",
+        "offsets.hpp",
+        "dwViewAngles",
+    ),
+    Offset(
+        "ViewMatrix",
+        "offsets.hpp",
+        "dwViewMatrix",
+    ),
+    Offset(
+        "OldOrigin",
+        "client_dll.hpp",
+        "m_vOldOrigin",
+    ),
 ]
 
 
