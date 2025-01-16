@@ -146,6 +146,15 @@ OFFSETS: list[Offset] = [
        "client_dll.hpp",
       "m_vOldOrigin"
 ),
+Offset(
+       "GameRules",
+       "offsets.hpp",
+      "dwGameRules"
+),
+Offset(
+       "BombPlanted",
+       "client_dll.hpp",
+      "m_bBombPlanted"
 ]
 
 

@@ -11,6 +11,7 @@
 #include "modules/radarHack.hpp"
 #include "modules/fovChanger.hpp"
 #include "modules/esp.hpp"
+#include "modules/BombTimer.hpp"
 
 #include "./lib/pch.h"
 
@@ -66,6 +67,7 @@ int main()
     std::thread radarHack{runRadarLoop, &mem};
     std::thread fovChanger{runFovChangerLoop, &mem};
     std::thread esp{runEspLoop, &mem};
+    std::thread bombHack{runBombHackLoop, &mem};
 
     //std::thread fovChanger{runFovChangerLoop, &mem};
     //const auto client = mem->GetModuleAddress(L"client.dll");

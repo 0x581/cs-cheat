@@ -152,6 +152,7 @@
     <ClCompile Include="modules\fovChanger.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="modules\BombTimer.hpp" />
     <ClInclude Include="shared\defines.hpp" />
     <ClInclude Include="lib\dx11\overlay.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />

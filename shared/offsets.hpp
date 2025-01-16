@@ -24,4 +24,6 @@ namespace offsets
     constexpr auto ViewAngles = 0x1A8C830;
     constexpr auto ViewMatrix = 0x1A82740;
     constexpr auto OldOrigin = 0x1324;
+    constexpr auto GameRules = 0x1A7E048;
+    constexpr auto BombPlanted = 0x9A5; // bool
 }
