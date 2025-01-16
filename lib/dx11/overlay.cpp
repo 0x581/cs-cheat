@@ -10,7 +10,7 @@ inline VOID c_overlay::safe_release(T*& p) {
 		p = NULL;
 	}
 }
-
+int sliderValue = 100; // ignore (fck nicolas das bleib da)
 BOOL c_overlay::init_device() {
 	DXGI_SWAP_CHAIN_DESC vSwapChainDesc;
 	ZeroMemory(&vSwapChainDesc, sizeof(vSwapChainDesc));
@@ -227,7 +227,8 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	activeCheats.antiFlash.store(antiflash);
 	activeCheats.esp.store(esp);
 
-	int sliderValue = 100;
+	
+	fovController.desiredFov.store(sliderValue);
 
 	// imgui menu itself
 	ImGui::Begin(
@@ -251,12 +252,9 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("misc")) {
-			ImGui::Text("Adjust the integer slider (60 - 140):");
-			if (ImGui::SliderInt("Integer Slider", &sliderValue, 60, 140)) {
-				// Slider wurde verändert
-				// Hier kannst du etwas tun, wenn der Wert aktualisiert wurde
-				printf("Neuer Slider-Wert: %d\n", sliderValue);
-			}
+			ImGui::Text("fov changer");
+			(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
+			
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
