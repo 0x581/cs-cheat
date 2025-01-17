@@ -49,6 +49,11 @@ namespace delays
         constexpr auto keyPressTime = std::chrono::milliseconds(10);
     }
 
+    namespace bombHack
+    {
+        constexpr auto sleep = std::chrono::milliseconds(10);
+    }
+
     namespace esp
     {
         constexpr auto sleep = std::chrono::milliseconds(10);

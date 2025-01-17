@@ -12,6 +12,7 @@
 #include "modules/radarHack.hpp"
 #include "modules/fovChanger.hpp"
 #include "modules/esp.hpp"
+#include "modules/BombTimer.hpp"
 
 
 static void connectionHandler(Memory** mem) {
@@ -66,6 +67,7 @@ int main()
     std::thread radarHack{runRadarLoop, &mem};
     std::thread fovChanger{runFovChangerLoop, &mem};
     std::thread esp{runEspLoop, &mem};
+    std::thread bombHack{runBombHackLoop, &mem};
 
     c_overlay overlay;
     while (overlay.msg_loop() && !overlay.ready) {}
