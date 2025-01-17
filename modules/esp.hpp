@@ -70,7 +70,9 @@ void runEsp(const Memory& mem, const uintptr_t client)
         ImVec2 min{ screenHeadPos.x - width / 2,  screenHeadPos.y };
         ImVec2 max{ min.x + width, min.y + height };
 
-        DrawRect(min, max, red, 1.5f);
+        //DrawRect(min, max, red, 1.5f);
+
+        
     }
 }
 
