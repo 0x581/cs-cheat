@@ -115,46 +115,51 @@ OFFSETS: list[Offset] = [
         "m_iIDEntIndex",
     ),
     Offset(
-       "CameraServices",
-       "client_dll.hpp",
-       "m_pCameraServices"
-       "Member of C_BasePlayerPawn, CPlayer_CameraServices *",
-   ),
-   Offset(
-       "FOV",
-       "client_dll.hpp",
-       "m_iFOV",
-       "Member of CCSPlayerBase_CameraServices, uint32",
-   ),
-   Offset(
-       "IsScoped",
-       "client_dll.hpp",
-       "m_bIsScoped"
+        "CameraServices",
+        "client_dll.hpp",
+        "m_pCameraServices",
+        "Member of C_BasePlayerPawn, CPlayer_CameraServices *",
     ),
- Offset(
-       "ViewAngles",
-       "offsets.hpp",
-       "dwViewAngles"
-),
- Offset(
-       "ViewMatrix",
-       "offsets.hpp",
-       "dwViewMatrix"
-),
- Offset(
-       "OldOrigin",
-       "client_dll.hpp",
-      "m_vOldOrigin"
-),
-Offset(
-       "GameRules",
-       "offsets.hpp",
-      "dwGameRules"
-),
-Offset(
-       "BombPlanted",
-       "client_dll.hpp",
-      "m_bBombPlanted"
+    Offset(
+        "FOV",
+        "client_dll.hpp",
+        "m_iFOV",
+        "Member of CCSPlayerBase_CameraServices, uint32",
+    ),
+    Offset(
+        "IsScoped",
+        "client_dll.hpp",
+        "m_bIsScoped",
+        "Member of C_BasePlayerPawn, bool",
+    ),
+    Offset(
+        "ViewAngles",
+        "offsets.hpp",
+        "dwViewAngles",
+    ),
+    Offset(
+        "ViewMatrix",
+        "offsets.hpp",
+        "dwViewMatrix",
+    ),
+    Offset(
+        "OldOrigin",
+        "client_dll.hpp",
+        "m_vOldOrigin",
+        "Member of C_BasePlayerPawn, Vector",
+    ),
+    Offset(
+        "GameRules",
+        "offsets.hpp",
+        "dwGameRules",
+        "C_CSGameRules",
+    ),
+    Offset(
+        "BombPlanted",
+        "client_dll.hpp",
+        "m_bBombPlanted",
+        "Member of C_CSGameRules, bool, was 0x9A5",
+    ),
 ]
 
 
@@ -223,5 +228,5 @@ def get_all_offsets() -> str:
 
 
 if __name__ == "__main__":
-    with open("offsets.hpp", "w") as file:
+    with open("shared/offsets.hpp", "w") as file:
         file.write(get_all_offsets())
