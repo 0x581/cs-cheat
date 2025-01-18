@@ -47,16 +47,29 @@ void runEsp(const Memory& mem, const uintptr_t client)
         const auto playerPawn = getPlayerPawnPtr(mem, i);
 
         if (!playerPawn)
+        {
+            delete espController.boxes[i];
+            espController.boxes[i] = nullptr;
             continue;
+        }
 
         const auto playerTeam = mem.Read<uint8_t>(playerPawn + offsets::teamNum);
 
         if (localPlayerTeam == playerTeam)
+        {
+            delete espController.boxes[i];
+            espController.boxes[i] = nullptr;
             continue;
+        }
 
         const int health = mem.Read<int>(playerPawn + offsets::health);
+
         if (health <= 0 || health > 100)
+        {
+            delete espController.boxes[i];
+            espController.boxes[i] = nullptr;
             continue;
+        }
 
         Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
         Vector3 headPos = { footPos.x, footPos.y, footPos.z + 75.f };
@@ -70,16 +83,19 @@ void runEsp(const Memory& mem, const uintptr_t client)
         ImVec2 min{ screenHeadPos.x - width / 2,  screenHeadPos.y };
         ImVec2 max{ min.x + width, min.y + height };
 
-        DrawRect(min, max, red, 1.5f);
+        auto pair = new std::pair<ImVec2, ImVec2>(min, max);
+
+        espController.boxes[i] = pair;
+
+        std::cout << "(" << footPos.x << "|" << footPos.y << "|" << footPos.z << "), (" << screenFootPos.x << "|" << screenFootPos.y << ")" << std::endl;
     }
 }
 
 void runEspLoop(Memory** mem)
 {
-
     while (true)
     {
-        if (activeCheats.esp.load())
+        if (!activeCheats.esp.load())
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;
@@ -96,7 +112,7 @@ void runEspLoop(Memory** mem)
 
         const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
 
-        // No local player . No match currently going on
+        // No local player -> No match currently going on
         if (!localPlayer)
             continue;
 
