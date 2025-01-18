@@ -148,6 +148,7 @@
     <ClCompile Include="lib\pch.cpp" />
     <ClCompile Include="lib\timer\timer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shared\consoleControl.cpp" />
     <ClCompile Include="shared\sharedVariables.cpp" />
     <ClCompile Include="modules\fovChanger.hpp" />
   </ItemGroup>
