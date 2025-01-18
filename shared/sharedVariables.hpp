@@ -2,6 +2,11 @@
 
 #include <atomic>
 
+#include "../lib/imgui/imgui.h"
+#include <utility>
+#include <Windows.h>
+
+
 struct CheatController
 {
     std::atomic<bool> bunnyHop{ false };
@@ -19,6 +24,16 @@ struct FOVController
 };
 
 
+struct ESPController
+{
+    std::pair<ImVec2, ImVec2> *boxes[64] {};
+};
+
+
 extern CheatController activeCheats;
 
 extern FOVController fovController;
+
+extern ESPController espController;
+
+extern HANDLE console;

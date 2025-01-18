@@ -31,6 +31,7 @@ private:
 
 	VOID init_render_target();
 	VOID dest_render_target();
+	const VOID renderCheats();
 	const VOID render(FLOAT width, FLOAT height);
 
 	void input_handler();
@@ -42,7 +43,7 @@ public:
 	BOOL msg_loop();
 	
 	VOID init_draw_list();
-	VOID box(const ImVec2& pos, const FLOAT width, const FLOAT height, ImU32 color, const FLOAT line_width = 2.f);
+	VOID box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width = 2.f);
 	VOID line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width = 2.f);
 	VOID circle(const ImVec2& point, const FLOAT radius, ImU32 color);
 	VOID text(const ImVec2& pos, const std::string& text, ImU32 color = ImColor(240, 248, 255), bool outline = true);

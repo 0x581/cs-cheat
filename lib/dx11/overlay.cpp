@@ -186,18 +186,33 @@ c_overlay::~c_overlay() {
 	delete font;
 }
 
+
+const void c_overlay::renderCheats() {
+	for (size_t i = 0; i < 64; i++)
+	{
+		auto pair_ptr = espController.boxes[i];
+
+		if (!pair_ptr)
+			continue;
+
+		box(pair_ptr->first, pair_ptr->second, ImColor(255, 0, 0));
+	}
+}
+
+
 const void c_overlay::render(FLOAT width, FLOAT height) {
 	if (exit) {
+		init_draw_list();
 		ready = true;
 		return;
 	}
 
 	ImGuiStyle& style = ImGui::GetStyle();
-	
-	
-	
-	
+
 	init_draw_list(); // we only do this once a loop
+
+	renderCheats();
+
 
 	// a double value between 0 && 1 based on the anim time
 	double menu_anim = sin((M_PI / 2.0) * (((menu_ticks == 1 ? 0 : 1) * pow(menu_ticks, 2)) / ((double)pow(menu_anim_time - 1, 2))));
@@ -265,7 +280,6 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		}
 		ImGui::EndTabBar();
 	}
-
 
 	ImGui::End();
 }
@@ -354,9 +368,8 @@ VOID c_overlay::init_draw_list() {
 }
 
 //to make esp box
-VOID c_overlay::box(const ImVec2& pos, const FLOAT width, const FLOAT height, ImU32 color, const FLOAT line_width) {
-	std::array<ImVec2, 4> box_lines{ pos,ImVec2{pos.x + width,pos.y},ImVec2{pos.x + width,pos.y + height},ImVec2{pos.x,pos.y + height} };
-	draw_list->AddPolyline(box_lines.data(), box_lines.size(), color, true, 2);
+VOID c_overlay::box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width) {
+	draw_list->AddRect(min, max, color, 0, 0, line_width);
 }
 
 //esp tracer

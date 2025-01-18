@@ -67,6 +67,9 @@
     <ClCompile Include="modules\fovChanger.hpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shared\consoleControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memory.hpp">
@@ -129,6 +132,7 @@
     <ClInclude Include="math\math.hpp">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="modules\BombTimer.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shared\fetchOffsets.py">
