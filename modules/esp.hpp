@@ -54,10 +54,19 @@ void runEsp(const Memory& mem, const uintptr_t client)
         Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
         Vector3 headPos = { footPos.x, footPos.y, footPos.z + 75.f };
 
-        Vector3 screenFootPos = footPos.WorldToScreen(view_matrix);
-        Vector3 screenHeadPos = headPos.WorldToScreen(view_matrix);
+        auto screenFootPos = worldToScreen(footPos, view_matrix);
+        auto screenHeadPos = worldToScreen(headPos, view_matrix);
 
-        float height = (screenFootPos.y - screenHeadPos.y) / 8;
+
+        if (screenFootPos.z == 0.f || screenHeadPos.z == 0.f)
+        {
+            delete espData.boxes[i];
+            espData.boxes[i] = nullptr;
+            continue;
+        }
+
+
+        float height = screenFootPos.y - screenHeadPos.y;
         float width = height / 2.4F;
 
         ImVec2 min{ screenHeadPos.x - width / 2,  screenHeadPos.y };
@@ -66,8 +75,6 @@ void runEsp(const Memory& mem, const uintptr_t client)
         auto pair = new std::pair<ImVec2, ImVec2>(min, max);
 
         espData.boxes[i] = pair;
-
-        std::cout << "(" << footPos.x << "|" << footPos.y << "|" << footPos.z << "), (" << screenFootPos.x << "|" << screenFootPos.y << ")" << std::endl;
     }
 }
 
