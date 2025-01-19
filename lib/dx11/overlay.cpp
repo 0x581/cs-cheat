@@ -234,11 +234,11 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	if (menu_ticks == 1)
 		return;
 
-	static bool triggerbot = false;
-	static bool radar = false;
-	static bool antiflash = false;
-	static bool esp = false;
-	static bool fov = false;
+	static bool triggerbot = activeCheats.triggerBot.load();
+	static bool radar = activeCheats.radar.load();
+	static bool antiflash = activeCheats.antiFlash.load();
+	static bool esp = activeCheats.esp.load();
+	static bool fov = activeCheats.fovChanger.load();
 	static bool l_test = false;
 		
 	activeCheats.triggerBot.store(triggerbot);

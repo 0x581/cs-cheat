@@ -3,6 +3,8 @@
 #include <Windows.h>
 
 typedef unsigned int CEntityIndex;
+typedef float GameTime_t;
+
 
 namespace keybinds
 {
