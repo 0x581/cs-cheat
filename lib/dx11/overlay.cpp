@@ -20,11 +20,21 @@ static bool esp = activeCheats.esp.load();
 static bool fov = activeCheats.fovChanger.load();
 static bool bomb = activeCheats.bombHack.load();
 static bool l_test = false;
+int selectedColorIndex = 0;
 static ImU32 selectedColor = rgbColors::green;  // Default selected color
 
 // Dropdown menu to select color
-const char* colorNames[] = { "Green", "Red", "Blue", "Yellow", "Black", "White" };
-ImU32 colors[] = { rgbColors::green, rgbColors::red, rgbColors::blue, rgbColors::yellow, rgbColors::black, rgbColors::white };
+const char* colorNames[] = {
+	"Green", "Red", "Blue", "Yellow", "Black", "White",
+	"Purple", "Dark Purple"
+};
+
+ImU32 colors[] = {
+	rgbColors::green, rgbColors::red, rgbColors::blue, rgbColors::yellow,
+	rgbColors::black, rgbColors::white,
+	rgbColors::purple1, rgbColors::purple2
+};
+
 
 
 ImGuiContext* context1 = ImGui::CreateContext();
@@ -214,6 +224,7 @@ const void c_overlay::renderCheats() {
 				continue;
 
 			box(pair_ptr->first, pair_ptr->second, selectedColor);
+			//text(pair_ptr->first - 3.0f, "test", selectedColor);
 		}
 	}
 }
@@ -238,7 +249,6 @@ void c_overlay::menu_main() {
 	if (ImGui::BeginTabBar("MyTabBar")) {
 		if (ImGui::BeginTabItem("aim")) {
 			ImGui::Checkbox("triggerbot", &triggerbot);
-			
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
 		}
@@ -248,11 +258,12 @@ void c_overlay::menu_main() {
 			ImGui::Checkbox("esp", &esp);
 			if(esp == true)
 			{ 
-				if (ImGui::BeginCombo("ESP Color", colorNames[0])) {
+				if (ImGui::BeginCombo("ESP Color", colorNames[selectedColorIndex])) {
 					for (int i = 0; i < IM_ARRAYSIZE(colorNames); i++) {
 						bool isSelected = (selectedColor == colors[i]);
 						if (ImGui::Selectable(colorNames[i], isSelected)) {
 							selectedColor = colors[i];
+							selectedColorIndex = i; // Update the selected color index
 						}
 						if (isSelected)
 							ImGui::SetItemDefaultFocus(); // Keep the selected item focused
