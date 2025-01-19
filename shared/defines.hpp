@@ -8,6 +8,9 @@ typedef float GameTime_t;
 
 namespace keybinds
 {
+    constexpr auto showMenu = VK_INSERT;
+    constexpr auto quickExit = VK_END;
+
     constexpr auto slowMode = VK_MENU;
     constexpr auto bunnyHop = VK_SPACE;
     constexpr auto triggerbot = VK_RBUTTON;
