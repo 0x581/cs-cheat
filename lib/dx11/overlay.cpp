@@ -17,6 +17,7 @@ static bool antiflash = false;
 static bool esp = false;
 static bool fov = false;
 static bool l_test = false;
+static bool bomb = false;
 ImGuiContext* context1 = ImGui::CreateContext();
 ImGuiContext* context2 = ImGui::CreateContext();
 BOOL c_overlay::init_device() {
@@ -221,10 +222,7 @@ const void c_overlay::renderCheats() {
 }
  void c_overlay::menu_main() {
 	
-	 ImGuiStyle& style1 = ImGui::GetStyle();
-	 double menu_anim = sin((M_PI / 2.0) * (((menu_ticks == 1 ? 0 : 1) * pow(menu_ticks, 2)) / ((double)pow(menu_anim_time - 1, 2))));
-	 circle({ window_width / 2, window_height / 2 }, menu_anim * (window_width * 0.573674 /*Magical constant to calc radius of a 16:9 window found using some basic trig*/), ImColor(11, 11, 11, 80));
-	 style1.Alpha = menu_anim;
+	
 	 ImGui::SetCurrentContext(context1);
 	 ImGui::SetNextWindowSize(ImVec2(400, 300));
 
@@ -257,7 +255,7 @@ const void c_overlay::renderCheats() {
 			 {
 				 (ImGui::SliderInt("Fov", &sliderValue, 60, 140));
 			 }
-			 ImGui::Checkbox("soon", &l_test);
+			 ImGui::Checkbox("bomb info", &bomb);
 			 ImGui::Checkbox("soon", &l_test);
 			 ImGui::EndTabItem();
 		 }
@@ -286,11 +284,38 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	std::string name = "0x581 cheat"; // Beispiel für eine Versionsnummer
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
 
+	if (bomb == true)
+	{
+		ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+		ImGui::SetNextWindowSize(ImVec2(200, 200));
+		ImGui::Begin(
+			"lol",
+			0,
+			ImGuiWindowFlags_NoTitleBar
+			| ImGuiWindowFlags_NoResize
+			| ImGuiWindowFlags_NoSavedSettings
+			| ImGuiWindowFlags_NoBackground
+		);
+
+		if (true)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+			ImGui::Text("bomb is planted");
+			ImGui::Text("time");
+		}
+		else
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+			ImGui::Text("is not planted");
+
+		}
+		ImGui::PopStyleColor();
+		ImGui::End();
+	}
+
 	if (menu_ticks == 1)
 		return;
 
-
-	
 	activeCheats.triggerBot.store(triggerbot);
 	activeCheats.radar.store(radar);
 	activeCheats.antiFlash.store(antiflash);
@@ -303,26 +328,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	menu_main();
 	
 	
-	if (l_test == true);
-	{
-		
-		//ImGui::SetCurrentContext(context2);
-		ImGui::SetNextWindowSize(ImVec2(400, 400));
-		ImGui::Begin(
-			"lol",
-			0,
-			ImGuiWindowFlags_NoTitleBar
-			| ImGuiWindowFlags_NoResize
-			| ImGuiWindowFlags_NoSavedSettings
-			| ImGuiWindowFlags_NoBackground
-		);
-		
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-		ImGui::Text("testwindow");
-		ImGui::PopStyleColor();
-		ImGui::Text("testwindow");
-		ImGui::End();
-	}
+	
 	
 	
 }
