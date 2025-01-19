@@ -56,7 +56,7 @@ public:
 	bool exit = true;
 	bool ready = true;
 	bool show_menu = true;
-	INT breath, menu_ticks;
+	INT breath;
 	s_font* font;
 };
 

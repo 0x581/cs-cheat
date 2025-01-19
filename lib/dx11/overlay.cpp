@@ -38,12 +38,12 @@ BOOL c_overlay::init_device() {
 
 	D3D_FEATURE_LEVEL vFeatureLevel;
 	D3D_FEATURE_LEVEL vFeatureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
-	
+
 	if (D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, vFeatureLevelArray, 2, D3D11_SDK_VERSION, &vSwapChainDesc, &swap_chain, &d3d_device, &vFeatureLevel, &device_context) != S_OK)
 		return false;
 
 	init_render_target();
-	
+
 	ShowWindow(window_handle, SW_SHOWNORMAL);
 	UpdateWindow(window_handle);
 	return true;
@@ -58,7 +58,7 @@ VOID c_overlay::dest_device() {
 
 VOID c_overlay::init_imgui() {
 	IMGUI_CHECKVERSION();
-	
+
 	ImVec4* colors = ImGui::GetStyle().Colors;
 
 
@@ -109,7 +109,7 @@ VOID c_overlay::init_imgui() {
 	style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.043f, 0.043f, 0.043f, 0.73f);
-	
+
 	ImGuiIO& io = ImGui::GetIO();
 	font->im_font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 24.0f);
 	font->font_size = 24.f;
@@ -118,7 +118,7 @@ VOID c_overlay::init_imgui() {
 	ImGui_ImplDX11_Init(d3d_device, device_context);
 }
 
- VOID c_overlay::dest_imgui() {
+VOID c_overlay::dest_imgui() {
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();
@@ -154,14 +154,13 @@ c_overlay::c_overlay() :
 	swap_chain(nullptr),
 	render_target_view(nullptr),
 	draw_list(nullptr),
-	breath(NULL),
-	menu_ticks(NULL)
+	breath(NULL)
 {
 	// get a handle to the nvidia window
 	window_handle = FindWindowA("CEF-OSC-WIDGET", "NVIDIA GeForce Overlay"); //Hijack nvidia share, bc for some reason this is fucking possible?
 	auto getInfo = GetWindowLongA(window_handle, -20);
 	auto changeAttributes = SetWindowLongA(window_handle, -20, (LONG_PTR)(getInfo | 0x20));
-	
+
 	// avoiding window flags: https://www.unknowncheats.me/forum/general-programming-and-reversing/229070-overlay-window-topmost-top-game-windows-video.html
 	MARGINS margins = { -1 };
 	margins.cyBottomHeight = margins.cyTopHeight = margins.cxLeftWidth = margins.cxRightWidth = -1;
@@ -176,7 +175,7 @@ c_overlay::c_overlay() :
 
 	if (!init_device())
 		return; // error creating device
-	
+
 	init_imgui();
 
 	std::thread(&c_overlay::input_handler, this).detach();
@@ -205,52 +204,50 @@ const void c_overlay::renderCheats() {
 		box(pair_ptr->first, pair_ptr->second, ImColor(255, 0, 0));
 	}
 }
- void c_overlay::menu_main() {
-	
-	
-	 ImGui::SetCurrentContext(context1);
-	 ImGui::SetNextWindowSize(ImVec2(500, 500));
+
+void c_overlay::menu_main() {
 
 
-	 // imgui menu itself
-	 ImGui::Begin(
-		 "Misc",
-		 0,
-		 ImGuiWindowFlags_NoTitleBar
-		 | ImGuiWindowFlags_NoResize
-		 | ImGuiWindowFlags_NoSavedSettings
-	 );
-	
-	 ImGui::Text("0x581 external");
-	 if (ImGui::BeginTabBar("MyTabBar")) {
-		 if (ImGui::BeginTabItem("aim")) {
-			 ImGui::Checkbox("triggerbot", &triggerbot);
-			 ImGui::Checkbox("esp", &esp);
-			 ImGui::Checkbox("soon", &l_test);
-			 ImGui::EndTabItem();
-		 }
-		 if (ImGui::BeginTabItem("visuals")) {
-			 ImGui::Checkbox("radar", &radar);
-			 ImGui::Checkbox("antiflash", &antiflash);
-			 ImGui::EndTabItem();
-		 }
-		 if (ImGui::BeginTabItem("misc")) {
-			 ImGui::Checkbox("Fov changer", &fov);
-			 if (fov == true)
-			 {
-				 (ImGui::SliderInt("Fov", &sliderValue, 60, 140));
-			 }
-			 ImGui::Checkbox("bomb info", &bomb);
-			 ImGui::Checkbox("soon", &l_test);
-			 ImGui::EndTabItem();
-		 }
-		 ImGui::EndTabBar();
-	 }
-	 ImGui::End();
+	ImGui::SetCurrentContext(context1);
+	ImGui::SetNextWindowSize(ImVec2(500, 500));
+
+
+	// imgui menu itself
+	ImGui::Begin(
+		"Misc",
+		0,
+		ImGuiWindowFlags_NoTitleBar
+		| ImGuiWindowFlags_NoResize
+		| ImGuiWindowFlags_NoSavedSettings
+	);
+
+	ImGui::Text("0x581 external");
+	if (ImGui::BeginTabBar("MyTabBar")) {
+		if (ImGui::BeginTabItem("aim")) {
+			ImGui::Checkbox("triggerbot", &triggerbot);
+			ImGui::Checkbox("esp", &esp);
+			ImGui::Checkbox("soon", &l_test);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("visuals")) {
+			ImGui::Checkbox("radar", &radar);
+			ImGui::Checkbox("antiflash", &antiflash);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("misc")) {
+			ImGui::Checkbox("Fov changer", &fov);
+			if (fov == true)
+			{
+				(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
+			}
+			ImGui::Checkbox("bomb info", &bomb);
+			ImGui::Checkbox("soon", &l_test);
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
+	ImGui::End();
 }
-
-
-
 
 const void c_overlay::render(FLOAT width, FLOAT height) {
 	if (exit) {
@@ -259,7 +256,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		return;
 	}
 
-	
+
 
 	init_draw_list(); // we only do this once a loop
 
@@ -269,7 +266,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	std::string name = "0x581 external"; // Beispiel für eine Versionsnummer
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
 
-	
+
 
 	if (bomb == true)
 	{
@@ -299,7 +296,8 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		ImGui::PopStyleColor();
 		ImGui::End();
 	}
-	if (menu_ticks == 1)
+
+	if (!show_menu)
 		return;
 
 	activeCheats.triggerBot.store(triggerbot);
@@ -310,10 +308,10 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 
 	fovData.desiredFov = sliderValue;
 
-	
+
 	menu_main();
-	
-	
+
+
 	/*ImGui::SetNextWindowSize(ImVec2(1000, 1000));
 	ImGui::Begin(
 		"ll",
@@ -321,14 +319,14 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		ImGuiWindowFlags_NoTitleBar
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoSavedSettings
-		
+
 	);
 
 	ImGui::ShowStyleEditor();
 
 	ImGui::End();
 	*/
-	
+
 }
 
 BOOL c_overlay::msg_loop() {
@@ -344,7 +342,7 @@ BOOL c_overlay::msg_loop() {
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();
 		ImGui::NewFrame();
-		
+
 		render(window_width, window_height);
 
 		ImGui::Render();
@@ -376,7 +374,9 @@ void c_overlay::input_handler() {
 void c_overlay::anim_handler() {
 	// timers for our animations
 	breath_timer.start();
-	menu_timer.start();
+
+	bool menuKeyReleased = true;
+
 
 	for (;!exit;) {
 		RECT rect{ 0 };
@@ -386,27 +386,28 @@ void c_overlay::anim_handler() {
 
 		// panic key
 		exit = GetAsyncKeyState(VK_END) & 0x8000;
-		
+
 		// timer for our breathing animation
 		int breath_tmr = breath_timer.end();
 		if (breath_tmr >= breath_anim_time * 2) {
-			breath = breath_anim_time; 
+			breath = breath_anim_time;
 			breath_timer.start();
 		}
-		else if (breath_tmr > breath_anim_time) 
+		else if (breath_tmr > breath_anim_time)
 			breath = breath_anim_time - (breath_tmr - breath_anim_time);
-		else if (breath_tmr <= breath_anim_time) 
+		else if (breath_tmr <= breath_anim_time)
 			breath = breath_tmr;
 
 		// timer for menu circle animation & fade in
-		int menu_tmr = menu_timer.end();
-		if (GetAsyncKeyState(VK_INSERT) & 0x8000 && menu_tmr > menu_anim_time) {
-			show_menu = !show_menu;
-			menu_ticks = menu_anim_time;
-			menu_timer.start();
-		}
-		else if (menu_tmr < menu_anim_time)
-			menu_ticks = (show_menu ? menu_tmr : menu_anim_time - menu_tmr);
+		const auto menuKeyPressed = GetAsyncKeyState(VK_INSERT) & 0x8000;
+
+		if (menuKeyPressed) {
+			if (menuKeyReleased) 
+				show_menu = !show_menu;
+
+			menuKeyReleased = false;
+		} else
+			menuKeyReleased = true;
 	}
 }
 
@@ -452,7 +453,7 @@ VOID c_overlay::radial_gradient(const ImVec2& center, float radius, ImU32 col_in
 	draw_list->PrimWriteVtx(center, uv, col_in);
 	for (int n = 0; n < count; n++)
 		draw_list->PrimWriteVtx(draw_list->_Path[n], uv, col_out);
-	
+
 	for (int n = 0; n < count; n++) {
 		draw_list->PrimWriteIdx((ImDrawIdx)(vtx_base));
 		draw_list->PrimWriteIdx((ImDrawIdx)(vtx_base + 1 + n));
