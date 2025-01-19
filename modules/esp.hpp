@@ -28,9 +28,8 @@ ImU32 Color(RGB color)
 }
 
 RGB red = { 255, 0, 0 };
-
-
-void DrawRect(ImVec2& min, ImVec2& max, RGB color, float thickness)
+//only for github
+void DrawRect(ImVec2 &min, ImVec2& max, RGB color, float thickness)
 {
     ImGui::GetBackgroundDrawList()->AddRect(min, max, Color(color), 0, 0, thickness);
 }
