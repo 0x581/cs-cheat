@@ -213,7 +213,8 @@ const void c_overlay::renderCheats() {
 			if (!pair_ptr)
 				continue;
 
-		box(pair_ptr->first, pair_ptr->second, selectedColor);
+			box(pair_ptr->first, pair_ptr->second, selectedColor);
+		}
 	}
 }
 
