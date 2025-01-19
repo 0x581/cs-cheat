@@ -21,17 +21,20 @@ void runBombHack(const Memory& mem, const uintptr_t client)
 	if (!bombplanted)
 		return;
 
-	for (int timeleft = 40; timeleft >= 0; timeleft--) //count 40sec from bombplanted
+	bombData.planted = true;
+
+	for (int timeLeft = 40; timeLeft >= 0; timeLeft--) //count 40sec from bombplanted
 	{
+		bombData.timeRemaining = float(timeLeft);
 		auto bombplanted = mem.Read<bool>(gameRules + offsets::BombPlanted); //refresh
 
 		if (!bombplanted)// end loop if bomb is not planted anymore
 			break;
 
-		std::cout << "Bomb planted: " << timeleft << " seconds remaining" << std::endl;
-
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
+
+	bombData.planted = false;
 }
 
 void runBombHackLoop(Memory** mem)
