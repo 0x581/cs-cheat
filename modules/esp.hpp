@@ -47,8 +47,8 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         if (!playerPawn)
         {
-            delete espController.boxes[i];
-            espController.boxes[i] = nullptr;
+            delete espData.boxes[i];
+            espData.boxes[i] = nullptr;
             continue;
         }
 
@@ -56,8 +56,8 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         if (localPlayerTeam == playerTeam)
         {
-            delete espController.boxes[i];
-            espController.boxes[i] = nullptr;
+            delete espData.boxes[i];
+            espData.boxes[i] = nullptr;
             continue;
         }
 
@@ -65,8 +65,8 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         if (health <= 0 || health > 100)
         {
-            delete espController.boxes[i];
-            espController.boxes[i] = nullptr;
+            delete espData.boxes[i];
+            espData.boxes[i] = nullptr;
             continue;
         }
 
@@ -84,7 +84,7 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         auto pair = new std::pair<ImVec2, ImVec2>(min, max);
 
-        espController.boxes[i] = pair;
+        espData.boxes[i] = pair;
 
         std::cout << "(" << footPos.x << "|" << footPos.y << "|" << footPos.z << "), (" << screenFootPos.x << "|" << screenFootPos.y << ")" << std::endl;
     }
