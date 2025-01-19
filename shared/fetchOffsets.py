@@ -160,6 +160,30 @@ OFFSETS: list[Offset] = [
         "C_CSGameRules::m_bBombPlanted",
         "Member of C_CSGameRules, bool",
     ),
+    Offset(
+        "plantedC4",
+        "offsets.hpp",
+        "dwPlantedC4",
+        "C_PlantedC4",
+    ),
+    Offset(
+        "BombTicking",
+        "client_dll.hpp",
+        "m_bBombTicking",
+        "Member of C_PlantedC4, bool",
+    ),
+    Offset(
+        "m_bC4Activated",
+        "client_dll.hpp",
+        "m_bC4Activated",
+        "Member of C_PlantedC4, bool",
+    ),
+    Offset(
+        "BombSite",
+        "client_dll.hpp",
+        "m_nBombSite",
+        "Member of C_PlantedC4, int32",
+    ),
 ]
 
 

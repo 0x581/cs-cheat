@@ -26,4 +26,8 @@ namespace offsets
     constexpr auto OldOrigin = 0x1324;                    // Member of C_BasePlayerPawn, Vector
     constexpr auto GameRules = 0x1A7E048;                 // C_CSGameRules
     constexpr auto BombPlanted = 0x9A5;                   // Member of C_CSGameRules, bool
+    constexpr auto plantedC4 = 0x1A86B10;                 // C_PlantedC4
+    constexpr auto BombTicking = 0xF90;                   // Member of C_PlantedC4, bool
+    constexpr auto m_bC4Activated = 0xFD8;                // Member of C_PlantedC4, bool
+    constexpr auto BombSite = 0xF94;                      // Member of C_PlantedC4, int32
 }
