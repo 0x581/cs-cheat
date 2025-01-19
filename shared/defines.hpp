@@ -61,7 +61,7 @@ namespace delays
 
     namespace esp
     {
-        constexpr auto sleep = std::chrono::milliseconds(10);
+        constexpr auto sleep = std::chrono::milliseconds(0);
     }
 }
 
