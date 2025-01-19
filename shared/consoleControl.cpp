@@ -4,10 +4,12 @@
 
 #include "sharedVariables.hpp"
 
-inline static std::string getPositioningString(short x, short y) {
+inline static COORD setCursorPosition(short x, short y) {
+	CONSOLE_SCREEN_BUFFER_INFO sBufferInfo{ 0 };
+	GetConsoleScreenBufferInfo(consoleOutput, &sBufferInfo);
     SetConsoleCursorPosition(consoleOutput, COORD{.X = x, .Y = y});
 
-	//print(f"\033[{y};{x}H", end = "")
+	return sBufferInfo.dwCursorPosition;
 }
 
 inline static void hideCursor() {

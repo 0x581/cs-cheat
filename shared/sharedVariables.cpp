@@ -3,8 +3,8 @@
 
 CheatController activeCheats{};
 
-FOVController fovController{};
-
-ESPController espController{};
+FOVData fovData{};
+ESPData espData{};
+BombData bombData{};
 
 HANDLE consoleOutput{ getConsoleOutputHandle() };

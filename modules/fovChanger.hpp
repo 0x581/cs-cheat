@@ -42,6 +42,6 @@ static void runFovChangerLoop(Memory** mem)
         auto cameraservices = (*mem)->Read<uintptr_t>(localPlayer + offsets::CameraServices);
 
         if (!isScoped) 
-            (*mem)->Write<UINT>(cameraservices + offsets::FOV, fovController.desiredFov.load());
+            (*mem)->Write<UINT>(cameraservices + offsets::FOV, fovData.desiredFov);
     }
 }

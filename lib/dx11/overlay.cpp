@@ -212,7 +212,7 @@ c_overlay::~c_overlay() {
 const void c_overlay::renderCheats() {
 	for (size_t i = 0; i < 64; i++)
 	{
-		auto pair_ptr = espController.boxes[i];
+		auto pair_ptr = espData.boxes[i];
 
 		if (!pair_ptr)
 			continue;
@@ -322,7 +322,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	activeCheats.esp.store(esp);
 	activeCheats.fovChanger.store(fov);
 
-	fovController.desiredFov.store(sliderValue);
+	fovData.desiredFov = sliderValue;
 
 	
 	menu_main();
