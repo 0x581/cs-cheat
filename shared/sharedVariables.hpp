@@ -36,4 +36,4 @@ extern FOVController fovController;
 
 extern ESPController espController;
 
-extern HANDLE console;
+extern HANDLE consoleOutput;
