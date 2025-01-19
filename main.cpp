@@ -88,4 +88,6 @@ int main()
     std::thread bombHack{runBombHackLoop, &mem};
 
     while (overlay.msg_loop() && !overlay.ready) {}
+
+    overlay.~c_overlay();
 }
