@@ -14,7 +14,7 @@ namespace offsets
     constexpr auto pawnOfController = 0x80C;              // Member of CCSPlayerController, Handle
     constexpr auto controllerOfPawn = 0x133C;             // Member of C_BasePlayerPawn, Handle
     constexpr auto playerName = 0x660;                    // Member of CBasePlayerController, char[128]
-    constexpr auto entitySpottedState = 0x23D0;           // Member of C_CSPlayerPawn, was 0x23D0
+    constexpr auto entitySpottedState = 0x23D0;           // Member of C_CSPlayerPawn
     constexpr auto health = 0x344;                        // Member of C_BaseEntity, int32
     constexpr auto attack = 0x1864620;
     constexpr auto IDEntIndex = 0x1458;
@@ -25,5 +25,5 @@ namespace offsets
     constexpr auto ViewMatrix = 0x1A82740;
     constexpr auto OldOrigin = 0x1324;                    // Member of C_BasePlayerPawn, Vector
     constexpr auto GameRules = 0x1A7E048;                 // C_CSGameRules
-    constexpr auto BombPlanted = 0x9A5;                   // Member of C_CSGameRules, bool, was 0x9A5
+    constexpr auto BombPlanted = 0x9A5;                   // Member of C_CSGameRules, bool
 }
