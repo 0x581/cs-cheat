@@ -7,8 +7,7 @@
 #include <Windows.h>
 
 
-struct CheatController
-{
+struct CheatController {
     std::atomic<bool> bunnyHop{ false };
     std::atomic<bool> antiFlash{ false };
     std::atomic<bool> triggerBot{ false };
@@ -18,22 +17,24 @@ struct CheatController
     std::atomic<bool> bombHack{ true };
 };
 
-struct FOVController
-{
-    std::atomic<unsigned int> desiredFov{ 60 };
+struct FOVData {
+    unsigned int desiredFov{ 60 };
 };
 
 
-struct ESPController
-{
+struct ESPData {
     std::pair<ImVec2, ImVec2> *boxes[64] {};
 };
 
+struct BombData {
+    bool planted{ false };
+    float timeRemaining{ 0.f };
+};
 
 extern CheatController activeCheats;
 
-extern FOVController fovController;
-
-extern ESPController espController;
+extern FOVData fovData;
+extern ESPData espData;
+extern BombData bombData;
 
 extern HANDLE consoleOutput;
