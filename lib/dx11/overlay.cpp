@@ -1,5 +1,6 @@
 #include "../pch.h"
 #include "../../shared/sharedVariables.hpp"
+#include "../../shared/defines.hpp"
 
 
 // microsoft safe release of pointers
@@ -377,7 +378,6 @@ void c_overlay::anim_handler() {
 
 	bool menuKeyReleased = true;
 
-
 	for (;!exit;) {
 		RECT rect{ 0 };
 		POINT point{ 0 };
@@ -385,7 +385,7 @@ void c_overlay::anim_handler() {
 		SetWindowPos(window_handle, HWND_TOPMOST, rect.left, rect.top, rect.right, rect.bottom, SWP_NOREDRAW);
 
 		// panic key
-		exit = GetAsyncKeyState(VK_END) & 0x8000;
+		exit = GetAsyncKeyState(keybinds::quickExit) & 0x8000;
 
 		// timer for our breathing animation
 		int breath_tmr = breath_timer.end();
@@ -398,10 +398,8 @@ void c_overlay::anim_handler() {
 		else if (breath_tmr <= breath_anim_time)
 			breath = breath_tmr;
 
-		// timer for menu circle animation & fade in
-		const auto menuKeyPressed = GetAsyncKeyState(VK_INSERT) & 0x8000;
-
-		if (menuKeyPressed) {
+		// Show/Hide menu
+		if (GetAsyncKeyState(keybinds::showMenu) & 0x8000) {
 			if (menuKeyReleased) 
 				show_menu = !show_menu;
 
