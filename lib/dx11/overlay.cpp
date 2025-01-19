@@ -203,12 +203,15 @@ c_overlay::~c_overlay() {
 
 
 const void c_overlay::renderCheats() {
-	for (size_t i = 0; i < 64; i++)
-	{
-		auto pair_ptr = espData.boxes[i];
 
-		if (!pair_ptr)
-			continue;
+	if (activeCheats.esp.load())
+	{
+		for (size_t i = 0; i < 64; i++)
+		{
+			auto pair_ptr = espData.boxes[i];
+
+			if (!pair_ptr)
+				continue;
 
 		box(pair_ptr->first, pair_ptr->second, selectedColor);
 	}
@@ -332,25 +335,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 
 	fovData.desiredFov = sliderValue;
 
-
 	menu_main();
-
-
-	/*ImGui::SetNextWindowSize(ImVec2(1000, 1000));
-	ImGui::Begin(
-		"ll",
-		0,
-		ImGuiWindowFlags_NoTitleBar
-		| ImGuiWindowFlags_NoResize
-		| ImGuiWindowFlags_NoSavedSettings
-
-	);
-
-	ImGui::ShowStyleEditor();
-
-	ImGui::End();
-	*/
-
 }
 
 BOOL c_overlay::msg_loop() {

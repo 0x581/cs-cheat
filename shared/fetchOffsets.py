@@ -184,6 +184,12 @@ OFFSETS: list[Offset] = [
         "m_nBombSite",
         "Member of C_PlantedC4, int32",
     ),
+    Offset(
+        "inCrouch",
+        "client_dll.hpp",
+        "m_bInCrouch",
+        "Member of CPlayer_MovementServices_Humanoid, bool",
+    ),
 ]
 
 
