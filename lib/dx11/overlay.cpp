@@ -11,6 +11,14 @@ inline VOID c_overlay::safe_release(T*& p) {
 	}
 }
 int sliderValue = 100; // ignore (fck nicolas das bleib da)
+static bool triggerbot = false;
+static bool radar = false;
+static bool antiflash = false;
+static bool esp = false;
+static bool fov = false;
+static bool l_test = false;
+ImGuiContext* context1 = ImGui::CreateContext();
+ImGuiContext* context2 = ImGui::CreateContext();
 BOOL c_overlay::init_device() {
 	DXGI_SWAP_CHAIN_DESC vSwapChainDesc;
 	ZeroMemory(&vSwapChainDesc, sizeof(vSwapChainDesc));
@@ -50,8 +58,10 @@ VOID c_overlay::dest_device() {
 
 VOID c_overlay::init_imgui() {
 	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
+	
 
+	
+	ImGui::SetCurrentContext(context1);
 	ImGui::StyleColorsClassic();
 	ImGuiStyle& style = ImGui::GetStyle();
 
@@ -68,7 +78,7 @@ VOID c_overlay::init_imgui() {
 	style.GrabMinSize = 5.0f;
 	style.GrabRounding = 3.0f;
 
-	style.Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
+	/*style.Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
 	style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.043f, 0.043f, 0.043f, 1.00f);
 	style.Colors[ImGuiCol_ChildBg] = ImVec4(0.043f, 0.043f, 0.043f, 1.00f);
@@ -85,16 +95,18 @@ VOID c_overlay::init_imgui() {
 	style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
 	style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);*/
 	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.012f, 0.91f, 0.957f, 1.f);
-	style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
+	/*style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
 	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
 	style.Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
 	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
 	style.Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
 	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
+	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);*/
+
+	
 
 	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
@@ -105,13 +117,19 @@ VOID c_overlay::init_imgui() {
 	style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.043f, 0.043f, 0.043f, 0.73f);
-
+	style.Colors[ImGuiCol_Border] = ImVec4(0.012f, 0.91f, 0.957f, ((breath / (float)breath_anim_time) * .7f) + .3f);
 	ImGuiIO& io = ImGui::GetIO();
 	font->im_font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 24.0f);
 	font->font_size = 24.f;
 
 	ImGui_ImplWin32_Init(window_handle);
 	ImGui_ImplDX11_Init(d3d_device, device_context);
+}
+VOID context() {
+	ImGui::SetCurrentContext(context2);
+	ImGuiStyle& style2 = ImGui::GetStyle();
+	style2.WindowRounding = 0.0f;
+	style2.Colors[ImGuiCol_WindowBg] = ImVec4(1.0f, 0.9f, 0.8f, 1.0f); // Light cream background
 }
 
  VOID c_overlay::dest_imgui() {
@@ -198,6 +216,54 @@ const void c_overlay::renderCheats() {
 		box(pair_ptr->first, pair_ptr->second, ImColor(255, 0, 0));
 	}
 }
+ void c_overlay::menu_main() {
+	
+	 ImGuiStyle& style1 = ImGui::GetStyle();
+	 double menu_anim = sin((M_PI / 2.0) * (((menu_ticks == 1 ? 0 : 1) * pow(menu_ticks, 2)) / ((double)pow(menu_anim_time - 1, 2))));
+	 circle({ window_width / 2, window_height / 2 }, menu_anim * (window_width * 0.573674 /*Magical constant to calc radius of a 16:9 window found using some basic trig*/), ImColor(11, 11, 11, 80));
+	 style1.Alpha = menu_anim;
+	 ImGui::SetCurrentContext(context1);
+	 ImGui::SetNextWindowSize(ImVec2(400, 300));
+
+
+	 // imgui menu itself
+	 ImGui::Begin(
+		 "Misc",
+		 0,
+		 ImGuiWindowFlags_NoTitleBar
+		 | ImGuiWindowFlags_NoResize
+		 | ImGuiWindowFlags_NoSavedSettings
+	 );
+
+	 ImGui::Text("0x581 cheat(bisher keinen namen)");
+	 if (ImGui::BeginTabBar("MyTabBar")) {
+		 if (ImGui::BeginTabItem("aim")) {
+			 ImGui::Checkbox("triggerbot", &triggerbot);
+			 ImGui::Checkbox("esp", &esp);
+			 ImGui::Checkbox("soon", &l_test);
+			 ImGui::EndTabItem();
+		 }
+		 if (ImGui::BeginTabItem("visuals")) {
+			 ImGui::Checkbox("radar", &radar);
+			 ImGui::Checkbox("antiflash", &antiflash);
+			 ImGui::EndTabItem();
+		 }
+		 if (ImGui::BeginTabItem("misc")) {
+			 ImGui::Checkbox("Fov changer", &fov);
+			 if (fov == true)
+			 {
+				 (ImGui::SliderInt("Fov", &sliderValue, 60, 140));
+			 }
+			 ImGui::Checkbox("soon", &l_test);
+			 ImGui::Checkbox("soon", &l_test);
+			 ImGui::EndTabItem();
+		 }
+		 ImGui::EndTabBar();
+	 }
+	 ImGui::End();
+}
+
+
 
 
 const void c_overlay::render(FLOAT width, FLOAT height) {
@@ -207,23 +273,12 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		return;
 	}
 
-	ImGuiStyle& style = ImGui::GetStyle();
+	
 
 	init_draw_list(); // we only do this once a loop
 
 	renderCheats();
 
-
-	// a double value between 0 && 1 based on the anim time
-	double menu_anim = sin((M_PI / 2.0) * (((menu_ticks == 1 ? 0 : 1) * pow(menu_ticks, 2)) / ((double)pow(menu_anim_time - 1, 2))));
-	circle({ window_width / 2, window_height / 2 }, menu_anim * (window_width * 0.573674 /*Magical constant to calc radius of a 16:9 window found using some basic trig*/), ImColor(11, 11, 11, 80));
-	style.Alpha = menu_anim;
-	style.Colors[ImGuiCol_Border] = ImVec4(0.012f, 0.91f, 0.957f, ((breath / (float)breath_anim_time) * .7f) + .3f);
-
-	
-
-	
-	ImGui::SetNextWindowSize(ImVec2(400, 300));
 
 	std::string name = "0x581 cheat"; // Beispiel für eine Versionsnummer
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
@@ -231,57 +286,42 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	if (menu_ticks == 1)
 		return;
 
-	static bool triggerbot = false;
-	static bool radar = false;
-	static bool antiflash = false;
-	static bool esp = false;
-	static bool fov = false;
-	static bool l_test = false;
-		
+
+	
 	activeCheats.triggerBot.store(triggerbot);
 	activeCheats.radar.store(radar);
 	activeCheats.antiFlash.store(antiflash);
 	activeCheats.esp.store(esp);
 	activeCheats.fovChanger.store(fov);
-	
-	
+
 	fovController.desiredFov.store(sliderValue);
 
-	// imgui menu itself
-	ImGui::Begin(
-		"Misc",
-		0,
-		ImGuiWindowFlags_NoTitleBar
-		| ImGuiWindowFlags_NoResize
-		| ImGuiWindowFlags_NoSavedSettings
-	);
-	ImGui::Text("0x581 cheat(bisher keinen namen)");
-	if (ImGui::BeginTabBar("MyTabBar")) {
-		if (ImGui::BeginTabItem("aim")) {
-			ImGui::Checkbox("triggerbot", &triggerbot);
-			ImGui::Checkbox("esp", &esp);
-			ImGui::Checkbox("soon", &l_test);
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("visuals")) {
-			ImGui::Checkbox("radar", &radar);
-			ImGui::Checkbox("antiflash", &antiflash);
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("misc")) {
-			ImGui::Checkbox("Fov changer", &fov);
-			if (fov == true) 
-			{
-				(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
-			}
-			ImGui::Checkbox("soon", &l_test);
-			ImGui::Checkbox("soon", &l_test);
-			ImGui::EndTabItem();
-		}
-		ImGui::EndTabBar();
+	
+	menu_main();
+	
+	
+	if (l_test == true);
+	{
+		
+		//ImGui::SetCurrentContext(context2);
+		ImGui::SetNextWindowSize(ImVec2(400, 400));
+		ImGui::Begin(
+			"lol",
+			0,
+			ImGuiWindowFlags_NoTitleBar
+			| ImGuiWindowFlags_NoResize
+			| ImGuiWindowFlags_NoSavedSettings
+			| ImGuiWindowFlags_NoBackground
+		);
+		
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+		ImGui::Text("testwindow");
+		ImGui::PopStyleColor();
+		ImGui::Text("testwindow");
+		ImGui::End();
 	}
-
-	ImGui::End();
+	
+	
 }
 
 BOOL c_overlay::msg_loop() {

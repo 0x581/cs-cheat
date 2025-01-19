@@ -32,6 +32,8 @@ private:
 	VOID init_render_target();
 	VOID dest_render_target();
 	const VOID renderCheats();
+	VOID menu_main();
+	VOID context();
 	const VOID render(FLOAT width, FLOAT height);
 
 	void input_handler();
