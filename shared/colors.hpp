@@ -13,14 +13,18 @@ struct RGB {
 };
 
 namespace rgbColors {
-    constexpr RGB black { 0, 0, 0 };
-    constexpr RGB white{ 255, 255, 255 };
-    constexpr RGB red{ 255, 0, 0 };
-    constexpr RGB green{ 0, 255, 0 };
-    constexpr RGB blue{ 0, 0, 255 };
-    constexpr RGB yellow{ 255, 255, 0 };
+    constexpr ImU32 black = IM_COL32(0, 0, 0, 255);    // Black
+    constexpr ImU32 white = IM_COL32(255, 255, 255, 255);  // White
+    constexpr ImU32 red = IM_COL32(255, 0, 0, 255);    // Red
+    constexpr ImU32 green = IM_COL32(0, 255, 0, 255);  // Green
+    constexpr ImU32 blue = IM_COL32(0, 0, 255, 255);   // Blue
+    constexpr ImU32 yellow = IM_COL32(255, 255, 0, 255);  // Yellow
 }
+
 
 namespace vec4Colors {
     constexpr ImVec4 red{ 1.00f, 0.04f, 0.00f, 0.71f };
+    constexpr ImVec4 purple{ 0.50f, 0.00f, 0.50f, 0.71f };
+ 
+ 
 }
