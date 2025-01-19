@@ -42,7 +42,7 @@ void runEsp(const Memory& mem, const uintptr_t client)
             continue;
         }
 
-        const int health = mem.Read<int>(playerPawn + offsets::health);
+        const auto health = mem.Read<int>(playerPawn + offsets::health);
 
         if (health <= 0 || health > 100)
         {
@@ -51,8 +51,20 @@ void runEsp(const Memory& mem, const uintptr_t client)
             continue;
         }
 
+        const auto movementServices = mem.Read<intptr_t>(playerPawn + offsets::movementServices);
+
+        if (!movementServices)
+        {
+            delete espData.boxes[i];
+            espData.boxes[i] = nullptr;
+            continue;
+        }
+
+        const auto isCrouched = mem.Read<bool>(movementServices + offsets::inCrouch);
+
+
         Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
-        Vector3 headPos = { footPos.x, footPos.y, footPos.z + 75.f };
+        Vector3 headPos = { footPos.x, footPos.y, footPos.z + (isCrouched ? 55.f : 75.f) };
 
         auto screenFootPos = worldToScreen(footPos, view_matrix);
         auto screenHeadPos = worldToScreen(headPos, view_matrix);
