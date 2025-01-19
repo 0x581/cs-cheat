@@ -133,6 +133,7 @@
       <Filter>math</Filter>
     </ClInclude>
     <ClInclude Include="modules\BombTimer.hpp" />
+    <ClInclude Include="shared\colors.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shared\fetchOffsets.py">

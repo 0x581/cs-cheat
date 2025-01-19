@@ -5,6 +5,7 @@
 #include "../shared/defines.hpp"
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
+#include "../shared/colors.hpp"
 
 #include "../memory.hpp"
 
@@ -13,26 +14,6 @@
 
 
 #include "../entityListInteraction.hpp"
-
-typedef struct
-{
-    ImU32 R;
-    ImU32 G;
-    ImU32 B;
-
-} RGB;
-
-ImU32 Color(RGB color)
-{
-    return IM_COL32(color.R, color.G, color.R, 255);
-}
-
-RGB red = { 255, 0, 0 };
-//only for github
-void DrawRect(ImVec2 &min, ImVec2& max, RGB color, float thickness)
-{
-    ImGui::GetBackgroundDrawList()->AddRect(min, max, Color(color), 0, 0, thickness);
-}
 
 
 void runEsp(const Memory& mem, const uintptr_t client)
