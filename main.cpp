@@ -13,7 +13,10 @@
 #include "modules/fovChanger.hpp"
 #include "modules/esp.hpp"
 #include "modules/BombTimer.hpp"
+#include <csignal>
 
+
+static c_overlay overlay{};
 
 static void connectionHandler(Memory** mem) {
     const std::vector<const wchar_t*> requiredModules{ modules::client };
@@ -55,8 +58,23 @@ static void connectionHandler(Memory** mem) {
     }
 }
 
+static int exitHandler(DWORD fdwCtrlType) {
+    switch (fdwCtrlType)
+    {
+    case CTRL_CLOSE_EVENT:
+    case CTRL_C_EVENT:
+        overlay.~c_overlay();
+
+        return TRUE;
+    }
+    return FALSE;
+}
+
+
 int main()
 {
+    SetConsoleCtrlHandler(exitHandler, TRUE);
+
     Memory *mem = nullptr;
 
     std::thread conn{connectionHandler, &mem};
@@ -69,7 +87,5 @@ int main()
     std::thread esp{runEspLoop, &mem};
     std::thread bombHack{runBombHackLoop, &mem};
 
-    c_overlay overlay;
     while (overlay.msg_loop() && !overlay.ready) {}
-    return 0;
 }

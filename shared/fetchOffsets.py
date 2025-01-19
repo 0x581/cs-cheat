@@ -78,25 +78,25 @@ OFFSETS: list[Offset] = [
         "pawnOfController",
         "client_dll.hpp",
         "m_hPlayerPawn",
-        "Member of CCSPlayerController, Handle"
+        "Member of CCSPlayerController, Handle",
     ),
     Offset(
         "controllerOfPawn",
         "client_dll.hpp",
         "m_hController",
-        "Member of C_BasePlayerPawn, Handle"
+        "Member of C_BasePlayerPawn, Handle",
     ),
     Offset(
         "playerName",
         "client_dll.hpp",
         "m_iszPlayerName",
-        "Member of CBasePlayerController, char[128]"
+        "Member of CBasePlayerController, char[128]",
     ),
     Offset(
         "entitySpottedState",
         "client_dll.hpp",
-        "m_entitySpottedState",
-        "Member of C_CSPlayerPawn, was 0x23D0",
+        "C_CSPlayerPawn::m_entitySpottedState",
+        "Member of C_CSPlayerPawn",
     ),
     Offset(
         "health",
@@ -157,8 +157,8 @@ OFFSETS: list[Offset] = [
     Offset(
         "BombPlanted",
         "client_dll.hpp",
-        "m_bBombPlanted",
-        "Member of C_CSGameRules, bool, was 0x9A5",
+        "C_CSGameRules::m_bBombPlanted",
+        "Member of C_CSGameRules, bool",
     ),
 ]
 
@@ -180,21 +180,60 @@ def get_github_file(file: str) -> str:
 
 def get_offset(offset: Offset) -> str:
     """This function gets the offset from the github repo."""
-    offsets = get_github_file(offset.file).splitlines()
+    file_string = get_github_file(offset.file)
 
-    offsets = [line for line in offsets if f"{offset.name} = " in line]
+    namespaces = offset.name.split("::")[:-1]
 
-    if len(offsets) == 0:
+    search_string = offset.name.split("::")[-1]
+    search_string = f"{search_string} = "
+
+    split_file = file_string.split(search_string)
+
+    if len(split_file) == 1:
         print(f"Failed to find {offset.name} in {offset.file}.")
         return ""
 
-    if len(offsets) > 1:
-        print(f"Found multiple options for {offset.name} in {offset.file}:")
-        for line in offsets:
-            print(f" -> {line}")
+    if len(split_file) == 2:
+        hex_offset = split_file[1].split(";")[0]
+
+        try:
+            int(hex_offset, 16)
+        except ValueError:
+            print(f"Failed to parse {hex_offset} as a hex number for {offset.name}.")
+            return ""
+
+        return hex_offset
+
+    matches = list(range(len(split_file) - 1))
+    split_str_copy = split_file.copy()
+
+    while len(namespaces) > 0:
+        namespace = f"namespace {namespaces.pop()} {{"
+
+        for i in matches.copy():
+            split = split_str_copy[i].split(namespace)
+
+            if len(split) == 1:
+                matches.remove(i)
+                continue
+
+            if "{" in split[-1]:
+                matches.remove(i)
+                continue
+
+            split_str_copy[i] = split[0]
+
+    if len(matches) == 0:
+        print(f"Failed to find {offset.name} in {offset.file}.")
         return ""
 
-    hex_offset = offsets[0].split(" = ")[1].split(";")[0]
+    if len(matches) > 1:
+        print(f"Found multiple matches for {offset.name} in {offset.file}.")
+        return ""
+
+    match_data = split_file[matches[0] + 1]
+
+    hex_offset = match_data.split(";")[0]
 
     try:
         int(hex_offset, 16)

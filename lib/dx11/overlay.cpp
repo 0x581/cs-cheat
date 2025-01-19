@@ -198,6 +198,9 @@ c_overlay::c_overlay() :
 }
 
 c_overlay::~c_overlay() {
+	static const ImVec4 clear_clr = ImVec4{ 0, 0, 0, 0 };
+	device_context->ClearRenderTargetView(render_target_view, (float*)&clear_clr);
+
 	dest_imgui();
 	dest_device();
 
