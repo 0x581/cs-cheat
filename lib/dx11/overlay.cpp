@@ -60,54 +60,46 @@ VOID c_overlay::dest_device() {
 VOID c_overlay::init_imgui() {
 	IMGUI_CHECKVERSION();
 	
+	ImVec4* colors = ImGui::GetStyle().Colors;
 
-	
+
+
+
 	ImGui::SetCurrentContext(context1);
 	ImGui::StyleColorsClassic();
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	style.WindowTitleAlign.x = 0.50f;
-	style.WindowPadding = ImVec2(15, 15);
-	style.WindowRounding = 4.0f;
-	style.FramePadding = ImVec2(2, 2);
-	style.FrameRounding = 2.0f;
+	style.WindowPadding = ImVec2(20, 20);
+	style.WindowRounding = 20.0f;
+	style.FramePadding = ImVec2(10, 4);
+	style.FrameRounding = 12.0f;
 	style.ItemSpacing = ImVec2(12, 8);
-	style.ItemInnerSpacing = ImVec2(8, 6);
+	style.ItemInnerSpacing = ImVec2(12, 6);
 	style.IndentSpacing = 25.0f;
 	style.ScrollbarSize = 15.0f;
 	style.ScrollbarRounding = 9.0f;
 	style.GrabMinSize = 5.0f;
 	style.GrabRounding = 3.0f;
+	style.WindowBorderSize = 5.0f;
 
-	/*style.Colors[ImGuiCol_Text] = ImVec4(0.80f, 0.80f, 0.83f, 1.00f);
-	style.Colors[ImGuiCol_TextDisabled] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style.Colors[ImGuiCol_WindowBg] = ImVec4(0.043f, 0.043f, 0.043f, 1.00f);
-	style.Colors[ImGuiCol_ChildBg] = ImVec4(0.043f, 0.043f, 0.043f, 1.00f);
-	style.Colors[ImGuiCol_PopupBg] = ImVec4(0.043f, 0.043f, 0.043f, 1.00f);
-	style.Colors[ImGuiCol_Border] = ImVec4(0.012f, 0.91f, 0.957f, 1.f);
-	style.Colors[ImGuiCol_BorderShadow] = ImVec4(0.043f, 0.043f, 0.043f, 0.00f);
-	style.Colors[ImGuiCol_FrameBg] = ImVec4(0.043f, 0.043f, 0.043f, 1.00f);
-	style.Colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style.Colors[ImGuiCol_FrameBgActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style.Colors[ImGuiCol_TitleBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(1.00f, 0.98f, 0.95f, 0.75f);
-	style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.07f, 0.07f, 0.09f, 1.00f);
-	style.Colors[ImGuiCol_MenuBarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-	style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);*/
-	style.Colors[ImGuiCol_CheckMark] = ImVec4(0.012f, 0.91f, 0.957f, 1.f);
-	/*style.Colors[ImGuiCol_SliderGrab] = ImVec4(0.80f, 0.80f, 0.83f, 0.31f);
-	style.Colors[ImGuiCol_SliderGrabActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-	style.Colors[ImGuiCol_Button] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.23f, 0.29f, 1.00f);
-	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style.Colors[ImGuiCol_Header] = ImVec4(0.10f, 0.09f, 0.12f, 1.00f);
-	style.Colors[ImGuiCol_HeaderHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style.Colors[ImGuiCol_HeaderActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);*/
+	style.TabBorderSize = 2.0f;
+	style.FrameBorderSize = 2.0f;
+	style.GrabMinSize = 10.0f;
 
-	
+	colors[ImGuiCol_Border] = ImVec4(0.46f, 0.00f, 0.53f, 0.70f);
+	colors[ImGuiCol_CheckMark] = ImVec4(0.96f, 0.01f, 0.01f, 1.00f);
+	colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.00f, 0.12f, 0.85f);
+	//colors[ImGuiCol_Border] = ImVec4(1.00f, 0.00f, 0.00f, 0.30f);
+	colors[ImGuiCol_CheckMark] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
+	colors[ImGuiCol_SliderGrab] = ImVec4(1.00f, 0.00f, 0.00f, 0.84f);
+	colors[ImGuiCol_SliderGrabActive] = ImVec4(1.00f, 0.06f, 0.00f, 1.00f);
+	colors[ImGuiCol_Tab] = ImVec4(0.05f, 0.00f, 0.12f, 0.85f);
+	colors[ImGuiCol_TabHovered] = ImVec4(1.00f, 0.04f, 0.00f, 0.71f);
+	colors[ImGuiCol_TabActive] = ImVec4(1.00f, 0.04f, 0.00f, 0.71f);
+
+
+	//style.Colors[ImGuiCol_Border] = ImVec4(0.012f, 0.91f, 0.957f, ((breath / (float)breath_anim_time) * .7f) + .3f);
 
 	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
 	style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
@@ -118,7 +110,7 @@ VOID c_overlay::init_imgui() {
 	style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
 	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
 	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.043f, 0.043f, 0.043f, 0.73f);
-	style.Colors[ImGuiCol_Border] = ImVec4(0.012f, 0.91f, 0.957f, ((breath / (float)breath_anim_time) * .7f) + .3f);
+	
 	ImGuiIO& io = ImGui::GetIO();
 	font->im_font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 24.0f);
 	font->font_size = 24.f;
@@ -224,7 +216,7 @@ const void c_overlay::renderCheats() {
 	
 	
 	 ImGui::SetCurrentContext(context1);
-	 ImGui::SetNextWindowSize(ImVec2(400, 300));
+	 ImGui::SetNextWindowSize(ImVec2(500, 500));
 
 
 	 // imgui menu itself
@@ -235,8 +227,8 @@ const void c_overlay::renderCheats() {
 		 | ImGuiWindowFlags_NoResize
 		 | ImGuiWindowFlags_NoSavedSettings
 	 );
-
-	 ImGui::Text("0x581 cheat(bisher keinen namen)");
+	
+	 ImGui::Text("0x581 external");
 	 if (ImGui::BeginTabBar("MyTabBar")) {
 		 if (ImGui::BeginTabItem("aim")) {
 			 ImGui::Checkbox("triggerbot", &triggerbot);
@@ -281,8 +273,10 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	renderCheats();
 
 
-	std::string name = "0x581 cheat"; // Beispiel für eine Versionsnummer
+	std::string name = "0x581 external"; // Beispiel für eine Versionsnummer
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
+
+	
 
 	if (bomb == true)
 	{
@@ -297,11 +291,11 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 			| ImGuiWindowFlags_NoBackground
 		);
 
-		if (true)
+		if (bombData.planted == true)
 		{
 			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
 			ImGui::Text("bomb is planted");
-			ImGui::Text("time");
+			ImGui::Text("Time remaining:", bombData.planted);
 		}
 		else
 		{
@@ -312,7 +306,6 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		ImGui::PopStyleColor();
 		ImGui::End();
 	}
-
 	if (menu_ticks == 1)
 		return;
 
@@ -328,8 +321,20 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	menu_main();
 	
 	
-	
-	
+	/*ImGui::SetNextWindowSize(ImVec2(1000, 1000));
+	ImGui::Begin(
+		"ll",
+		0,
+		ImGuiWindowFlags_NoTitleBar
+		| ImGuiWindowFlags_NoResize
+		| ImGuiWindowFlags_NoSavedSettings
+		
+	);
+
+	ImGui::ShowStyleEditor();
+
+	ImGui::End();
+	*/
 	
 }
 
