@@ -214,6 +214,7 @@ c_overlay::~c_overlay() {
 
 const void c_overlay::renderCheats() {
 
+
 	if (activeCheats.esp.load())
 	{
 		for (size_t i = 0; i < 64; i++)
