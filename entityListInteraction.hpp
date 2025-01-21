@@ -94,12 +94,12 @@ const uintptr_t getCurrentLookatEnemyPawn(const Memory& mem)
         return 0;
 
     // Get the local player's team and entity index
-    const auto team = mem.Read<uint8_t>(localPlayer + offsets::teamNum);
+    const auto team = mem.Read<PlayerTeam_t>(localPlayer + offsets::teamNum);
 
     const auto entityPawn = getObjectPtrFromHandle(mem, entIndex);
 
     // Get the enemy's team (target entity)
-    const auto otherTeam = mem.Read<uint8_t>(entityPawn + offsets::teamNum);
+    const auto otherTeam = mem.Read<PlayerTeam_t>(entityPawn + offsets::teamNum);
 
     // Check if the target is an enemy (i.e. not on the same team)
     if (team != otherTeam)
@@ -129,7 +129,7 @@ const uintptr_t getCurrentLookatPlayerPawn(const Memory& mem)
         return 0;
 
     // Get the local player's team and entity index
-    const auto team = mem.Read<uint8_t>(localPlayer + offsets::teamNum);
+    // const auto team = mem.Read<PlayerTeam_t>(localPlayer + offsets::teamNum);
 
     // TODO: Add check for Player
 

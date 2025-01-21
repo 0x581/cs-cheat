@@ -217,14 +217,12 @@ const void c_overlay::renderCheats() {
 
 	if (activeCheats.esp.load())
 	{
-		for (size_t i = 0; i < 64; i++)
+		for (const auto &espRenderData : espData.boxes)
 		{
-			auto pair_ptr = espData.boxes[i];
-
-			if (!pair_ptr)
+			if (!espRenderData.isVisible)
 				continue;
 
-			box(pair_ptr->first, pair_ptr->second, selectedColor);
+			box(espRenderData.min, espRenderData.max, selectedColor);
 			//text(pair_ptr->first - 3.0f, "test", selectedColor);
 		}
 	}
