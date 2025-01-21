@@ -55,18 +55,15 @@ static void runEsp(const Memory& mem, const uintptr_t client)
             continue;
         }
 
-        const auto isCrouched = mem.Read<bool>(movementServices + offsets::inCrouch);
+        const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
 
-        std::cout << "Is crouched: " << isCrouched << std::endl;
-
-
+        std::cout << "Crouch amount: " << crouchAmount << std::endl;
 
         Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
-        Vector3 headPos = { footPos.x, footPos.y, footPos.z + (isCrouched ? 55.f : 75.f) };
+        Vector3 headPos = { footPos.x, footPos.y, footPos.z + 72.f};
 
         auto screenFootPos = worldToScreen(footPos, view_matrix);
         auto screenHeadPos = worldToScreen(headPos, view_matrix);
-
 
         if (screenFootPos.z == 0.f || screenHeadPos.z == 0.f)
         {
@@ -74,16 +71,22 @@ static void runEsp(const Memory& mem, const uintptr_t client)
             continue;
         }
 
+        float width = (screenFootPos.y - screenHeadPos.y) / 2.4F;
+
+        if (crouchAmount != 0.f)
+        {
+            headPos = { footPos.x, footPos.y, footPos.z + 72.f - (crouchAmount * 17.f) };
+            screenHeadPos = worldToScreen(headPos, view_matrix);
+        }
+
         char buffer[PLAYER_NAME_LENGTH]{ 0 };
-        if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH))
+        if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH)) 
         {
             espData.boxes[i].isVisible = false;
             continue;
         }
 
         parseString(buffer, espData.boxes[i].playerName, PLAYER_NAME_LENGTH);
-
-        float width = (screenFootPos.y - screenHeadPos.y) / 2.4F;
 
         espData.boxes[i].min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
         espData.boxes[i].max = { screenHeadPos.x + width / 2, screenFootPos.y };

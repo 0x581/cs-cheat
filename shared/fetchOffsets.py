@@ -185,10 +185,10 @@ OFFSETS: list[Offset] = [
         "Member of C_PlantedC4, int32",
     ),
     Offset(
-        "inCrouch",
+        "crouchAmount",
         "client_dll.hpp",
-        "m_bInCrouch",
-        "Member of CPlayer_MovementServices_Humanoid, bool",
+        "m_flDuckAmount",
+        "Member of CPlayer_MovementServices, float",
     ),
 ]
 

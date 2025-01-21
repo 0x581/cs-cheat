@@ -30,5 +30,5 @@ namespace offsets
     constexpr auto BombTicking = 0xF90;                   // Member of C_PlantedC4, bool
     constexpr auto m_bC4Activated = 0xFD8;                // Member of C_PlantedC4, bool
     constexpr auto BombSite = 0xF94;                      // Member of C_PlantedC4, int32
-    constexpr auto inCrouch = 0x1E0;                      // Member of CPlayer_MovementServices_Humanoid, bool
+    constexpr auto crouchAmount = 0x228;                  // Member of CPlayer_MovementServices, float
 }
