@@ -221,8 +221,10 @@ const void c_overlay::renderCheats() {
 		{
 			if (!espRenderData.isVisible)
 				continue;
+			float dynamicGlowSize = 5.0f + sin(ImGui::GetTime() * 2.0f) * 3.0f;
 
-			box(espRenderData.min, espRenderData.max, selectedColor);
+			box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+			//box(espRenderData.min, espRenderData.max, selectedColor);
 
 			const auto name_text = espRenderData.playerName;
 
@@ -244,6 +246,42 @@ const void c_overlay::renderCheats() {
 		}
 	}
 }
+
+void c_overlay::box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size) {
+	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
+
+	float alpha = (color >> 24 & 0xFF) / 255.0f; 
+	ImVec4 color_vec = ImGui::ColorConvertU32ToFloat4(color); 
+
+	
+	float glow_intensity = 0.3f; // Maximum alpha multiplier for glow layers
+
+
+	for (int i = 1; i <= glow_size; i++) {
+		float glow_alpha = alpha * glow_intensity * (1.0f - (float)i / glow_size); // Calculate fading alpha
+		ImU32 glow_color = ImGui::ColorConvertFloat4ToU32(ImVec4(color_vec.x, color_vec.y, color_vec.z, glow_alpha));
+
+		// Glow outside the box
+		draw_list->AddRect(
+			ImVec2(min.x - i, min.y - i),
+			ImVec2(max.x + i, max.y + i),
+			glow_color, 0.0f, 0, line_width
+		);
+
+		// Glow inside the box
+		draw_list->AddRect(
+			ImVec2(min.x + i, min.y + i),
+			ImVec2(max.x - i, max.y - i),
+			glow_color, 0.0f, 0, line_width
+		);
+	}
+
+	// Draw the main box on top
+	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
+}
+
+
+
 
 void c_overlay::menu_main() {
 
