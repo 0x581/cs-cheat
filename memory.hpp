@@ -1,5 +1,7 @@
 #pragma once
 
+#include <thread>
+
 #include <Windows.h>
 #include <iostream>
 #include <sstream>
@@ -186,6 +188,7 @@ public:
     }
 
 
+    // Returns non-zero on success
     bool ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
     {
         return ReadProcessMemory(this->process, (LPCVOID)address, buffer, nBytes, NULL);

@@ -1,15 +1,17 @@
 #pragma once
 
+#include "cheats.hpp"
+
 #include <thread>
 
 #include "../shared/defines.hpp"
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
-#include "../memory.hpp"
+#include "../entityListInteraction.hpp"
 
 
-void runBombHack(const Memory& mem, const uintptr_t client)
+static void runBombHack(const Memory& mem, const uintptr_t client)
 {
 	const auto plantedC4 = mem.Read<int>(client + offsets::plantedC4);
 

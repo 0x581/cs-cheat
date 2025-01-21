@@ -217,13 +217,21 @@ const void c_overlay::renderCheats() {
 
 	if (activeCheats.esp.load())
 	{
-		for (size_t i = 0; i < 64; i++)
+		for (const auto &espRenderData : espData.boxes)
 		{
-			auto pair_ptr = espData.boxes[i];
-
-			if (!pair_ptr)
+			if (!espRenderData.isVisible)
 				continue;
 
+			box(espRenderData.min, espRenderData.max, selectedColor);
+
+			const auto text_size = ImGui::CalcTextSize(espRenderData.playerName);
+
+			auto text_pos = ImVec2{
+				(espRenderData.max.x + espRenderData.min.x - text_size.x) / 2.f,
+				espRenderData.max.y
+			};
+
+			text(text_pos, espRenderData.playerName, selectedColor);
 			float dynamicGlowSize = 5.0f + sin(ImGui::GetTime() * 2.0f) * 3.0f;
 
 			box_with_glow(pair_ptr->first, pair_ptr->second, selectedColor, 2.0f, dynamicGlowSize);

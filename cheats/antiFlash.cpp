@@ -1,4 +1,4 @@
-#pragma once
+#include "cheats.hpp"
 
 #include <thread>
 
@@ -6,9 +6,8 @@
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
-#include "../memory.hpp"
 
-void runAntiFlashLoop(Memory **mem)
+void runAntiFlashLoop(Memory** mem)
 {
     while (true)
     {

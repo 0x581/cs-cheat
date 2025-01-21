@@ -1,4 +1,4 @@
-#pragma once
+#include "cheats.hpp"
 
 #include <thread>
 
@@ -6,12 +6,10 @@
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
-#include "../memory.hpp"
-
 #include "../entityListInteraction.hpp"
 
 
-void runRadarHack(const Memory& mem, const uintptr_t client)
+static void runRadarHack(const Memory& mem, const uintptr_t client)
 {
 	for (size_t i = 0; i < 64; i++)
 	{
@@ -24,7 +22,7 @@ void runRadarHack(const Memory& mem, const uintptr_t client)
 	}
 }
 
-void runRadarLoop(Memory **mem)
+void runRadarLoop(Memory** mem)
 {
 	while (true)
 	{

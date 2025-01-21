@@ -1,4 +1,4 @@
-#pragma once
+#include "cheats.hpp"
 
 #include <thread>
 
@@ -6,11 +6,10 @@
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
-#include "../memory.hpp"
-
 #include "../entityListInteraction.hpp"
 
-void runTriggerBot(const Memory &mem, const uintptr_t client)
+
+static void runTriggerBot(const Memory& mem, const uintptr_t client)
 {
     // Check if the target is an enemy (i.e. not on the same team)
     if (getCurrentLookatEnemyPawn(mem)) {
@@ -21,7 +20,7 @@ void runTriggerBot(const Memory &mem, const uintptr_t client)
     }
 }
 
-void runTriggerBotLoop(Memory **mem)
+void runTriggerBotLoop(Memory** mem)
 {
     while (true)
     {
