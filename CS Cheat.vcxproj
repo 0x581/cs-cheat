@@ -150,10 +150,12 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shared\consoleControl.cpp" />
     <ClCompile Include="shared\sharedVariables.cpp" />
-    <ClCompile Include="modules\fovChanger.hpp" />
+    <ClCompile Include="modules\fovChanger.cpp" />
+    <ClCompile Include="shared\string_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="modules\BombTimer.hpp" />
+    <ClInclude Include="modules\BombTimer.cpp" />
+    <ClInclude Include="modules\cheats.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
     <ClInclude Include="lib\dx11\overlay.h" />
@@ -171,14 +173,15 @@
     <ClInclude Include="lib\timer\timer.h" />
     <ClInclude Include="math\math.hpp" />
     <ClInclude Include="memory.hpp" />
-    <ClInclude Include="modules\esp.hpp" />
+    <ClInclude Include="modules\esp.cpp" />
     <ClInclude Include="shared\sharedVariables.hpp" />
-    <ClInclude Include="modules\antiflash.hpp" />
-    <ClInclude Include="modules\bunnyHop.hpp" />
-    <ClInclude Include="modules\radarHack.hpp" />
-    <ClInclude Include="modules\triggerbot.hpp" />
+    <ClInclude Include="modules\antiflash.cpp" />
+    <ClInclude Include="modules\bunnyHop.cpp" />
+    <ClInclude Include="modules\radarHack.cpp" />
+    <ClInclude Include="modules\triggerbot.cpp" />
     <ClInclude Include="entityListInteraction.hpp" />
     <ClInclude Include="shared\offsets.hpp" />
+    <ClInclude Include="shared\string_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini" />

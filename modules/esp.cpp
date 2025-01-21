@@ -1,44 +1,43 @@
 #pragma once
 
+#include "cheats.hpp"
+
 #include <thread>
 
 #include "../shared/defines.hpp"
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 #include "../shared/colors.hpp"
+#include "../shared/string_utils.hpp"
 
-#include "../memory.hpp"
+#include "../entityListInteraction.hpp"
 
 #include "../math/math.hpp"
 #include "../lib/pch.h"
 
 
-#include "../entityListInteraction.hpp"
-
-
 void runEsp(const Memory& mem, const uintptr_t client)
 {
     const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
-    const auto localPlayerTeam = mem.Read<uint8_t>(localPlayerPawn + offsets::teamNum);
+    const auto localPlayerTeam = mem.Read<PlayerTeam_t>(localPlayerPawn + offsets::teamNum);
 
     const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
 
     for (int i = 0; i < 64; i++) {
-        const auto playerPawn = getPlayerPawnPtr(mem, i);
+        const auto controller = getPlayerControllerPtr(mem, i);
+        const auto playerPawn = getPawnPtrFromControllerPtr(mem, controller);
 
         if (!playerPawn)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
-        const auto playerTeam = mem.Read<uint8_t>(playerPawn + offsets::teamNum);
+        const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
 
         if (localPlayerTeam == playerTeam)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
@@ -46,8 +45,7 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         if (health <= 0 || health > 100)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
@@ -55,8 +53,7 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         if (!movementServices)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
@@ -75,21 +72,25 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         if (screenFootPos.z == 0.f || screenHeadPos.z == 0.f)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
+        char buffer[PLAYER_NAME_LENGTH]{ 0 };
+        if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH))
+        {
+            espData.boxes[i].isVisible = false;
+            continue;
+        }
 
-        float height = screenFootPos.y - screenHeadPos.y;
-        float width = height / 2.4F;
+        parseString(buffer, espData.boxes[i].playerName, PLAYER_NAME_LENGTH);
 
-        ImVec2 min{ screenHeadPos.x - width / 2,  screenHeadPos.y };
-        ImVec2 max{ min.x + width, min.y + height };
+        float width = (screenFootPos.y - screenHeadPos.y) / 2.4F;
 
-        auto pair = new std::pair<ImVec2, ImVec2>(min, max);
+        espData.boxes[i].min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
+        espData.boxes[i].max = { screenHeadPos.x + width / 2, screenFootPos.y };
 
-        espData.boxes[i] = pair;
+        espData.boxes[i].isVisible = true;
     }
 }
 

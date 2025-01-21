@@ -1,21 +1,19 @@
 #pragma once
 
+#include "cheats.hpp"
+
 #include <thread>
 
 #include "../shared/defines.hpp"
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
-#include "../memory.hpp"
 
-static void runBunnyHopLoop(Memory **mem)
+static void runFovChangerLoop(Memory** mem)
 {
-    // const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
-
     while (true)
     {
-
-        if (!activeCheats.bunnyHop.load())
+        if (!activeCheats.fovChanger.load())
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;
@@ -26,7 +24,7 @@ static void runBunnyHopLoop(Memory **mem)
             continue;
         }
 
-        std::this_thread::sleep_for(delays::bunnyHop::sleep);
+        std::this_thread::sleep_for(delays::fovChanger::sleep);
 
         const auto client = (*mem)->GetModuleAddress(modules::client);
 
@@ -36,11 +34,14 @@ static void runBunnyHopLoop(Memory **mem)
         if (!localPlayer)
             continue;
 
-        if (!GetAsyncKeyState(keybinds::bunnyHop))
+        auto isScoped = (*mem)->Read<bool>(localPlayer + offsets::IsScoped);
+        
+        if (isScoped)
             continue;
 
-        (*mem)->Write<int>(client + offsets::jump, 256);
-        std::this_thread::sleep_for(delays::bunnyHop::keyPressTime);
-        (*mem)->Write<int>(client + offsets::jump, 65537);
+        auto cameraservices = (*mem)->Read<uintptr_t>(localPlayer + offsets::CameraServices);
+
+        if (!isScoped) 
+            (*mem)->Write<UINT>(cameraservices + offsets::FOV, fovData.desiredFov);
     }
 }

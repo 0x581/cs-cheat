@@ -1,12 +1,13 @@
 #pragma once
 
+#include "cheats.hpp"
+
 #include <thread>
 
 #include "../shared/defines.hpp"
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
-#include "../memory.hpp"
 
 void runAntiFlashLoop(Memory **mem)
 {

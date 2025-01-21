@@ -6,13 +6,7 @@
 
 #include "memory.hpp"
 
-#include "modules/bunnyHop.hpp"
-#include "modules/antiflash.hpp"
-#include "modules/triggerbot.hpp"
-#include "modules/radarHack.hpp"
-#include "modules/fovChanger.hpp"
-#include "modules/esp.hpp"
-#include "modules/BombTimer.hpp"
+#include "modules/cheats.hpp"
 #include <csignal>
 
 
