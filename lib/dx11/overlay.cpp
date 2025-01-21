@@ -223,7 +223,15 @@ const void c_overlay::renderCheats() {
 				continue;
 
 			box(espRenderData.min, espRenderData.max, selectedColor);
-			//text(pair_ptr->first - 3.0f, "test", selectedColor);
+
+			const auto text_size = ImGui::CalcTextSize(espRenderData.playerName);
+
+			auto text_pos = ImVec2{
+				(espRenderData.max.x + espRenderData.min.x - text_size.x) / 2.f,
+				espRenderData.max.y
+			};
+
+			text(text_pos, espRenderData.playerName, selectedColor);
 		}
 	}
 }
