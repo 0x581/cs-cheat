@@ -7,6 +7,12 @@
 #include <Windows.h>
 
 
+struct EspRenderData {
+    ImVec2 min;
+    ImVec2 max;
+    std::string name;
+};
+
 struct CheatController {
     std::atomic<bool> bunnyHop{ false };
     std::atomic<bool> antiFlash{ true };
