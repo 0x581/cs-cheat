@@ -221,8 +221,10 @@ const void c_overlay::renderCheats() {
 		{
 			if (!espRenderData.isVisible)
 				continue;
+			float dynamicGlowSize = 5.0f + sin(ImGui::GetTime() * 2.0f) * 3.0f;
 
-			box(espRenderData.min, espRenderData.max, selectedColor);
+			box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+			//box(espRenderData.min, espRenderData.max, selectedColor);
 
 			const auto text_size = ImGui::CalcTextSize(espRenderData.playerName);
 
@@ -232,9 +234,7 @@ const void c_overlay::renderCheats() {
 			};
 
 			text(text_pos, espRenderData.playerName, selectedColor);
-			float dynamicGlowSize = 5.0f + sin(ImGui::GetTime() * 2.0f) * 3.0f;
-
-			box_with_glow(pair_ptr->first, pair_ptr->second, selectedColor, 2.0f, dynamicGlowSize);
+			
 			//box(pair_ptr->first, pair_ptr->second, selectedColor);
 			//text(pair_ptr->first - 3.0f, "test", selectedColor);
 
@@ -248,20 +248,19 @@ const void c_overlay::renderCheats() {
 void c_overlay::box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size) {
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
 
-	// Extract the alpha (transparency) component from the color
-	float alpha = (color >> 24 & 0xFF) / 255.0f; // Extract alpha from the RGBA color
-	ImVec4 color_vec = ImGui::ColorConvertU32ToFloat4(color); // Convert color to ImVec4
+	
+	float alpha = (color >> 24 & 0xFF) / 255.0f; 
+	ImVec4 color_vec = ImGui::ColorConvertU32ToFloat4(color); 
 
 	
-	float glow_intensity = 0.4f; // Maximum alpha multiplier for glow layers
+	float glow_intensity = 0.4f; 
 
-	// Draw the glow layers
+	
 	for (int i = 1; i <= glow_size; i++) {
-		// Calculate alpha for the current glow layer (less steep drop-off)
+		
 		float glow_alpha = alpha * glow_intensity * (1.0f - (float)i / glow_size);
 		ImU32 glow_color = ImGui::ColorConvertFloat4ToU32(ImVec4(color_vec.x, color_vec.y, color_vec.z, glow_alpha));
 
-		// Draw a slightly larger rectangle for each glow layer
 		draw_list->AddRect(
 			ImVec2(min.x - i, min.y - i),
 			ImVec2(max.x + i, max.y + i),
@@ -269,7 +268,6 @@ void c_overlay::box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color,
 		);
 	}
 
-	// Draw the main box on top
 	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
 }
 
