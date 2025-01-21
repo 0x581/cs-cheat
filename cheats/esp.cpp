@@ -57,8 +57,6 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
 
-        std::cout << "Crouch amount: " << crouchAmount << std::endl;
-
         Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
         Vector3 headPos = { footPos.x, footPos.y, footPos.z + 72.f};
 
