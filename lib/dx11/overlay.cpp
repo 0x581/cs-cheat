@@ -224,14 +224,23 @@ const void c_overlay::renderCheats() {
 
 			box(espRenderData.min, espRenderData.max, selectedColor);
 
-			const auto text_size = ImGui::CalcTextSize(espRenderData.playerName);
+			const auto name_text = espRenderData.playerName;
+
+			const auto text_size = ImGui::CalcTextSize(name_text);
+
+			auto width = espRenderData.max.x - espRenderData.min.x;
+			auto t_width = text_size.x;
+
+			std::cout << "Text width: " << t_width << ", box width: " << width << std::endl;
+
+
 
 			auto text_pos = ImVec2{
-				(espRenderData.max.x + espRenderData.min.x - text_size.x) / 2.f,
+				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f),
 				espRenderData.max.y
 			};
 
-			text(text_pos, espRenderData.playerName, selectedColor);
+			text(text_pos, name_text, selectedColor);
 		}
 	}
 }
