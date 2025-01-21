@@ -21,7 +21,7 @@ struct CheatController {
     std::atomic<bool> triggerBot{ true };
     std::atomic<bool> radar{ true };
     std::atomic<bool> fovChanger{ false };
-    std::atomic<bool> esp{ false };
+    std::atomic<bool> esp{ true };
     std::atomic<bool> bombHack{ true };
 };
 
