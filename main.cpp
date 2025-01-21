@@ -6,7 +6,7 @@
 
 #include "memory.hpp"
 
-#include "modules/cheats.hpp"
+#include "cheats/cheats.hpp"
 #include <csignal>
 
 
