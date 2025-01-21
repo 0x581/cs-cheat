@@ -1,16 +1,18 @@
 #pragma once
 
 #include <atomic>
-
-#include "../lib/imgui/imgui.h"
 #include <utility>
 #include <Windows.h>
 
+#include "defines.hpp"
+
+#include "../lib/imgui/imgui.h"
 
 struct EspRenderData {
-    ImVec2 min;
-    ImVec2 max;
-    std::string name;
+    bool isVisible{ false };
+    ImVec2 min{ 0, 0 };
+    ImVec2 max{ 0, 0 };
+    char playerName[PLAYER_NAME_LENGTH]{0};
 };
 
 struct CheatController {
@@ -29,7 +31,7 @@ struct FOVData {
 
 
 struct ESPData {
-    std::pair<ImVec2, ImVec2> *boxes[64] {};
+    EspRenderData boxes[64] {};
 };
 
 struct BombData {
