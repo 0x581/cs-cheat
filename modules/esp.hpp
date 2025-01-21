@@ -62,6 +62,9 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         const auto isCrouched = mem.Read<bool>(movementServices + offsets::inCrouch);
 
+        std::cout << "Is crouched: " << isCrouched << std::endl;
+
+
 
         Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
         Vector3 headPos = { footPos.x, footPos.y, footPos.z + (isCrouched ? 55.f : 75.f) };
