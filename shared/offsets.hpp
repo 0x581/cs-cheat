@@ -2,7 +2,7 @@
 
 namespace offsets
 {
-    constexpr auto localPlayerPawn = 0x186DDE8;           // Relative to client.dll
+    constexpr auto localPlayerPawn = 0x186DE00;           // Relative to client.dll
     constexpr auto onGroundLastTick = 0x2298;             // Member of localPlayerPawn, bool
     constexpr auto movementServices = 0x11E8;             // Member of C_BasePlayerPawn, CPlayer_MovementServices *
     constexpr auto buttons = 0x48;                        // Member of CPlayer_MovementServices, CInButtonState

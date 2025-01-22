@@ -1,12 +1,14 @@
 """
-This file gets the offsets from https://cloud.0x581.zip/s/fZna7TEp5SbsBc4/download?path=%2F&files=
+This file gets the offsets from any of the following sites:
+https://cloud.0x581.zip/s/fZna7TEp5SbsBc4/download?path=%2F&files=
+https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/
 """
 
 from dataclasses import dataclass
 
 import requests
 
-OFFSETS_URL = "https://cloud.0x581.zip/s/fZna7TEp5SbsBc4/download?path=%2F&files="
+OFFSETS_URL = "https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/"
 
 FETCHED_FILES: dict[str, str] = {}
 
@@ -297,5 +299,5 @@ def get_all_offsets() -> str:
 
 
 if __name__ == "__main__":
-    with open("offsets.hpp", "w") as file:
+    with open("shared/offsets.hpp", "w") as file:
         file.write(get_all_offsets())
