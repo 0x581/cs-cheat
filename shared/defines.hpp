@@ -66,6 +66,15 @@ namespace delays
     {
         constexpr auto sleep = std::chrono::milliseconds(0);
     }
+
+    namespace aimbot
+    {
+        constexpr auto sleep = std::chrono::milliseconds(15);
+    }
+    namespace aimbot2
+    {
+        constexpr auto sleep = std::chrono::milliseconds(1);
+    }
 }
 
 namespace modules
