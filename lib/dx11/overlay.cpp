@@ -219,11 +219,14 @@ const void c_overlay::renderCheats() {
 	{
 		for (const auto &espRenderData : espData.boxes)
 		{
-			if (!espRenderData.isVisible)
+			if (!espRenderData.isValid)
 				continue;
+
 			float dynamicGlowSize = 5.0f + sin(ImGui::GetTime() * 2.0f) * 3.0f;
+			float dynamicLineSize = 3.0f + sin(ImGui::GetTime() * 2.0f);
 
 			box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+			//box(espRenderData.min, espRenderData.max, selectedColor, dynamicLineSize);
 			//box(espRenderData.min, espRenderData.max, selectedColor);
 
 			const auto name_text = espRenderData.playerName;

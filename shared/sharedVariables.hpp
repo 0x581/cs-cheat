@@ -9,10 +9,12 @@
 #include "../lib/imgui/imgui.h"
 
 struct EspRenderData {
+    bool isValid{ false };
     bool isVisible{ false };
+    bool isFriendly{ false };
+    char playerName[PLAYER_NAME_LENGTH]{ 0 };
     ImVec2 min{ 0, 0 };
     ImVec2 max{ 0, 0 };
-    char playerName[PLAYER_NAME_LENGTH]{0};
 };
 
 struct CheatController {

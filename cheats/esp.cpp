@@ -27,23 +27,19 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         if (!playerPawn)
         {
-            espData.boxes[i].isVisible = false;
+            espData.boxes[i].isValid = false;
             continue;
         }
 
         const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
 
-        if (localPlayerTeam == playerTeam)
-        {
-            espData.boxes[i].isVisible = false;
-            continue;
-        }
+        espData.boxes[i].isFriendly = localPlayerTeam == playerTeam;
 
         const auto health = mem.Read<int>(playerPawn + offsets::health);
 
         if (health <= 0 || health > 100)
         {
-            espData.boxes[i].isVisible = false;
+            espData.boxes[i].isValid = false;
             continue;
         }
 
@@ -51,7 +47,7 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         if (!movementServices)
         {
-            espData.boxes[i].isVisible = false;
+            espData.boxes[i].isValid = false;
             continue;
         }
 
@@ -65,7 +61,7 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         if (screenFootPos.z == 0.f || screenHeadPos.z == 0.f)
         {
-            espData.boxes[i].isVisible = false;
+            espData.boxes[i].isValid = false;
             continue;
         }
 
@@ -80,7 +76,7 @@ static void runEsp(const Memory& mem, const uintptr_t client)
         char buffer[PLAYER_NAME_LENGTH]{ 0 };
         if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH)) 
         {
-            espData.boxes[i].isVisible = false;
+            espData.boxes[i].isValid = false;
             continue;
         }
 
@@ -89,7 +85,7 @@ static void runEsp(const Memory& mem, const uintptr_t client)
         espData.boxes[i].min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
         espData.boxes[i].max = { screenHeadPos.x + width / 2, screenFootPos.y };
 
-        espData.boxes[i].isVisible = true;
+        espData.boxes[i].isValid = true;
     }
 }
 
