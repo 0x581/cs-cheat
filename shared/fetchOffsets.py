@@ -297,5 +297,5 @@ def get_all_offsets() -> str:
 
 
 if __name__ == "__main__":
-    with open("shared/offsets.hpp", "w") as file:
+    with open("offsets.hpp", "w") as file:
         file.write(get_all_offsets())
