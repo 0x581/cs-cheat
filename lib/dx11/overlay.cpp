@@ -20,10 +20,11 @@ static bool esp = activeCheats.esp.load();
 static bool fov = activeCheats.fovChanger.load();
 static bool bomb = activeCheats.bombHack.load();
 static bool l_test = false;
+static bool box_glow = false;
 int selectedColorIndex = 0;
-static ImU32 selectedColor = rgbColors::green;  // Default selected color
+static ImU32 selectedColor = rgbColors::green;  
 
-// Dropdown menu to select color
+
 const char* colorNames[] = {
 	"Green", "Red", "Blue", "Yellow", "Black", "White",
 	"Purple", "Dark Purple"
@@ -38,8 +39,10 @@ ImU32 colors[] = {
 
 
 ImGuiContext* context1 = ImGui::CreateContext();
+
 BOOL c_overlay::init_device() {
-	DXGI_SWAP_CHAIN_DESC vSwapChainDesc;
+	
+	DXGI_SWAP_CHAIN_DESC vSwapChainDesc = {};
 	ZeroMemory(&vSwapChainDesc, sizeof(vSwapChainDesc));
 	vSwapChainDesc.BufferCount = 2;
 	vSwapChainDesc.BufferDesc.Width = 0;
@@ -50,22 +53,80 @@ BOOL c_overlay::init_device() {
 	vSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	vSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	vSwapChainDesc.OutputWindow = window_handle;
-	vSwapChainDesc.SampleDesc.Count = 1;
-	vSwapChainDesc.SampleDesc.Quality = 0;
+	vSwapChainDesc.SampleDesc.Count = 4;
+	vSwapChainDesc.SampleDesc.Quality = D3D11_STANDARD_MULTISAMPLE_PATTERN; 
 	vSwapChainDesc.Windowed = TRUE;
 	vSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-	D3D_FEATURE_LEVEL vFeatureLevel;
-	D3D_FEATURE_LEVEL vFeatureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
 
-	if (D3D11CreateDeviceAndSwapChain(NULL, D3D_DRIVER_TYPE_HARDWARE, NULL, 0, vFeatureLevelArray, 2, D3D11_SDK_VERSION, &vSwapChainDesc, &swap_chain, &d3d_device, &vFeatureLevel, &device_context) != S_OK)
-		return false;
+	D3D_FEATURE_LEVEL vFeatureLevel;
+	D3D_FEATURE_LEVEL vFeatureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0 };
+
+	
+	HRESULT result = D3D11CreateDeviceAndSwapChain(
+		NULL,
+		D3D_DRIVER_TYPE_HARDWARE,
+		NULL,
+		0,
+		vFeatureLevelArray,
+		2,
+		D3D11_SDK_VERSION,
+		&vSwapChainDesc,
+		&swap_chain,
+		&d3d_device,
+		&vFeatureLevel,
+		&device_context
+	);
+
+	if (FAILED(result)) {
+		return FALSE; 
+	}
+
+	D3D11_BLEND_DESC blendDesc = {};
+	blendDesc.RenderTarget[0].BlendEnable = TRUE;
+	blendDesc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	blendDesc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	blendDesc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blendDesc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	blendDesc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	blendDesc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	ID3D11BlendState* blendState = nullptr;
+	result = d3d_device->CreateBlendState(&blendDesc, &blendState);
+	if (FAILED(result)) {
+		return FALSE; 
+	}
+
+	// Set up rasterizer state
+	D3D11_RASTERIZER_DESC rasterDesc = {};
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	rasterDesc.MultisampleEnable = TRUE;
+	rasterDesc.AntialiasedLineEnable = TRUE;
+
+	ID3D11RasterizerState* rasterState = nullptr;
+	result = d3d_device->CreateRasterizerState(&rasterDesc, &rasterState);
+	if (FAILED(result)) {
+		return FALSE; 
+	}
+
+	device_context->RSSetState(rasterState);
+
+	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	device_context->OMSetBlendState(blendState, blendFactor, 0xFFFFFFFF);
+
+
+
+	
+	blendState->Release();
+	rasterState->Release();
 
 	init_render_target();
 
 	ShowWindow(window_handle, SW_SHOWNORMAL);
 	UpdateWindow(window_handle);
-	return true;
+	return TRUE;
 }
 
 VOID c_overlay::dest_device() {
@@ -223,11 +284,11 @@ const void c_overlay::renderCheats() {
 				continue;
 
 			float dynamicGlowSize = 5.0f + sin(ImGui::GetTime() * 2.0f) * 3.0f;
-			float dynamicLineSize = 3.0f + sin(ImGui::GetTime() * 2.0f);
 
-			box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
-			//box(espRenderData.min, espRenderData.max, selectedColor, dynamicLineSize);
-			//box(espRenderData.min, espRenderData.max, selectedColor);
+			if (box_glow)
+				box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+			else
+				box(espRenderData.min, espRenderData.max, selectedColor);
 
 			const auto name_text = espRenderData.playerName;
 
@@ -250,36 +311,44 @@ const void c_overlay::renderCheats() {
 	}
 }
 
-void c_overlay::box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size) {
+void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 color, FLOAT line_width, FLOAT glow_size) {
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
 
-	float alpha = (color >> 24 & 0xFF) / 255.0f; 
-	ImVec4 color_vec = ImGui::ColorConvertU32ToFloat4(color); 
+	
+	float alpha = (color >> 24 & 0xFF) / 255.0f;
+	ImVec4 color_vec = ImGui::ColorConvertU32ToFloat4(color);
 
 	
-	float glow_intensity = 0.3f; // Maximum alpha multiplier for glow layers
+	float glow_intensity = 0.3f; 
 
-
+	
 	for (int i = 1; i <= glow_size; i++) {
-		float glow_alpha = alpha * glow_intensity * (1.0f - (float)i / glow_size); // Calculate fading alpha
+		
+		float glow_alpha = alpha * glow_intensity * (1.0f - (float)i / glow_size);
 		ImU32 glow_color = ImGui::ColorConvertFloat4ToU32(ImVec4(color_vec.x, color_vec.y, color_vec.z, glow_alpha));
 
-		// Glow outside the box
+		
 		draw_list->AddRect(
 			ImVec2(min.x - i, min.y - i),
 			ImVec2(max.x + i, max.y + i),
-			glow_color, 0.0f, 0, line_width
+			glow_color,
+			0.0f,
+			0,
+			line_width
 		);
 
-		// Glow inside the box
+		
 		draw_list->AddRect(
 			ImVec2(min.x + i, min.y + i),
 			ImVec2(max.x - i, max.y - i),
-			glow_color, 0.0f, 0, line_width
+			glow_color,
+			0.0f, 
+			0,
+			line_width
 		);
 	}
 
-	// Draw the main box on top
+	
 	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
 }
 
@@ -327,6 +396,7 @@ void c_overlay::menu_main() {
 					}
 					ImGui::EndCombo();
 				}
+				ImGui::Checkbox("box glow", &box_glow);
 			}
 			ImGui::EndTabItem();
 		}
@@ -492,8 +562,10 @@ VOID c_overlay::init_draw_list() {
 
 //to make esp box
 VOID c_overlay::box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width) {
-	draw_list->AddRect(min, max, color, 0, 0, line_width);
+	// The anti-aliasing for the box is handled through the rasterizer state in DirectX.
+	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
 }
+
 
 //esp tracer
 VOID c_overlay::line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width) {
