@@ -5,12 +5,6 @@
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="modules">
-      <UniqueIdentifier>{3a41a899-9a0d-4426-830a-4c819d6b014b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="offsets">
-      <UniqueIdentifier>{589b64ba-d9b0-457c-94e5-9862f8b225a8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="lib">
       <UniqueIdentifier>{fd1749bf-e36b-4020-942f-f70da3414713}</UniqueIdentifier>
     </Filter>
@@ -25,6 +19,15 @@
     </Filter>
     <Filter Include="math">
       <UniqueIdentifier>{5cc33ff1-269c-4f34-9b61-091322300f58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="cheats">
+      <UniqueIdentifier>{3a41a899-9a0d-4426-830a-4c819d6b014b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils">
+      <UniqueIdentifier>{0b16f0a4-3d36-459b-b97c-52bb784941fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="defines">
+      <UniqueIdentifier>{bbc70bf9-4d57-4383-9859-96018f3ef78c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -61,22 +64,40 @@
     <ClCompile Include="lib\pch.cpp">
       <Filter>lib</Filter>
     </ClCompile>
-    <ClCompile Include="shared\sharedVariables.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="cheats\antiFlash.cpp">
+      <Filter>cheats</Filter>
     </ClCompile>
-    <ClCompile Include="modules\fovChanger.hpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="cheats\bunnyHop.cpp">
+      <Filter>cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\bombTimer.cpp">
+      <Filter>cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\fovChanger.cpp">
+      <Filter>cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\radarHack.cpp">
+      <Filter>cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\triggerBot.cpp">
+      <Filter>cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="cheats\esp.cpp">
+      <Filter>cheats</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\string_utils.cpp">
+      <Filter>utils</Filter>
     </ClCompile>
     <ClCompile Include="shared\consoleControl.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="shared\sharedVariables.cpp">
+      <Filter>defines</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memory.hpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="shared\offsets.hpp">
-      <Filter>offsets</Filter>
     </ClInclude>
     <ClInclude Include="lib\imgui\imconfig.h">
       <Filter>lib\imgui</Filter>
@@ -117,28 +138,32 @@
     <ClInclude Include="lib\pch.h">
       <Filter>lib</Filter>
     </ClInclude>
-    <ClInclude Include="shared\defines.hpp" />
-    <ClInclude Include="shared\sharedVariables.hpp" />
-    <ClInclude Include="modules\antiflash.hpp" />
-    <ClInclude Include="modules\bunnyHop.hpp" />
-    <ClInclude Include="modules\radarHack.hpp" />
-    <ClInclude Include="modules\triggerbot.hpp" />
-    <ClInclude Include="entityListInteraction.hpp">
-      <Filter>offsets</Filter>
-    </ClInclude>
-    <ClInclude Include="modules\esp.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="math\math.hpp">
       <Filter>math</Filter>
     </ClInclude>
-    <ClInclude Include="modules\BombTimer.hpp" />
-    <ClInclude Include="shared\colors.hpp" />
+    <ClInclude Include="cheats\cheats.hpp">
+      <Filter>cheats</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\offsets.hpp">
+      <Filter>defines</Filter>
+    </ClInclude>
+    <ClInclude Include="entityListInteraction.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\sharedVariables.hpp">
+      <Filter>defines</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\defines.hpp">
+      <Filter>defines</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\string_utils.hpp">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="shared\colors.hpp">
+      <Filter>defines</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shared\fetchOffsets.py">
-      <Filter>offsets</Filter>
-    </None>
     <None Include="lib\imgui\imgui.ini">
       <Filter>lib\imgui</Filter>
     </None>
@@ -147,6 +172,9 @@
     </None>
     <None Include="lib\imgui\imgui_impl_osx.mm">
       <Filter>lib\imgui</Filter>
+    </None>
+    <None Include="shared\fetchOffsets.py">
+      <Filter>defines</Filter>
     </None>
   </ItemGroup>
 </Project>

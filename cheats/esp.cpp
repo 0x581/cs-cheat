@@ -1,4 +1,4 @@
-#pragma once
+#include "cheats.hpp"
 
 #include <thread>
 
@@ -6,39 +6,36 @@
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 #include "../shared/colors.hpp"
+#include "../shared/string_utils.hpp"
 
-#include "../memory.hpp"
+#include "../entityListInteraction.hpp"
 
 #include "../math/math.hpp"
 #include "../lib/pch.h"
 
 
-#include "../entityListInteraction.hpp"
-
-
-void runEsp(const Memory& mem, const uintptr_t client)
+static void runEsp(const Memory& mem, const uintptr_t client)
 {
     const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
-    const auto localPlayerTeam = mem.Read<uint8_t>(localPlayerPawn + offsets::teamNum);
+    const auto localPlayerTeam = mem.Read<PlayerTeam_t>(localPlayerPawn + offsets::teamNum);
 
     const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
 
     for (int i = 0; i < 64; i++) {
-        const auto playerPawn = getPlayerPawnPtr(mem, i);
+        const auto controller = getPlayerControllerPtr(mem, i);
+        const auto playerPawn = getPawnPtrFromControllerPtr(mem, controller);
 
         if (!playerPawn)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
-        const auto playerTeam = mem.Read<uint8_t>(playerPawn + offsets::teamNum);
+        const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
 
         if (localPlayerTeam == playerTeam)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
@@ -46,8 +43,7 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         if (health <= 0 || health > 100)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
@@ -55,38 +51,45 @@ void runEsp(const Memory& mem, const uintptr_t client)
 
         if (!movementServices)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
-        const auto isCrouched = mem.Read<bool>(movementServices + offsets::inCrouch);
-
+        const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
 
         Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
-        Vector3 headPos = { footPos.x, footPos.y, footPos.z + (isCrouched ? 55.f : 75.f) };
+        Vector3 headPos = { footPos.x, footPos.y, footPos.z + 72.f};
 
         auto screenFootPos = worldToScreen(footPos, view_matrix);
         auto screenHeadPos = worldToScreen(headPos, view_matrix);
 
-
         if (screenFootPos.z == 0.f || screenHeadPos.z == 0.f)
         {
-            delete espData.boxes[i];
-            espData.boxes[i] = nullptr;
+            espData.boxes[i].isVisible = false;
             continue;
         }
 
+        float width = (screenFootPos.y - screenHeadPos.y) / 2.4F;
 
-        float height = screenFootPos.y - screenHeadPos.y;
-        float width = height / 2.4F;
+        if (crouchAmount != 0.f)
+        {
+            headPos = { footPos.x, footPos.y, footPos.z + 72.f - (crouchAmount * 17.f) };
+            screenHeadPos = worldToScreen(headPos, view_matrix);
+        }
 
-        ImVec2 min{ screenHeadPos.x - width / 2,  screenHeadPos.y };
-        ImVec2 max{ min.x + width, min.y + height };
+        char buffer[PLAYER_NAME_LENGTH]{ 0 };
+        if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH)) 
+        {
+            espData.boxes[i].isVisible = false;
+            continue;
+        }
 
-        auto pair = new std::pair<ImVec2, ImVec2>(min, max);
+        parseString(buffer, espData.boxes[i].playerName, PLAYER_NAME_LENGTH);
 
-        espData.boxes[i] = pair;
+        espData.boxes[i].min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
+        espData.boxes[i].max = { screenHeadPos.x + width / 2, screenFootPos.y };
+
+        espData.boxes[i].isVisible = true;
     }
 }
 

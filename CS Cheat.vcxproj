@@ -128,6 +128,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -148,13 +150,19 @@
     <ClCompile Include="lib\pch.cpp" />
     <ClCompile Include="lib\timer\timer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="cheats\antiFlash.cpp" />
+    <ClCompile Include="cheats\bombTimer.cpp" />
+    <ClCompile Include="cheats\bunnyHop.cpp" />
+    <ClCompile Include="cheats\esp.cpp" />
+    <ClCompile Include="cheats\fovChanger.cpp" />
+    <ClCompile Include="cheats\radarHack.cpp" />
+    <ClCompile Include="cheats\triggerBot.cpp" />
     <ClCompile Include="shared\consoleControl.cpp" />
     <ClCompile Include="shared\sharedVariables.cpp" />
-    <ClCompile Include="modules\fovChanger.hpp" />
+    <ClCompile Include="shared\string_utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="modules\Aimbot.hpp" />
-    <ClInclude Include="modules\BombTimer.hpp" />
+    <ClInclude Include="cheats\cheats.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
     <ClInclude Include="lib\dx11\overlay.h" />
@@ -172,14 +180,10 @@
     <ClInclude Include="lib\timer\timer.h" />
     <ClInclude Include="math\math.hpp" />
     <ClInclude Include="memory.hpp" />
-    <ClInclude Include="modules\esp.hpp" />
     <ClInclude Include="shared\sharedVariables.hpp" />
-    <ClInclude Include="modules\antiflash.hpp" />
-    <ClInclude Include="modules\bunnyHop.hpp" />
-    <ClInclude Include="modules\radarHack.hpp" />
-    <ClInclude Include="modules\triggerbot.hpp" />
     <ClInclude Include="entityListInteraction.hpp" />
     <ClInclude Include="shared\offsets.hpp" />
+    <ClInclude Include="shared\string_utils.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini" />

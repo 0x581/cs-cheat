@@ -20,6 +20,7 @@ static bool esp = activeCheats.esp.load();
 static bool fov = activeCheats.fovChanger.load();
 static bool bomb = activeCheats.bombHack.load();
 static bool l_test = false;
+static bool box_glow = false;
 int selectedColorIndex = 0;
 static ImU32 selectedColor = rgbColors::green;  // Default selected color
 
@@ -217,18 +218,78 @@ const void c_overlay::renderCheats() {
 
 	if (activeCheats.esp.load())
 	{
-		for (size_t i = 0; i < 64; i++)
+		for (const auto &espRenderData : espData.boxes)
 		{
-			auto pair_ptr = espData.boxes[i];
-
-			if (!pair_ptr)
+			if (!espRenderData.isVisible)
 				continue;
+			float dynamicGlowSize = 5.0f + sin(ImGui::GetTime() * 2.0f) * 3.0f;
 
-			box(pair_ptr->first, pair_ptr->second, selectedColor);
-			//text(pair_ptr->first - 3.0f, "test", selectedColor);
+			if (box_glow == true)
+			{
+				box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+
+			}
+			else
+			{
+				box(espRenderData.min, espRenderData.max, selectedColor);
+			}
+
+			const auto name_text = espRenderData.playerName;
+
+			const auto text_size = ImGui::CalcTextSize(name_text);
+
+			auto width = espRenderData.max.x - espRenderData.min.x;
+			auto t_width = text_size.x;
+
+			std::cout << "Text width: " << t_width << ", box width: " << width << std::endl;
+
+
+
+			auto text_pos = ImVec2{
+				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f),
+				espRenderData.max.y
+			};
+
+			text(text_pos, name_text, selectedColor);
 		}
 	}
 }
+
+void c_overlay::box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size) {
+	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
+
+	float alpha = (color >> 24 & 0xFF) / 255.0f; 
+	ImVec4 color_vec = ImGui::ColorConvertU32ToFloat4(color); 
+
+	
+	float glow_intensity = 0.3f; // Maximum alpha multiplier for glow layers
+
+
+	for (int i = 1; i <= glow_size; i++) {
+		float glow_alpha = alpha * glow_intensity * (1.0f - (float)i / glow_size); // Calculate fading alpha
+		ImU32 glow_color = ImGui::ColorConvertFloat4ToU32(ImVec4(color_vec.x, color_vec.y, color_vec.z, glow_alpha));
+
+		// Glow outside the box
+		draw_list->AddRect(
+			ImVec2(min.x - i, min.y - i),
+			ImVec2(max.x + i, max.y + i),
+			glow_color, 0.0f, 0, line_width
+		);
+
+		// Glow inside the box
+		draw_list->AddRect(
+			ImVec2(min.x + i, min.y + i),
+			ImVec2(max.x - i, max.y - i),
+			glow_color, 0.0f, 0, line_width
+		);
+	}
+
+	// Draw the main box on top
+	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
+}
+
+
+
 
 void c_overlay::menu_main() {
 
@@ -271,6 +332,7 @@ void c_overlay::menu_main() {
 					}
 					ImGui::EndCombo();
 				}
+				ImGui::Checkbox("box glow", &box_glow);
 			}
 			ImGui::EndTabItem();
 		}

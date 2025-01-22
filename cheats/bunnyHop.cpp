@@ -1,14 +1,15 @@
 #pragma once
 
+#include "cheats.hpp"
+
 #include <thread>
 
 #include "../shared/defines.hpp"
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
-#include "../memory.hpp"
 
-static void runBunnyHopLoop(Memory **mem)
+void runBunnyHopLoop(Memory** mem)
 {
     // const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 

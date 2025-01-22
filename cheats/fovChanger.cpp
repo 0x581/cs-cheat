@@ -1,4 +1,4 @@
-#pragma once
+#include "cheats.hpp"
 
 #include <thread>
 
@@ -6,10 +6,8 @@
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
-#include "../memory.hpp"
 
-
-static void runFovChangerLoop(Memory** mem)
+void runFovChangerLoop(Memory** mem)
 {
     while (true)
     {
@@ -35,13 +33,13 @@ static void runFovChangerLoop(Memory** mem)
             continue;
 
         auto isScoped = (*mem)->Read<bool>(localPlayer + offsets::IsScoped);
-        
+
         if (isScoped)
             continue;
 
         auto cameraservices = (*mem)->Read<uintptr_t>(localPlayer + offsets::CameraServices);
 
-        if (!isScoped) 
+        if (!isScoped)
             (*mem)->Write<UINT>(cameraservices + offsets::FOV, fovData.desiredFov);
     }
 }

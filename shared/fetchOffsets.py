@@ -185,10 +185,10 @@ OFFSETS: list[Offset] = [
         "Member of C_PlantedC4, int32",
     ),
     Offset(
-        "inCrouch",
+        "crouchAmount",
         "client_dll.hpp",
-        "m_bInCrouch",
-        "Member of CPlayer_MovementServices_Humanoid, bool",
+        "m_flDuckAmount",
+        "Member of CPlayer_MovementServices, float",
     ),
 ]
 
@@ -297,5 +297,5 @@ def get_all_offsets() -> str:
 
 
 if __name__ == "__main__":
-    with open("shared/offsets.hpp", "w") as file:
+    with open("offsets.hpp", "w") as file:
         file.write(get_all_offsets())

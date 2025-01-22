@@ -1,10 +1,13 @@
 #pragma once
 
 #include <Windows.h>
+#include <chrono>
 
 typedef unsigned int CEntityIndex;
 typedef float GameTime_t;
+typedef uint8_t PlayerTeam_t;
 
+constexpr auto PLAYER_NAME_LENGTH = 128;
 
 namespace keybinds
 {
