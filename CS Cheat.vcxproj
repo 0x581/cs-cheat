@@ -153,6 +153,7 @@
     <ClCompile Include="modules\fovChanger.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="modules\Aimbot.hpp" />
     <ClInclude Include="modules\BombTimer.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
