@@ -116,6 +116,8 @@ BOOL c_overlay::init_device() {
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	device_context->OMSetBlendState(blendState, blendFactor, 0xFFFFFFFF);
 
+
+
 	
 	blendState->Release();
 	rasterState->Release();
@@ -564,8 +566,10 @@ VOID c_overlay::init_draw_list() {
 
 //to make esp box
 VOID c_overlay::box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width) {
-	draw_list->AddRect(min, max, color, 0, 0, line_width);
+	// The anti-aliasing for the box is handled through the rasterizer state in DirectX.
+	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
 }
+
 
 //esp tracer
 VOID c_overlay::line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width) {
