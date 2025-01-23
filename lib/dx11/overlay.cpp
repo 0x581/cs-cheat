@@ -286,9 +286,19 @@ const void c_overlay::renderCheats() {
 			float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
 
 			if (box_glow)
-				box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+			{
+				if (!espRenderData.isFriendly)
+					box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+				else
+					; // box_with_glow(espRenderData.min, espRenderData.max, rgbColors::black, 2.0f, dynamicGlowSize);
+			}
 			else
-				box(espRenderData.min, espRenderData.max, selectedColor);
+			{
+				if (!espRenderData.isFriendly)
+					box(espRenderData.min, espRenderData.max, selectedColor);
+				else
+					; // box(espRenderData.min, espRenderData.max, rgbColors::black);
+			}
 
 			const auto name_text = espRenderData.playerName;
 
