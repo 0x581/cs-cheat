@@ -1,7 +1,6 @@
 #pragma once
+
 #include <vector>
-int screenWidth = GetSystemMetrics(SM_CXSCREEN);
-int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 
 #define ROW_MAJOR
 
@@ -60,7 +59,7 @@ struct Vector2 {
 };
 
 
-Vector4 operator*(const Matrix4x4& m, const Vector4& v)
+static Vector4 operator*(const Matrix4x4& m, const Vector4& v)
 {
 #ifdef ROW_MAJOR
 	return Vector4(
@@ -79,7 +78,10 @@ Vector4 operator*(const Matrix4x4& m, const Vector4& v)
 #endif
 }
 
-Vector3 worldToScreen(const Vector3& world_pos, const Matrix4x4& view_matrix) {
+static Vector3 worldToScreen(const Vector3& world_pos, const Matrix4x4& view_matrix) {
+	static int screenWidth = GetSystemMetrics(SM_CXSCREEN);
+	static int screenHeight = GetSystemMetrics(SM_CYSCREEN);
+
 	auto clip_coords = view_matrix * Vector4(world_pos.x, world_pos.y, world_pos.z, 1);
 
 	if (clip_coords.w < 0.01f)
