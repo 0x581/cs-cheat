@@ -25,6 +25,7 @@ struct CheatController {
     std::atomic<bool> fovChanger{ false };
     std::atomic<bool> esp{ true };
     std::atomic<bool> bombHack{ true };
+    std::atomic<bool> aimBot{ true };
 };
 
 struct FOVData {

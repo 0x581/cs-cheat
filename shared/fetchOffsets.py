@@ -23,6 +23,12 @@ class Offset:
 
 OFFSETS: list[Offset] = [
     Offset(
+        "localPlayerController",
+        "offsets.hpp",
+        "dwLocalPlayerController",
+        "Relative to client.dll",
+    ),
+    Offset(
         "localPlayerPawn",
         "offsets.hpp",
         "dwLocalPlayerPawn",
