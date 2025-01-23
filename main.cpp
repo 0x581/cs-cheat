@@ -80,6 +80,7 @@ int main()
     std::thread fovChanger{runFovChangerLoop, &mem};
     std::thread esp{runEspLoop, &mem};
     std::thread bombHack{runBombHackLoop, &mem};
+    std::thread aimBot{runAimBotLoop, &mem};
 
     while (overlay.msg_loop() && !overlay.ready) {}
 

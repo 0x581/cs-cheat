@@ -15,3 +15,5 @@ void runRadarLoop(Memory** mem);
 void runTriggerBotLoop(Memory** mem);
 
 void runEspLoop(Memory** mem);
+
+void runAimBotLoop(Memory** mem);
