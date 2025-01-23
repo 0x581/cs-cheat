@@ -94,6 +94,9 @@
     <ClCompile Include="shared\sharedVariables.cpp">
       <Filter>defines</Filter>
     </ClCompile>
+    <ClCompile Include="cheats\aimBot.cpp">
+      <Filter>cheats</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memory.hpp">

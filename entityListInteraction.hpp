@@ -55,7 +55,7 @@ static uintptr_t getControllerPtrFromPawnPtr(const Memory& mem, uintptr_t pawnPt
 }
 
 
-static uintptr_t getPlayerControllerPtr(const Memory& mem, uintptr_t index)
+static uintptr_t getPlayerControllerPtr(const Memory& mem, uintptr_t index, bool skipLocalPlayer = true)
 {
     if (index >= 64)
         exit(-1);
@@ -72,7 +72,19 @@ static uintptr_t getPlayerControllerPtr(const Memory& mem, uintptr_t index)
 
     // The index is multiplied by 0x78 as that is the distance from one Controller Ptr to the next
     // https://youtu.be/nB9metCiG7A?si=r5Qlorcxqdzs0Wjg&t=870
-    return mem.Read<uintptr_t>(controllerList + index * 0x78);
+    const auto controllerPtr = mem.Read<uintptr_t>(controllerList + index * 0x78);
+
+    if (skipLocalPlayer)
+    {
+        const auto client = mem.GetModuleAddress(modules::client);
+
+        const auto localPlayerController = mem.Read<uintptr_t>(client + offsets::localPlayerController);
+
+        if (localPlayerController == controllerPtr)
+            return 0;
+    }
+
+    return controllerPtr;
 }
 
 static uintptr_t getPlayerPawnPtr(const Memory& mem, uintptr_t index)
@@ -96,14 +108,31 @@ static uintptr_t getCurrentLookatEnemyPawn(const Memory& mem)
     // Get the local player's team and entity index
     const auto team = mem.Read<PlayerTeam_t>(localPlayer + offsets::teamNum);
 
-    const auto entityPawn = getObjectPtrFromHandle(mem, entIndex);
+    const auto entityPtr = getObjectPtrFromHandle(mem, entIndex);
+
+    bool isPlayer = false;
+
+    for (size_t i = 0; i < 64; i++)
+    {
+        const auto playerPawnPtr = getPlayerPawnPtr(mem, i);
+
+        if (entityPtr == playerPawnPtr)
+        {
+            isPlayer = true;
+            break;
+        }
+    }
+
+    if (!isPlayer)
+        return 0;
+
 
     // Get the enemy's team (target entity)
-    const auto otherTeam = mem.Read<PlayerTeam_t>(entityPawn + offsets::teamNum);
+    const auto otherTeam = mem.Read<PlayerTeam_t>(entityPtr + offsets::teamNum);
 
     // Check if the target is an enemy (i.e. not on the same team)
     if (team != otherTeam)
-        return entityPawn;
+        return entityPtr;
 
     // TODO: Add check for Player
 
