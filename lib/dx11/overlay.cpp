@@ -283,7 +283,7 @@ const void c_overlay::renderCheats() {
 			if (!espRenderData.isValid)
 				continue;
 
-			float dynamicGlowSize = 5.0f + sin(ImGui::GetTime() * 2.0f) * 3.0f;
+			float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
 
 			if (box_glow)
 				box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
@@ -297,7 +297,7 @@ const void c_overlay::renderCheats() {
 			auto width = espRenderData.max.x - espRenderData.min.x;
 			auto t_width = text_size.x;
 
-			std::cout << "Text width: " << t_width << ", box width: " << width << std::endl;
+			//std::cout << "Text width: " << t_width << ", box width: " << width << std::endl;
 
 
 
