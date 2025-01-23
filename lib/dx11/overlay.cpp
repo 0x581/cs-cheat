@@ -379,25 +379,35 @@ void c_overlay::menu_main() {
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("visuals")) {
-			ImGui::Checkbox("radar", &radar);
-			ImGui::Checkbox("antiflash", &antiflash);
-			ImGui::Checkbox("esp", &esp);
-			if(esp == true)
-			{ 
-				if (ImGui::BeginCombo("ESP Color", colorNames[selectedColorIndex])) {
-					for (int i = 0; i < IM_ARRAYSIZE(colorNames); i++) {
-						bool isSelected = (selectedColor == colors[i]);
-						if (ImGui::Selectable(colorNames[i], isSelected)) {
-							selectedColor = colors[i];
-							selectedColorIndex = i; // Update the selected color index
+			ImGui::BeginChild("##container", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
+				
+				ImGui::Checkbox("esp", &esp);
+				if (esp == true)
+				{
+					if (ImGui::BeginCombo("Color", colorNames[selectedColorIndex])) {
+						for (int i = 0; i < IM_ARRAYSIZE(colorNames); i++) {
+							bool isSelected = (selectedColor == colors[i]);
+							if (ImGui::Selectable(colorNames[i], isSelected)) {
+								selectedColor = colors[i];
+								selectedColorIndex = i; // Update the selected color index
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus(); // Keep the selected item focused
 						}
-						if (isSelected)
-							ImGui::SetItemDefaultFocus(); // Keep the selected item focused
+						ImGui::EndCombo();
 					}
-					ImGui::EndCombo();
+					ImGui::Checkbox("box glow", &box_glow);
 				}
-				ImGui::Checkbox("box glow", &box_glow);
 			}
+			ImGui::EndChild();
+
+
+			ImGui::SetCursorPos({ 285, 85 });
+			ImGui::BeginChild("##container1", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
+				ImGui::Checkbox("radar", &radar);
+				ImGui::Checkbox("antiflash", &antiflash);
+			}
+			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("misc")) {
@@ -408,6 +418,9 @@ void c_overlay::menu_main() {
 			}
 			ImGui::Checkbox("bomb info", &bomb);
 			ImGui::Checkbox("soon", &l_test);
+			ImGui::EndTabItem();
+		}if (ImGui::BeginTabItem("config")) {
+			
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
