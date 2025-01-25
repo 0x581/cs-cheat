@@ -601,12 +601,12 @@ VOID c_overlay::circle(const ImVec2& point, const FLOAT radius, ImU32 color) {
 //esp names
 VOID c_overlay::text(const ImVec2& pos, const std::string& text, ImU32 color, bool outline) {
 	if (outline) {
-		draw_list->AddText(font->im_font, 18.f, { pos.x + 1, pos.y }, IM_COL32_BLACK, text.c_str());
-		draw_list->AddText(font->im_font, 18.f, { pos.x - 1, pos.y }, IM_COL32_BLACK, text.c_str());
-		draw_list->AddText(font->im_font, 18.f, { pos.x, pos.y + 1 }, IM_COL32_BLACK, text.c_str());
-		draw_list->AddText(font->im_font, 18.f, { pos.x, pos.y - 1 }, IM_COL32_BLACK, text.c_str());
+		draw_list->AddText(font->im_font, font->im_font->FontSize, { pos.x + 1, pos.y }, IM_COL32_BLACK, text.c_str());
+		draw_list->AddText(font->im_font, font->im_font->FontSize, { pos.x - 1, pos.y }, IM_COL32_BLACK, text.c_str());
+		draw_list->AddText(font->im_font, font->im_font->FontSize, { pos.x, pos.y + 1 }, IM_COL32_BLACK, text.c_str());
+		draw_list->AddText(font->im_font, font->im_font->FontSize, { pos.x, pos.y - 1 }, IM_COL32_BLACK, text.c_str());
 	}
-	draw_list->AddText(font->im_font, 18.f, pos, color, text.c_str());
+	draw_list->AddText(font->im_font, font->im_font->FontSize, pos, color, text.c_str());
 }
 //?
 VOID c_overlay::radial_gradient(const ImVec2& center, float radius, ImU32 col_in, ImU32 col_out) {
