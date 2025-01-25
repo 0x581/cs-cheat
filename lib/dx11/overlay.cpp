@@ -402,7 +402,7 @@ void c_overlay::menu_main() {
 			ImGui::EndChild();
 
 
-			ImGui::SetCursorPos({ 285, 85 });
+			ImGui::SetCursorPos({ 285, 95 });
 			ImGui::BeginChild("##container1", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
 				ImGui::Checkbox("radar", &radar);
 				ImGui::Checkbox("antiflash", &antiflash);
