@@ -1,7 +1,7 @@
 #include "sharedVariables.hpp"
 #include "consoleControl.cpp"
 
-CheatController activeCheats{};
+ActiveCheats activeCheats{};
 
 FOVData fovData{};
 ESPData espData{};
