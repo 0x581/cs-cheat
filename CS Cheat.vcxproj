@@ -143,6 +143,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="cheats\aimBot.cpp" />
+    <ClCompile Include="config\config.cpp" />
     <ClCompile Include="lib\dx11\overlay.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
@@ -167,6 +168,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cheats\cheats.hpp" />
+    <ClInclude Include="config\config.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
     <ClInclude Include="lib\dx11\overlay.h" />

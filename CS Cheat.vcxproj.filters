@@ -29,6 +29,9 @@
     <Filter Include="defines">
       <UniqueIdentifier>{bbc70bf9-4d57-4383-9859-96018f3ef78c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="config">
+      <UniqueIdentifier>{d7c21a1e-ca69-482a-aff6-39423eabe472}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -97,6 +100,9 @@
     <ClCompile Include="cheats\aimBot.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
+    <ClCompile Include="config\config.cpp">
+      <Filter>config</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memory.hpp">
@@ -164,6 +170,9 @@
     </ClInclude>
     <ClInclude Include="shared\colors.hpp">
       <Filter>defines</Filter>
+    </ClInclude>
+    <ClInclude Include="config\config.hpp">
+      <Filter>config</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
