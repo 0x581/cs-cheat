@@ -12,10 +12,10 @@ using std::filesystem::path;
 using std::ifstream;
 using std::ofstream;
 
-constexpr char MAGIC_BYTES[64]{ "Basic CS2 Cheat config" };
-constexpr auto configPath = "Basic CS2 Cheat/config.cfg"; // In Local Appdata
+constexpr char MAGIC_BYTES[64]{ "Merkur CS2 Config" };
+constexpr auto configFolder = "Merkur/CS2/"; // In Local Appdata
 
-static bool createPathIfNotExist(path &cfg_path, const char* pathToFile = configPath)
+static bool createPathToConfig(path &cfg_path)
 {
     WCHAR *appdata{ 0 };
 
@@ -26,27 +26,37 @@ static bool createPathIfNotExist(path &cfg_path, const char* pathToFile = config
         return false;
     }
 
-    cfg_path = path(appdata) / path(pathToFile);
+    cfg_path = path(appdata) / path(configFolder);
     CoTaskMemFree(appdata);
 
     // Ensure the directory exists
-    std::filesystem::create_directories(cfg_path.parent_path());
+    std::filesystem::create_directories(cfg_path);
 
     return true;
 }
 
-bool loadConfigData(ConfigData* buffer) {
+bool loadConfigData(ConfigData* buffer, const wchar_t* configName = L"default") {
     path cfg_path;
 
-    if (!createPathIfNotExist(cfg_path))
+    if (!createPathToConfig(cfg_path))
         return false;
+
+    const auto fileName = std::wstring(configName) + L".cfg";
+
+    cfg_path /= fileName;
 
     ifstream file{ cfg_path, std::ifstream::ate | std::ios::binary };
     const auto fileSize = file.tellg();
 
-    if (fileSize == 0)
+    if (fileSize == -1)
     {
         std::cout << "No config found.\n";
+        return false;
+    }
+
+    if (fileSize == 0)
+    {
+        std::cout << "Config is empty.\n";
         return false;
     }
 
@@ -75,11 +85,15 @@ bool loadConfigData(ConfigData* buffer) {
     return true;
 }
 
-bool storeConfigData(const ConfigData data) {
+bool storeConfigData(const ConfigData data, const wchar_t* configName = L"default") {
     path cfg_path;
 
-    if (!createPathIfNotExist(cfg_path))
+    if (!createPathToConfig(cfg_path))
         return false;
+
+    const auto fileName = std::wstring(configName) + L".cfg";
+
+    cfg_path /= fileName;
 
     ofstream file{ cfg_path, std::ios::binary };
 

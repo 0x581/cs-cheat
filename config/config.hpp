@@ -3,6 +3,8 @@
 
 #include "../lib/imgui/imgui.h"
 
+constexpr auto COLOR_NAME_MAX_LENGTH = 32;
+
 
 struct MainWindowSettings {
     ImVec2 windowPosition;
@@ -18,8 +20,6 @@ struct ActiveCheats {
     bool radar;
     bool triggerBot;
 };
-
-constexpr auto COLOR_NAME_MAX_LENGTH = 32;
 
 struct EspSettings {
     char selectedColor[COLOR_NAME_MAX_LENGTH];
@@ -53,7 +53,7 @@ static constexpr const ConfigData default_config{
     .bombSettings {.windowPosition = ImVec2(200, 200)}
 };
 
-bool loadConfigData(ConfigData* buffer);
-bool storeConfigData(ConfigData data);
+bool loadConfigData(ConfigData* buffer, const wchar_t* configName);
+bool storeConfigData(const ConfigData data, const wchar_t* configName);
 
 extern ConfigData config;
