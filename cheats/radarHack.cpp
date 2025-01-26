@@ -7,6 +7,7 @@
 #include "../shared/offsets.hpp"
 
 #include "../entityListInteraction.hpp"
+#include "../config/config.hpp"
 
 
 static void runRadarHack(const Memory& mem, const uintptr_t client)
@@ -26,7 +27,7 @@ void runRadarLoop(Memory** mem)
 {
 	while (true)
 	{
-		if (!activeCheats.radar)
+		if (!config.activeCheats.radar)
 		{
 			std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
 			continue;

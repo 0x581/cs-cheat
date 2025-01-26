@@ -2,6 +2,7 @@
 #include "../../shared/sharedVariables.hpp"
 #include "../../shared/defines.hpp"
 #include "../../shared/colors.hpp"
+#include "../../config/config.hpp"
 
 
 // microsoft safe release of pointers
@@ -313,7 +314,7 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 const void c_overlay::renderCheats() {
 
 
-	if (activeCheats.esp)
+	if (config.activeCheats.esp)
 	{
 		for (const auto& espRenderData : espData.boxes)
 		{
@@ -378,7 +379,7 @@ void c_overlay::draw_menu() {
 	ImGui::Text("0x581 external");
 	if (ImGui::BeginTabBar("MyTabBar")) {
 		if (ImGui::BeginTabItem("aim")) {
-			ImGui::Checkbox("triggerbot", &activeCheats.triggerBot);
+			ImGui::Checkbox("triggerbot", &config.activeCheats.triggerBot);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
 		}
@@ -386,8 +387,8 @@ void c_overlay::draw_menu() {
 		if (ImGui::BeginTabItem("visuals")) {
 			ImGui::BeginChild("##container", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
 				
-				ImGui::Checkbox("esp", &activeCheats.esp);
-				if (activeCheats.esp == true)
+				ImGui::Checkbox("esp", &config.activeCheats.esp);
+				if (config.activeCheats.esp == true)
 				{
 					if (ImGui::BeginCombo("Color", colorNames[selectedColorIndex])) {
 						for (int i = 0; i < IM_ARRAYSIZE(colorNames); i++) {
@@ -409,20 +410,20 @@ void c_overlay::draw_menu() {
 
 			ImGui::SetCursorPos({ 285, 85 });
 			ImGui::BeginChild("##container1", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
-				ImGui::Checkbox("radar", &activeCheats.radar);
-				ImGui::Checkbox("antiflash", &activeCheats.antiFlash);
+				ImGui::Checkbox("radar", &config.activeCheats.radar);
+				ImGui::Checkbox("antiflash", &config.activeCheats.antiFlash);
 			}
 			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}
 		
 		if (ImGui::BeginTabItem("misc")) {
-			ImGui::Checkbox("Fov changer", &activeCheats.fovChanger);
-			if (activeCheats.fovChanger == true)
+			ImGui::Checkbox("Fov changer", &config.activeCheats.fovChanger);
+			if (config.activeCheats.fovChanger == true)
 			{
 				(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
 			}
-			ImGui::Checkbox("bomb info", &activeCheats.bombHack);
+			ImGui::Checkbox("bomb info", &config.activeCheats.bombHack);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
 		}
@@ -484,7 +485,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	std::string name = "0x581 external"; // Beispiel für eine Versionsnummer
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
 
-	if (activeCheats.bombHack)
+	if (config.activeCheats.bombHack)
 		draw_bomb();
 
 	if (!show_menu)

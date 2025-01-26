@@ -17,17 +17,6 @@ struct EspRenderData {
     ImVec2 max{ 0, 0 };
 };
 
-struct ActiveCheats {
-    bool bunnyHop{ false };
-    bool antiFlash{ true };
-    bool triggerBot{ true };
-    bool radar{ true };
-    bool fovChanger{ false };
-    bool esp{ true };
-    bool bombHack{ true };
-    bool aimBot{ true };
-};
-
 struct FOVData {
     unsigned int desiredFov{ 60 };
 };
@@ -41,8 +30,6 @@ struct BombData {
     bool planted{ false };
     float timeRemaining{ 0.f };
 };
-
-extern ActiveCheats activeCheats;
 
 extern FOVData fovData;
 extern ESPData espData;

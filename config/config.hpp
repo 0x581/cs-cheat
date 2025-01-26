@@ -33,8 +33,8 @@ struct BombSettings {
 struct ConfigData {
     MainWindowSettings mainWindowSettings;
     ActiveCheats activeCheats;
-    EspSettings espSettings;
-    BombSettings bombSettings;
+    EspSettings esp;
+    BombSettings bomb;
 };
 
 static constexpr const ConfigData default_config{
@@ -49,8 +49,8 @@ static constexpr const ConfigData default_config{
         .radar = true,
         .triggerBot = true,
     },
-    .espSettings {.selectedColor{0}, .renderFriendlies = false },
-    .bombSettings {.windowPosition = ImVec2(200, 200)}
+    .esp {.selectedColor{0}, .renderFriendlies = false },
+    .bomb {.windowPosition = ImVec2(200, 200)}
 };
 
 bool loadConfigData(ConfigData* buffer, const wchar_t* configName);

@@ -5,7 +5,7 @@
 #include <thread>
 
 #include "../shared/defines.hpp"
-#include "../shared/sharedVariables.hpp"
+#include "../config/config.hpp"
 #include "../shared/offsets.hpp"
 
 
@@ -16,7 +16,7 @@ void runBunnyHopLoop(Memory** mem)
     while (true)
     {
 
-        if (!activeCheats.bunnyHop)
+        if (!config.activeCheats.bunnyHop)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;

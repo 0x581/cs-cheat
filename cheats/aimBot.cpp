@@ -3,7 +3,7 @@
 #include <thread>
 
 #include "../shared/defines.hpp"
-#include "../shared/sharedVariables.hpp"
+#include "../config/config.hpp"
 #include "../shared/offsets.hpp"
 
 #include "../entityListInteraction.hpp"
@@ -80,7 +80,7 @@ void runAimBotLoop(Memory** mem)
 {
 	while (true)
 	{
-		if (!activeCheats.aimBot)
+		if (!config.activeCheats.aimBot)
 		{
 			std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
 			continue;

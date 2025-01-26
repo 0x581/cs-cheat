@@ -5,7 +5,7 @@
 #include <thread>
 
 #include "../shared/defines.hpp"
-#include "../shared/sharedVariables.hpp"
+#include "../config/config.hpp"
 #include "../shared/offsets.hpp"
 
 #include "../entityListInteraction.hpp"
@@ -71,7 +71,7 @@ void runBombHackLoop(Memory** mem)
 {
 	while (true)
 	{
-		if (!activeCheats.bombHack)
+		if (!config.activeCheats.bombHack)
 		{
 			std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
 			continue;

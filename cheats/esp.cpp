@@ -7,6 +7,7 @@
 #include "../shared/offsets.hpp"
 #include "../shared/colors.hpp"
 #include "../shared/string_utils.hpp"
+#include "../config/config.hpp"
 
 #include "../entityListInteraction.hpp"
 
@@ -93,7 +94,7 @@ void runEspLoop(Memory** mem)
 {
     while (true)
     {
-        if (!activeCheats.esp)
+        if (!config.activeCheats.esp)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;

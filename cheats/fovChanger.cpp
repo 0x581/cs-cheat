@@ -6,12 +6,13 @@
 #include "../shared/sharedVariables.hpp"
 #include "../shared/offsets.hpp"
 
+#include "../config/config.hpp"
 
 void runFovChangerLoop(Memory** mem)
 {
     while (true)
     {
-        if (!activeCheats.fovChanger)
+        if (!config.activeCheats.fovChanger)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;
