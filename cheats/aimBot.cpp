@@ -80,7 +80,7 @@ void runAimBotLoop(Memory** mem)
 {
 	while (true)
 	{
-		if (!activeCheats.aimBot.load())
+		if (!activeCheats.aimBot)
 		{
 			std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
 			continue;

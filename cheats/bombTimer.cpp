@@ -71,7 +71,7 @@ void runBombHackLoop(Memory** mem)
 {
 	while (true)
 	{
-		if (!activeCheats.bombHack.load())
+		if (!activeCheats.bombHack)
 		{
 			std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
 			continue;

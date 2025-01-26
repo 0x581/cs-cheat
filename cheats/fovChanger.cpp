@@ -11,7 +11,7 @@ void runFovChangerLoop(Memory** mem)
 {
     while (true)
     {
-        if (!activeCheats.fovChanger.load())
+        if (!activeCheats.fovChanger)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;

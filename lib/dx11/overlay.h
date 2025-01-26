@@ -32,11 +32,15 @@ private:
 	VOID init_render_target();
 	VOID dest_render_target();
 	const VOID renderCheats();
-	VOID menu_main();
 	const VOID render(FLOAT width, FLOAT height);
 
 	void input_handler();
 	void anim_handler();
+
+	VOID draw_menu();
+	VOID draw_bomb();
+
+
 public:
 	c_overlay();
 	~c_overlay();

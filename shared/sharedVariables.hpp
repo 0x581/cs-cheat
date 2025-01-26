@@ -18,14 +18,14 @@ struct EspRenderData {
 };
 
 struct ActiveCheats {
-    std::atomic<bool> bunnyHop{ false };
-    std::atomic<bool> antiFlash{ true };
-    std::atomic<bool> triggerBot{ true };
-    std::atomic<bool> radar{ true };
-    std::atomic<bool> fovChanger{ false };
-    std::atomic<bool> esp{ true };
-    std::atomic<bool> bombHack{ true };
-    std::atomic<bool> aimBot{ true };
+    bool bunnyHop{ false };
+    bool antiFlash{ true };
+    bool triggerBot{ true };
+    bool radar{ true };
+    bool fovChanger{ false };
+    bool esp{ true };
+    bool bombHack{ true };
+    bool aimBot{ true };
 };
 
 struct FOVData {

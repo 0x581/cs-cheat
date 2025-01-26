@@ -24,7 +24,7 @@ void runTriggerBotLoop(Memory** mem)
 {
     while (true)
     {
-        if (!activeCheats.triggerBot.load())
+        if (!activeCheats.triggerBot)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;

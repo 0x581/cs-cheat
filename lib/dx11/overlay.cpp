@@ -13,12 +13,7 @@ inline VOID c_overlay::safe_release(T*& p) {
 	}
 }
 int sliderValue = 100; // ignore (fck nicolas das bleib da)
-static bool triggerbot = activeCheats.triggerBot.load();
-static bool radar = activeCheats.radar.load();
-static bool antiflash = activeCheats.antiFlash.load();
-static bool esp = activeCheats.esp.load();
-static bool fov = activeCheats.fovChanger.load();
-static bool bomb = activeCheats.bombHack.load();
+
 static bool l_test = false;
 static bool box_glow = false;
 int selectedColorIndex = 0;
@@ -37,8 +32,8 @@ ImU32 colors[] = {
 };
 
 
-
 ImGuiContext* context1 = ImGui::CreateContext();
+
 
 BOOL c_overlay::init_device() {
 	
@@ -273,54 +268,6 @@ c_overlay::~c_overlay() {
 }
 
 
-const void c_overlay::renderCheats() {
-
-
-	if (activeCheats.esp.load())
-	{
-		for (const auto &espRenderData : espData.boxes)
-		{
-			if (!espRenderData.isValid)
-				continue;
-
-			float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
-
-			if (box_glow)
-			{
-				if (!espRenderData.isFriendly)
-					box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
-				else
-					; // box_with_glow(espRenderData.min, espRenderData.max, rgbColors::black, 2.0f, dynamicGlowSize);
-			}
-			else
-			{
-				if (!espRenderData.isFriendly)
-					box(espRenderData.min, espRenderData.max, selectedColor);
-				else
-					; // box(espRenderData.min, espRenderData.max, rgbColors::black);
-			}
-
-			const auto name_text = espRenderData.playerName;
-
-			const auto text_size = ImGui::CalcTextSize(name_text);
-
-			auto width = espRenderData.max.x - espRenderData.min.x;
-			auto t_width = text_size.x;
-
-			//std::cout << "Text width: " << t_width << ", box width: " << width << std::endl;
-
-
-
-			auto text_pos = ImVec2{
-				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f),
-				espRenderData.max.y
-			};
-
-			text(text_pos, name_text, selectedColor);
-		}
-	}
-}
-
 void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 color, FLOAT line_width, FLOAT glow_size) {
 	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
 
@@ -363,9 +310,56 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 }
 
 
+const void c_overlay::renderCheats() {
 
 
-void c_overlay::menu_main() {
+	if (activeCheats.esp)
+	{
+		for (const auto& espRenderData : espData.boxes)
+		{
+			if (!espRenderData.isValid)
+				continue;
+
+			float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
+
+			if (box_glow)
+			{
+				if (!espRenderData.isFriendly)
+					box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+				else
+					; // box_with_glow(espRenderData.min, espRenderData.max, rgbColors::black, 2.0f, dynamicGlowSize);
+			}
+			else
+			{
+				if (!espRenderData.isFriendly)
+					box(espRenderData.min, espRenderData.max, selectedColor);
+				else
+					; // box(espRenderData.min, espRenderData.max, rgbColors::black);
+			}
+
+			const auto name_text = espRenderData.playerName;
+
+			const auto text_size = ImGui::CalcTextSize(name_text);
+
+			auto width = espRenderData.max.x - espRenderData.min.x;
+			auto t_width = text_size.x;
+
+			//std::cout << "Text width: " << t_width << ", box width: " << width << std::endl;
+
+
+
+			auto text_pos = ImVec2{
+				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f),
+				espRenderData.max.y
+			};
+
+			text(text_pos, name_text, selectedColor);
+		}
+	}
+}
+
+
+void c_overlay::draw_menu() {
 
 
 	ImGui::SetCurrentContext(context1);
@@ -384,15 +378,16 @@ void c_overlay::menu_main() {
 	ImGui::Text("0x581 external");
 	if (ImGui::BeginTabBar("MyTabBar")) {
 		if (ImGui::BeginTabItem("aim")) {
-			ImGui::Checkbox("triggerbot", &triggerbot);
+			ImGui::Checkbox("triggerbot", &activeCheats.triggerBot);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
 		}
+		
 		if (ImGui::BeginTabItem("visuals")) {
 			ImGui::BeginChild("##container", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
 				
-				ImGui::Checkbox("esp", &esp);
-				if (esp == true)
+				ImGui::Checkbox("esp", &activeCheats.esp);
+				if (activeCheats.esp == true)
 				{
 					if (ImGui::BeginCombo("Color", colorNames[selectedColorIndex])) {
 						for (int i = 0; i < IM_ARRAYSIZE(colorNames); i++) {
@@ -414,22 +409,25 @@ void c_overlay::menu_main() {
 
 			ImGui::SetCursorPos({ 285, 85 });
 			ImGui::BeginChild("##container1", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
-				ImGui::Checkbox("radar", &radar);
-				ImGui::Checkbox("antiflash", &antiflash);
+				ImGui::Checkbox("radar", &activeCheats.radar);
+				ImGui::Checkbox("antiflash", &activeCheats.antiFlash);
 			}
 			ImGui::EndChild();
 			ImGui::EndTabItem();
 		}
+		
 		if (ImGui::BeginTabItem("misc")) {
-			ImGui::Checkbox("Fov changer", &fov);
-			if (fov == true)
+			ImGui::Checkbox("Fov changer", &activeCheats.fovChanger);
+			if (activeCheats.fovChanger == true)
 			{
 				(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
 			}
-			ImGui::Checkbox("bomb info", &bomb);
+			ImGui::Checkbox("bomb info", &activeCheats.bombHack);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
-		}if (ImGui::BeginTabItem("config")) {
+		}
+		
+		if (ImGui::BeginTabItem("config")) {
 			
 			ImGui::EndTabItem();
 		}
@@ -437,6 +435,37 @@ void c_overlay::menu_main() {
 	}
 	ImGui::End();
 }
+
+
+void c_overlay::draw_bomb()
+{
+	ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+	ImGui::SetNextWindowSize(ImVec2(200, 200));
+	ImGui::Begin(
+		"lol",
+		0,
+		ImGuiWindowFlags_NoTitleBar
+		| ImGuiWindowFlags_NoResize
+		| ImGuiWindowFlags_NoSavedSettings
+		| ImGuiWindowFlags_NoBackground
+	);
+
+	if (bombData.planted == true)
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+		ImGui::Text("bomb is planted");
+		ImGui::Text("Time remaining:", bombData.timeRemaining);
+	}
+	else
+	{
+		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
+		ImGui::Text("is not planted");
+
+	}
+	ImGui::PopStyleColor();
+	ImGui::End();
+}
+
 
 const void c_overlay::render(FLOAT width, FLOAT height) {
 	if (exit) {
@@ -455,49 +484,15 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	std::string name = "0x581 external"; // Beispiel für eine Versionsnummer
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
 
-
-
-	if (bomb == true)
-	{
-		ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-		ImGui::SetNextWindowSize(ImVec2(200, 200));
-		ImGui::Begin(
-			"lol",
-			0,
-			ImGuiWindowFlags_NoTitleBar
-			| ImGuiWindowFlags_NoResize
-			| ImGuiWindowFlags_NoSavedSettings
-			| ImGuiWindowFlags_NoBackground
-		);
-
-		if (bombData.planted == true)
-		{
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-			ImGui::Text("bomb is planted");
-			ImGui::Text("Time remaining:", bombData.timeRemaining);
-		}
-		else
-		{
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
-			ImGui::Text("is not planted");
-
-		}
-		ImGui::PopStyleColor();
-		ImGui::End();
-	}
+	if (activeCheats.bombHack)
+		draw_bomb();
 
 	if (!show_menu)
 		return;
 
-	activeCheats.triggerBot.store(triggerbot);
-	activeCheats.radar.store(radar);
-	activeCheats.antiFlash.store(antiflash);
-	activeCheats.esp.store(esp);
-	activeCheats.fovChanger.store(fov);
-
 	fovData.desiredFov = sliderValue;
 
-	menu_main();
+	draw_menu();
 }
 
 BOOL c_overlay::msg_loop() {

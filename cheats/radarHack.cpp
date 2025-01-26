@@ -26,7 +26,7 @@ void runRadarLoop(Memory** mem)
 {
 	while (true)
 	{
-		if (!activeCheats.radar.load())
+		if (!activeCheats.radar)
 		{
 			std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
 			continue;

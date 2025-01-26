@@ -11,7 +11,7 @@ void runAntiFlashLoop(Memory** mem)
 {
     while (true)
     {
-        if (!activeCheats.antiFlash.load())
+        if (!activeCheats.antiFlash)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;

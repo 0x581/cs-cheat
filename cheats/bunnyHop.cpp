@@ -16,7 +16,7 @@ void runBunnyHopLoop(Memory** mem)
     while (true)
     {
 
-        if (!activeCheats.bunnyHop.load())
+        if (!activeCheats.bunnyHop)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;

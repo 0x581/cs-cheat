@@ -93,7 +93,7 @@ void runEspLoop(Memory** mem)
 {
     while (true)
     {
-        if (!activeCheats.esp.load())
+        if (!activeCheats.esp)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;
