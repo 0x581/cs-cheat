@@ -364,14 +364,11 @@ void c_overlay::draw_menu()
 	if (isFirstIteration)
 	{
 		// Main window position
-		ImGui::SetNextWindowPos(config.mainWindow.windowPosition);
+		ImGui::SetNextWindowPos(sharedConfig.mainWindow.windowPosition);
 		isFirstIteration = false;
 	}
 
-	config.mainWindow.windowPosition = ImGui::GetWindowPos();
-
 	ImGui::SetNextWindowSize(ImVec2(500, 500));
-
 
 	// imgui menu itself
 	ImGui::Begin(
@@ -381,6 +378,8 @@ void c_overlay::draw_menu()
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoSavedSettings
 	);
+
+	sharedConfig.mainWindow.windowPosition = ImGui::GetWindowPos();
 
 	ImGui::Text("0x581 external");
 	if (ImGui::BeginTabBar("MyTabBar")) {
@@ -451,7 +450,7 @@ void c_overlay::draw_bomb()
 	if (isFirstIteration)
 	{
 		// Main window position
-		ImGui::SetNextWindowPos(config.bombWindow.windowPosition);
+		ImGui::SetNextWindowPos(sharedConfig.bombWindow.windowPosition);
 		isFirstIteration = false;
 	}
 
@@ -465,6 +464,8 @@ void c_overlay::draw_bomb()
 		| ImGuiWindowFlags_NoSavedSettings
 		| ImGuiWindowFlags_NoBackground
 	);
+
+	sharedConfig.bombWindow.windowPosition = ImGui::GetWindowPos();
 
 	if (bombData.planted == true)
 	{

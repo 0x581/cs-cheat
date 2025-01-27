@@ -9,6 +9,8 @@
 #include "cheats/cheats.hpp"
 #include <csignal>
 
+#include "config/config.hpp"
+
 
 static c_overlay overlay{};
 
@@ -59,6 +61,7 @@ static int exitHandler(DWORD fdwCtrlType) {
     case CTRL_C_EVENT:
         overlay.~c_overlay();
 
+        storeConfigData(sharedConfig, L"common");
         return TRUE;
     }
     return FALSE;
@@ -67,6 +70,8 @@ static int exitHandler(DWORD fdwCtrlType) {
 
 int main()
 {
+    loadConfigData(&sharedConfig, L"common");
+
     SetConsoleCtrlHandler(exitHandler, TRUE);
 
     Memory *mem = nullptr;

@@ -12,6 +12,10 @@ using std::filesystem::path;
 using std::ifstream;
 using std::ofstream;
 
+
+ConfigData config = default_config;
+SharedConfigData sharedConfig = default_shared_config;
+
 constexpr char MAGIC_BYTES[64]{ "Merkur CS2 Config" };
 constexpr auto configFolder = "Merkur/CS2/"; // In Local Appdata
 
@@ -35,7 +39,8 @@ static bool createPathToConfig(path &cfg_path)
     return true;
 }
 
-bool loadConfigData(ConfigData* buffer, const wchar_t* configName = L"default") {
+template <typename T>
+bool loadConfigData(T* buffer, const wchar_t* configName) {
     path cfg_path;
 
     if (!createPathToConfig(cfg_path))
@@ -60,7 +65,7 @@ bool loadConfigData(ConfigData* buffer, const wchar_t* configName = L"default") 
         return false;
     }
 
-    if (fileSize != sizeof(MAGIC_BYTES) + sizeof(ConfigData))
+    if (fileSize != sizeof(MAGIC_BYTES) + sizeof(T))
     {
         std::cerr << "Error: Config file is either outdated or invalid.\n";
         return false;
@@ -78,14 +83,17 @@ bool loadConfigData(ConfigData* buffer, const wchar_t* configName = L"default") 
         return false;
     }
 
-    file.read(reinterpret_cast<char*>(buffer), sizeof(ConfigData));
+    memset(buffer, 0, sizeof(T));
+
+    file.read(reinterpret_cast<char*>(buffer), sizeof(T));
 
     file.close();
 
     return true;
 }
 
-bool storeConfigData(const ConfigData data, const wchar_t* configName = L"default") {
+template <typename T>
+bool storeConfigData(const T data, const wchar_t* configName) {
     path cfg_path;
 
     if (!createPathToConfig(cfg_path))
@@ -98,9 +106,14 @@ bool storeConfigData(const ConfigData data, const wchar_t* configName = L"defaul
     ofstream file{ cfg_path, std::ios::binary };
 
     file.write(MAGIC_BYTES, sizeof(MAGIC_BYTES));
-    file.write(reinterpret_cast<const char*>(&data), sizeof(data));
+    file.write(reinterpret_cast<const char*>(&data), sizeof(T));
 
     file.close();
+
+    return true;
 }
 
-ConfigData config = default_config;
+template bool loadConfigData<ConfigData>(ConfigData* data, const wchar_t* configName);
+template bool loadConfigData<SharedConfigData>(SharedConfigData* data, const wchar_t* configName);
+template bool storeConfigData<ConfigData>(const ConfigData data, const wchar_t* configName);
+template bool storeConfigData<SharedConfigData>(const SharedConfigData data, const wchar_t* configName);

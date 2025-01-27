@@ -31,14 +31,16 @@ struct BombSettings {
 };
 
 struct ConfigData {
-    MainWindowSettings mainWindow;
     ActiveCheats activeCheats;
     EspSettings esp;
+};
+
+struct SharedConfigData {
+    MainWindowSettings mainWindow;
     BombSettings bombWindow;
 };
 
 static constexpr const ConfigData default_config{
-    .mainWindow {.windowPosition = ImVec2(50, 100) },
     .activeCheats {
         .aimBot = true,
         .antiFlash = true,
@@ -50,10 +52,19 @@ static constexpr const ConfigData default_config{
         .triggerBot = true,
     },
     .esp {.selectedColor{0}, .renderFriendlies = false },
-    .bombWindow {.windowPosition = ImVec2(50, 50)}
 };
 
-bool loadConfigData(ConfigData* buffer, const wchar_t* configName);
-bool storeConfigData(const ConfigData data, const wchar_t* configName);
+static constexpr const SharedConfigData default_shared_config{
+    .mainWindow {.windowPosition = ImVec2(50, 100) },
+    .bombWindow {.windowPosition = ImVec2(50, 50)},
+};
+
+template <typename T>
+bool loadConfigData(T* buffer, const wchar_t* configName);
+
+template <typename T>
+bool storeConfigData(const T data, const wchar_t* configName);
 
 extern ConfigData config;
+
+extern SharedConfigData sharedConfig;
