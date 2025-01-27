@@ -20,6 +20,12 @@ namespace keybinds
     constexpr auto aimBot = 0x58;
 }
 
+namespace files
+{
+    constexpr auto persistentConfig = L"persistent";
+}
+
+
 namespace delays
 {
     constexpr auto memConnectionWaitTime = std::chrono::seconds(1);

@@ -70,7 +70,7 @@ static int exitHandler(DWORD fdwCtrlType) {
 
 int main()
 {
-    loadConfigData(&sharedConfig, L"common");
+    loadConfigData(&persistentConfig, files::persistentConfig);
 
     SetConsoleCtrlHandler(exitHandler, TRUE);
 

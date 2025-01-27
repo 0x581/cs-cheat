@@ -35,7 +35,7 @@ struct ConfigData {
     EspSettings esp;
 };
 
-struct SharedConfigData {
+struct PersistentConfigData {
     MainWindowSettings mainWindow;
     BombSettings bombWindow;
 };
@@ -54,7 +54,7 @@ static constexpr const ConfigData default_config{
     .esp {.selectedColor{0}, .renderFriendlies = false },
 };
 
-static constexpr const SharedConfigData default_shared_config{
+static constexpr const PersistentConfigData default_shared_config{
     .mainWindow {.windowPosition = ImVec2(50, 100) },
     .bombWindow {.windowPosition = ImVec2(50, 50)},
 };
@@ -67,4 +67,4 @@ bool storeConfigData(const T data, const wchar_t* configName);
 
 extern ConfigData config;
 
-extern SharedConfigData sharedConfig;
+extern PersistentConfigData persistentConfig;

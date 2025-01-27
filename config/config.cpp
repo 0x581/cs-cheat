@@ -14,7 +14,7 @@ using std::ofstream;
 
 
 ConfigData config = default_config;
-SharedConfigData sharedConfig = default_shared_config;
+PersistentConfigData persistentConfig = default_shared_config;
 
 constexpr char MAGIC_BYTES[64]{ "Merkur CS2 Config" };
 constexpr auto configFolder = "Merkur/CS2/"; // In Local Appdata
@@ -114,6 +114,6 @@ bool storeConfigData(const T data, const wchar_t* configName) {
 }
 
 template bool loadConfigData<ConfigData>(ConfigData* data, const wchar_t* configName);
-template bool loadConfigData<SharedConfigData>(SharedConfigData* data, const wchar_t* configName);
+template bool loadConfigData<PersistentConfigData>(PersistentConfigData* data, const wchar_t* configName);
 template bool storeConfigData<ConfigData>(const ConfigData data, const wchar_t* configName);
-template bool storeConfigData<SharedConfigData>(const SharedConfigData data, const wchar_t* configName);
+template bool storeConfigData<PersistentConfigData>(const PersistentConfigData data, const wchar_t* configName);
