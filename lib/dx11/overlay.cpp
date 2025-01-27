@@ -490,15 +490,12 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		return;
 	}
 
+	init_draw_list(); // we only do this once a loop
 
 	std::string name = "Merkur Cheats";
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x - 5, 0 }, name, rgbColors::off_white, true);
 
 	renderCheats();
-
-
-	std::string name = "0x581 external"; // Beispiel für eine Versionsnummer
-	text({ window_width - ImGui::CalcTextSize(name.c_str()).x, 0 }, name);
 
 	if (config.activeCheats.bombHack)
 		draw_bomb();
