@@ -97,7 +97,10 @@ private:
     }
 
 public:
-    Memory(const wchar_t* processName, const std::vector<const wchar_t *> &requiredModules)
+    const bool processIsAlive() const {
+        DWORD exitCode;
+        return GetExitCodeProcess(this->process, &exitCode) && (exitCode == STILL_ACTIVE);
+    }
     {
         // Get the process handle
 
@@ -168,10 +171,13 @@ public:
         clearModuleMap();
     }
 
-    DWORD getProcessId() const { return this->id; }
-    HANDLE getProcessHandle() const { return this->process; }
 
-    uintptr_t GetModuleAddress(const wchar_t *moduleName) const
+    // Normal functions for access & Co.
+
+    const DWORD getProcessId() const { return this->id; }
+    const HANDLE getProcessHandle() const { return this->process; }
+
+    const uintptr_t GetModuleAddress(const wchar_t *moduleName) const
     {
         if (!modules.contains(moduleName))
             std::wcout << "Failed to find module: " << moduleName << std::endl;
@@ -183,35 +189,44 @@ public:
     T Read(uintptr_t address) const
     {
         T value{};
+
+        if (this->processIsAlive())
         ReadProcessMemory(this->process, (LPCVOID)address, &value, sizeof(T), NULL);
+
         return value;
     }
 
-
-    // Returns non-zero on success
-    bool ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
+    // Returns number of bytes read
+    size_t ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
     {
-        return ReadProcessMemory(this->process, (LPCVOID)address, buffer, nBytes, NULL);
+        size_t nBytesRead{ 0 };
+
+        if (nBytes && this->processIsAlive())
+            ReadProcessMemory(this->process, (LPCVOID)address, buffer, nBytes, &nBytesRead);
+
+        return nBytesRead;
     }
 
     template <typename T>
     bool Write(uintptr_t address, T value) const
     {
+        if (this->processIsAlive())
         return WriteProcessMemory(this->process, (LPVOID)address, &value, sizeof(T), NULL);
+
+        return false;
     }
 
     void Inspect(uintptr_t address, size_t nBytes) const
     {
-        size_t nBytesRead = 0;
-        byte *data = new byte[nBytes];
+        byte *buffer = new byte[nBytes];
 
-        bool ret = ReadProcessMemory(this->process, (LPCVOID)address, data, nBytes, &nBytesRead);
+        size_t nBytesRead = this->ReadBytes(address, buffer, nBytes);
 
-        if (!ret)
+        if (!nBytesRead)
         {
             std::cout << "Inspect " << nBytes << " bytes at 0x" << std::hex << address << std::dec << " failed." << std::endl;
 
-            delete[] data;
+            delete[] buffer;
             return;
         }
 
@@ -232,7 +247,7 @@ public:
                 if (j % 8 == 0 && j != 0)
                     byteString << " ";
 
-                byteString << std::setw(2) << std::setfill('0') << (unsigned int)data[i + j] << " ";
+                byteString << std::setw(2) << std::setfill('0') << (unsigned int)buffer[i + j] << " ";
             }
             byteString << std::endl;
         }
@@ -245,6 +260,6 @@ public:
 
         std::cout << byteString.str();
 
-        delete[] data;
+        delete[] buffer;
     }
 };
