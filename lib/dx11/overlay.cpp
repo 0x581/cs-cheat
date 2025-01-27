@@ -33,7 +33,7 @@ ImU32 colors[] = {
 };
 
 
-ImGuiContext* context1 = ImGui::CreateContext();
+ImGuiContext* menuContext = ImGui::CreateContext();
 
 
 BOOL c_overlay::init_device() {
@@ -137,10 +137,7 @@ VOID c_overlay::init_imgui() {
 
 	ImVec4* colors = ImGui::GetStyle().Colors;
 
-
-
-
-	ImGui::SetCurrentContext(context1);
+	ImGui::SetCurrentContext(menuContext);
 	ImGui::StyleColorsClassic();
 	ImGuiStyle& style = ImGui::GetStyle();
 
@@ -360,10 +357,21 @@ const void c_overlay::renderCheats() {
 }
 
 
-void c_overlay::draw_menu() {
+void c_overlay::draw_menu()
+{
+	ImGui::SetCurrentContext(menuContext);
 
+	static bool isFirstIteration = true;
 
-	ImGui::SetCurrentContext(context1);
+	if (isFirstIteration)
+	{
+		// Main window position
+		ImGui::SetNextWindowPos(config.mainWindow.windowPosition);
+		isFirstIteration = false;
+	}
+
+	config.mainWindow.windowPosition = ImGui::GetWindowPos();
+
 	ImGui::SetNextWindowSize(ImVec2(500, 500));
 
 
@@ -440,6 +448,15 @@ void c_overlay::draw_menu() {
 
 void c_overlay::draw_bomb()
 {
+	static bool isFirstIteration = true;
+
+	if (isFirstIteration)
+	{
+		// Main window position
+		ImGui::SetNextWindowPos(config.bombWindow.windowPosition);
+		isFirstIteration = false;
+	}
+
 	ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 	ImGui::SetNextWindowSize(ImVec2(200, 200));
 	ImGui::Begin(

@@ -31,14 +31,14 @@ struct BombSettings {
 };
 
 struct ConfigData {
-    MainWindowSettings mainWindowSettings;
+    MainWindowSettings mainWindow;
     ActiveCheats activeCheats;
     EspSettings esp;
-    BombSettings bomb;
+    BombSettings bombWindow;
 };
 
 static constexpr const ConfigData default_config{
-    .mainWindowSettings {.windowPosition = ImVec2(500, 500) },
+    .mainWindow {.windowPosition = ImVec2(50, 100) },
     .activeCheats {
         .aimBot = true,
         .antiFlash = true,
@@ -50,7 +50,7 @@ static constexpr const ConfigData default_config{
         .triggerBot = true,
     },
     .esp {.selectedColor{0}, .renderFriendlies = false },
-    .bomb {.windowPosition = ImVec2(200, 200)}
+    .bombWindow {.windowPosition = ImVec2(50, 50)}
 };
 
 bool loadConfigData(ConfigData* buffer, const wchar_t* configName);
