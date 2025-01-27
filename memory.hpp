@@ -107,8 +107,26 @@ public:
         DWORD exitCode;
         return GetExitCodeProcess(this->process, &exitCode) && (exitCode == STILL_ACTIVE);
     }
+
+    Memory() {}
+
+    ~Memory()
     {
+        if (this->process)
+            CloseHandle(this->process);
+
+        clearModuleMap();
+    }
+
+    const bool connectToProcess(const wchar_t* processName, const std::vector<const wchar_t*>& requiredModules)
+    {
+        const std::scoped_lock sl{ this->mutex };
+
+        assert(!this->is_valid && "Cannot connect to process while already connected.");
+
         // Get the process handle
+        DWORD pId = 0;          // PID
+        HANDLE pHandle = NULL; // Process handle
 
         PROCESSENTRY32W processEntry{};
         processEntry.dwSize = sizeof(PROCESSENTRY32W);
@@ -119,15 +137,16 @@ public:
         {
             DWORD error = GetLastError();
             std::cout << "Process snapshot failed: " << error << std::endl;
-            return;
+
+            return false;
         }
 
         while (Process32NextW(processSnapShot, &processEntry))
         {
             if (!wcscmp(processName, processEntry.szExeFile))
             {
-                this->id = processEntry.th32ProcessID;
-                this->process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->id);
+                pId = processEntry.th32ProcessID;
+                pHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pId);
                 break;
             }
         }
@@ -135,8 +154,11 @@ public:
         if (processSnapShot)
             CloseHandle(processSnapShot);
 
-        if (!this->process || !this->id)
-            return;
+        if (!pHandle || !pId)
+            return false;
+
+        this->process = pHandle;
+        this->id = pId;
 
         // Initialize the module hashmap
         this->updateModuleMap();
@@ -156,17 +178,25 @@ public:
             if (try_num < 10) {
                 std::this_thread::sleep_for(delays::memory::moduleFetchWaitTime);
                 this->updateModuleMap();
-            } else {
+            }
+            else {
                 // 10 attempts to get the modules failed, clear process
                 std::cout << "Failed to fetch required Modules." << std::endl;
                 CloseHandle(this->process);
 
-                this->process = nullptr;
+                clearModuleMap();
+                this->process = 0;
                 this->id = 0;
 
-                return;
+                return false;
             }
         }
+
+        this->process = pHandle;
+        this->id = pId;
+        this->is_valid = true;
+
+        return true;
     }
 
     void invalidate()
@@ -205,7 +235,7 @@ public:
         T value{};
 
         if (this->processIsAlive())
-        ReadProcessMemory(this->process, (LPCVOID)address, &value, sizeof(T), NULL);
+            ReadProcessMemory(this->process, (LPCVOID)address, &value, sizeof(T), NULL);
 
         return value;
     }
@@ -225,7 +255,7 @@ public:
     bool Write(uintptr_t address, T value) const
     {
         if (this->processIsAlive())
-        return WriteProcessMemory(this->process, (LPVOID)address, &value, sizeof(T), NULL);
+            return WriteProcessMemory(this->process, (LPVOID)address, &value, sizeof(T), NULL);
 
         return false;
     }
