@@ -309,8 +309,6 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 
 
 const void c_overlay::renderCheats() {
-
-
 	if (config.activeCheats.esp)
 	{
 		for (const auto& espRenderData : espData.boxes)
@@ -324,15 +322,15 @@ const void c_overlay::renderCheats() {
 			{
 				if (!espRenderData.isFriendly)
 					box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
-				else
-					; // box_with_glow(espRenderData.min, espRenderData.max, rgbColors::black, 2.0f, dynamicGlowSize);
+				else if (config.esp.renderFriendlies)
+					box_with_glow(espRenderData.min, espRenderData.max, rgbColors::black, 2.0f, dynamicGlowSize);
 			}
 			else
 			{
 				if (!espRenderData.isFriendly)
 					box(espRenderData.min, espRenderData.max, selectedColor);
-				else
-					; // box(espRenderData.min, espRenderData.max, rgbColors::black);
+				else if (config.esp.renderFriendlies)
+					box(espRenderData.min, espRenderData.max, rgbColors::black);
 			}
 
 			const auto name_text = espRenderData.playerName;
