@@ -43,7 +43,7 @@ static int exitHandler(DWORD fdwCtrlType) {
     case CTRL_C_EVENT:
         overlay.~c_overlay();
 
-        storeConfigData(sharedConfig, L"common");
+        storeConfigData(persistentConfig, files::persistentConfig);
         return TRUE;
     }
     return FALSE;
