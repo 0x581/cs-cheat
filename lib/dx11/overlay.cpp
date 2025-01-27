@@ -491,8 +491,8 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	}
 
 
-
-	init_draw_list(); // we only do this once a loop
+	std::string name = "Merkur Cheats";
+	text({ window_width - ImGui::CalcTextSize(name.c_str()).x - 5, 0 }, name, rgbColors::off_white, true);
 
 	renderCheats();
 
