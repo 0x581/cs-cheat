@@ -11,6 +11,8 @@
 #include <unordered_map>
 
 #include "shared/defines.hpp"
+#include <mutex>
+#include <cassert>
 
 struct WCharHash
 {
@@ -29,7 +31,6 @@ struct WCharHash
     }
 };
 
-// Custom equality function for wchar_t*
 struct WCharEqual
 {
     bool operator()(const wchar_t *const lhs, const wchar_t *const rhs) const noexcept
@@ -43,8 +44,13 @@ constexpr auto BYTES_PER_ROW = 32;
 class Memory
 {
 private:
+    bool is_valid{ false };
+    std::mutex mutex{};
+
+
     DWORD id = 0;          // PID
     HANDLE process = NULL; // Process handle
+
 
     std::unordered_map<const wchar_t *, uintptr_t, WCharHash, WCharEqual> modules{};
 
@@ -163,12 +169,20 @@ public:
         }
     }
 
-    ~Memory()
+    void invalidate()
     {
-        if (this->process)
-            CloseHandle(this->process);
+        const std::scoped_lock sl{ this->mutex };
 
-        clearModuleMap();
+        assert(this->is_valid && "Cannot invalidate Memory Object twice!");
+
+        this->is_valid = false;
+    }
+
+    const bool isValid()
+    {
+        const std::scoped_lock sl{ this->mutex };
+
+        return this->is_valid;
     }
 
 
