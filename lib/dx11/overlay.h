@@ -51,7 +51,7 @@ public:
 	VOID box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width = 2.f);
 	VOID line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width = 2.f);
 	VOID circle(const ImVec2& point, const FLOAT radius, ImU32 color);
-	VOID text(const ImVec2& pos, const std::string& text, ImU32 color = ImColor(240, 248, 255), bool outline = true);
+	VOID text(const ImVec2& pos, const std::string& text, ImU32 color, bool outline = true);
 	VOID radial_gradient(const ImVec2& center, float radius, ImU32 col_in, ImU32 col_out);
 	VOID box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size);
 
@@ -59,7 +59,7 @@ public:
 public:
 	FLOAT window_width, window_height;
 	bool exit = true;
-	bool ready = true;
+	bool ready_to_close = true;
 	bool show_menu = true;
 	INT breath;
 	s_font* font;
