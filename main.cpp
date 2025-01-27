@@ -56,18 +56,18 @@ int main()
 
     SetConsoleCtrlHandler(exitHandler, TRUE);
 
-    Memory *mem = nullptr;
+    Memory mem{};
 
-    std::thread conn{connectionHandler, &mem};
+    std::thread conn{connectionHandler, std::ref(mem)};
 
-    std::thread triggerBot{runTriggerBotLoop, &mem};
-    std::thread antiFlash{runAntiFlashLoop, &mem};
-    std::thread bunnyHop{runBunnyHopLoop, &mem};
-    std::thread radarHack{runRadarLoop, &mem};
-    std::thread fovChanger{runFovChangerLoop, &mem};
-    std::thread esp{runEspLoop, &mem};
-    std::thread bombHack{runBombHackLoop, &mem};
-    std::thread aimBot{runAimBotLoop, &mem};
+    std::thread triggerBot{runTriggerBotLoop, std::ref(mem) };
+    std::thread antiFlash{runAntiFlashLoop, std::ref(mem) };
+    std::thread bunnyHop{runBunnyHopLoop, std::ref(mem) };
+    std::thread radarHack{runRadarLoop, std::ref(mem) };
+    std::thread fovChanger{runFovChangerLoop, std::ref(mem) };
+    std::thread esp{runEspLoop, std::ref(mem) };
+    std::thread bombHack{runBombHackLoop, std::ref(mem) };
+    std::thread aimBot{runAimBotLoop, std::ref(mem) };
 
     while (overlay.msg_loop() && !overlay.ready_to_close) {}
 

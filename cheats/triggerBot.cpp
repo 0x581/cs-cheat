@@ -20,7 +20,7 @@ static void runTriggerBot(const Memory& mem, const uintptr_t client)
     }
 }
 
-void runTriggerBotLoop(Memory** mem)
+void runTriggerBotLoop(Memory& mem)
 {
     while (true)
     {
@@ -30,22 +30,22 @@ void runTriggerBotLoop(Memory** mem)
             continue;
         }
 
-        if (!*mem) {
+        if (!mem.isValid()) {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
         std::this_thread::sleep_for(delays::triggerBot::sleep);
 
-        const auto client = (*mem)->GetModuleAddress(modules::client);
+        const auto client = mem.GetModuleAddress(modules::client);
 
-        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
             continue;
 
         if (GetAsyncKeyState(keybinds::triggerbot))
-            runTriggerBot(**mem, client);
+            runTriggerBot(mem, client);
     }
 }

@@ -8,7 +8,7 @@
 
 #include "../config/config.hpp"
 
-void runFovChangerLoop(Memory** mem)
+void runFovChangerLoop(Memory& mem)
 {
     while (true)
     {
@@ -18,29 +18,29 @@ void runFovChangerLoop(Memory** mem)
             continue;
         }
 
-        if (!*mem) {
+        if (!mem.isValid()) {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
         std::this_thread::sleep_for(delays::fovChanger::sleep);
 
-        const auto client = (*mem)->GetModuleAddress(modules::client);
+        const auto client = mem.GetModuleAddress(modules::client);
 
-        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
             continue;
 
-        auto isScoped = (*mem)->Read<bool>(localPlayer + offsets::IsScoped);
+        auto isScoped = mem.Read<bool>(localPlayer + offsets::IsScoped);
 
         if (isScoped)
             continue;
 
-        auto cameraservices = (*mem)->Read<uintptr_t>(localPlayer + offsets::CameraServices);
+        auto cameraservices = mem.Read<uintptr_t>(localPlayer + offsets::CameraServices);
 
         if (!isScoped)
-            (*mem)->Write<UINT>(cameraservices + offsets::FOV, fovData.desiredFov);
+            mem.Write<UINT>(cameraservices + offsets::FOV, fovData.desiredFov);
     }
 }

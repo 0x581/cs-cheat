@@ -90,7 +90,7 @@ static void runEsp(const Memory& mem, const uintptr_t client)
     }
 }
 
-void runEspLoop(Memory** mem)
+void runEspLoop(Memory& mem)
 {
     while (true)
     {
@@ -100,21 +100,22 @@ void runEspLoop(Memory** mem)
             continue;
         }
 
-        if (!*mem) {
+        if (!mem.isValid()) {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
+
         std::this_thread::sleep_for(delays::esp::sleep);
 
-        const auto client = (*mem)->GetModuleAddress(modules::client);
+        const auto client = mem.GetModuleAddress(modules::client);
 
-        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
             continue;
 
-        runEsp(**mem, client);
+        runEsp(mem, client);
     }
 }

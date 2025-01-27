@@ -23,7 +23,7 @@ static void runRadarHack(const Memory& mem, const uintptr_t client)
 	}
 }
 
-void runRadarLoop(Memory** mem)
+void runRadarLoop(Memory& mem)
 {
 	while (true)
 	{
@@ -33,21 +33,21 @@ void runRadarLoop(Memory** mem)
 			continue;
 		}
 
-		if (!*mem) {
+		if (!mem.isValid()) {
 			std::this_thread::sleep_for(delays::memConnectionWaitTime);
 			continue;
 		}
 
 		std::this_thread::sleep_for(delays::radarHack::sleep);
 
-		const auto client = (*mem)->GetModuleAddress(modules::client);
+		const auto client = mem.GetModuleAddress(modules::client);
 
-		const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+		const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
 		// No local player -> No match currently going on
 		if (!localPlayer)
 			continue;
 
-		runRadarHack(**mem, client);
+		runRadarHack(mem, client);
 	}
 }
