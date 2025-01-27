@@ -215,7 +215,7 @@ VOID c_overlay::dest_render_target() {
 }
 
 c_overlay::c_overlay() :
-	ready(false),
+	ready_to_close(false),
 	exit(false),
 	window_handle(nullptr),
 	window_class({}),
@@ -488,7 +488,7 @@ void c_overlay::draw_bomb()
 const void c_overlay::render(FLOAT width, FLOAT height) {
 	if (exit) {
 		init_draw_list();
-		ready = true;
+		ready_to_close = true;
 		return;
 	}
 

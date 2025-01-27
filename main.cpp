@@ -82,7 +82,7 @@ int main()
     std::thread bombHack{runBombHackLoop, &mem};
     std::thread aimBot{runAimBotLoop, &mem};
 
-    while (overlay.msg_loop() && !overlay.ready) {}
+    while (overlay.msg_loop() && !overlay.ready_to_close) {}
 
     overlay.~c_overlay();
 }
