@@ -103,6 +103,9 @@
     <ClCompile Include="config\config.cpp">
       <Filter>config</Filter>
     </ClCompile>
+    <ClCompile Include="hijack_handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="memory.hpp">
@@ -174,6 +177,7 @@
     <ClInclude Include="config\config.hpp">
       <Filter>config</Filter>
     </ClInclude>
+    <ClInclude Include="hijack_handle.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini">
