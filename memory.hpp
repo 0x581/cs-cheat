@@ -14,6 +14,10 @@
 #include <mutex>
 #include <cassert>
 
+
+#include <string>
+
+
 struct WCharHash
 {
     size_t operator()(const wchar_t *const str) const noexcept
@@ -40,6 +44,9 @@ struct WCharEqual
 };
 
 constexpr auto BYTES_PER_ROW = 32;
+
+
+
 
 class Memory
 {
@@ -122,11 +129,19 @@ public:
     {
         const std::scoped_lock sl{ this->mutex };
 
+        // Clean up previous connection if exists
         assert(!this->is_valid && "Cannot connect to process while already connected.");
 
+        if (this->process)
+            CloseHandle(this->process);
+
+        this->process = 0;
+        this->id = 0;
+        clearModuleMap();
+
         // Get the process handle
-        DWORD pId = 0;          // PID
-        HANDLE pHandle = NULL; // Process handle
+        DWORD pId = 0;
+        HANDLE pHandle = NULL;
 
         PROCESSENTRY32W processEntry{};
         processEntry.dwSize = sizeof(PROCESSENTRY32W);
@@ -206,13 +221,19 @@ public:
         assert(this->is_valid && "Cannot invalidate Memory Object twice!");
 
         this->is_valid = false;
+
+        if (this->process)
+            CloseHandle(this->process);
+
+        this->process = 0;
+        this->id = 0;
     }
 
     const bool isValid()
     {
         const std::scoped_lock sl{ this->mutex };
 
-        return this->is_valid;
+        return this->id && this->process && this->is_valid;
     }
 
 
