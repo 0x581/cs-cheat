@@ -103,7 +103,7 @@
     <ClCompile Include="config\config.cpp">
       <Filter>config</Filter>
     </ClCompile>
-    <ClCompile Include="hijack_handle.cpp">
+    <ClCompile Include="hook\hijack_handle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -177,7 +177,8 @@
     <ClInclude Include="config\config.hpp">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="hijack_handle.hpp" />
+    <ClInclude Include="hook\hijack_handle.hpp" />
+    <ClInclude Include="hook\defines.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini">

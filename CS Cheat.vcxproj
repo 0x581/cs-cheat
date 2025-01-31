@@ -43,7 +43,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -144,7 +144,7 @@
   <ItemGroup>
     <ClCompile Include="cheats\aimBot.cpp" />
     <ClCompile Include="config\config.cpp" />
-    <ClCompile Include="hijack_handle.cpp" />
+    <ClCompile Include="hook\hijack_handle.cpp" />
     <ClCompile Include="lib\dx11\overlay.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
@@ -170,7 +170,8 @@
   <ItemGroup>
     <ClInclude Include="cheats\cheats.hpp" />
     <ClInclude Include="config\config.hpp" />
-    <ClInclude Include="hijack_handle.hpp" />
+    <ClInclude Include="hook\defines.hpp" />
+    <ClInclude Include="hook\hijack_handle.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
     <ClInclude Include="lib\dx11\overlay.h" />
