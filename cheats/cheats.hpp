@@ -2,18 +2,19 @@
 
 #include "../memory.hpp"
 
-void runAntiFlashLoop(Memory** mem);
+void runAimBotLoop(Memory& mem);
 
-void runBombHackLoop(Memory** mem);
+void runAntiFlashLoop(Memory& mem);
 
-void runBunnyHopLoop(Memory** mem);
+void runBombHackLoop(Memory& mem);
 
-void runFovChangerLoop(Memory** mem);
+void runBunnyHopLoop(Memory& mem);
 
-void runRadarLoop(Memory** mem);
+void runEspLoop(Memory& mem);
 
-void runTriggerBotLoop(Memory** mem);
+void runFovChangerLoop(Memory& mem);
 
-void runEspLoop(Memory** mem);
+void runRadarLoop(Memory& mem);
 
-void runAimBotLoop(Memory** mem);
+void runTriggerBotLoop(Memory& mem);
+

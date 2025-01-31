@@ -11,6 +11,8 @@
 #include <unordered_map>
 
 #include "shared/defines.hpp"
+#include <mutex>
+#include <cassert>
 
 struct WCharHash
 {
@@ -29,7 +31,6 @@ struct WCharHash
     }
 };
 
-// Custom equality function for wchar_t*
 struct WCharEqual
 {
     bool operator()(const wchar_t *const lhs, const wchar_t *const rhs) const noexcept
@@ -43,8 +44,13 @@ constexpr auto BYTES_PER_ROW = 32;
 class Memory
 {
 private:
+    bool is_valid{ false };
+    std::mutex mutex{};
+
+
     DWORD id = 0;          // PID
     HANDLE process = NULL; // Process handle
+
 
     std::unordered_map<const wchar_t *, uintptr_t, WCharHash, WCharEqual> modules{};
 
@@ -97,9 +103,30 @@ private:
     }
 
 public:
-    Memory(const wchar_t* processName, const std::vector<const wchar_t *> &requiredModules)
+    const bool processIsAlive() const {
+        DWORD exitCode;
+        return GetExitCodeProcess(this->process, &exitCode) && (exitCode == STILL_ACTIVE);
+    }
+
+    Memory() {}
+
+    ~Memory()
     {
+        if (this->process)
+            CloseHandle(this->process);
+
+        clearModuleMap();
+    }
+
+    const bool connectToProcess(const wchar_t* processName, const std::vector<const wchar_t*>& requiredModules)
+    {
+        const std::scoped_lock sl{ this->mutex };
+
+        assert(!this->is_valid && "Cannot connect to process while already connected.");
+
         // Get the process handle
+        DWORD pId = 0;          // PID
+        HANDLE pHandle = NULL; // Process handle
 
         PROCESSENTRY32W processEntry{};
         processEntry.dwSize = sizeof(PROCESSENTRY32W);
@@ -110,15 +137,16 @@ public:
         {
             DWORD error = GetLastError();
             std::cout << "Process snapshot failed: " << error << std::endl;
-            return;
+
+            return false;
         }
 
         while (Process32NextW(processSnapShot, &processEntry))
         {
             if (!wcscmp(processName, processEntry.szExeFile))
             {
-                this->id = processEntry.th32ProcessID;
-                this->process = OpenProcess(PROCESS_ALL_ACCESS, FALSE, this->id);
+                pId = processEntry.th32ProcessID;
+                pHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pId);
                 break;
             }
         }
@@ -126,8 +154,11 @@ public:
         if (processSnapShot)
             CloseHandle(processSnapShot);
 
-        if (!this->process || !this->id)
-            return;
+        if (!pHandle || !pId)
+            return false;
+
+        this->process = pHandle;
+        this->id = pId;
 
         // Initialize the module hashmap
         this->updateModuleMap();
@@ -147,31 +178,50 @@ public:
             if (try_num < 10) {
                 std::this_thread::sleep_for(delays::memory::moduleFetchWaitTime);
                 this->updateModuleMap();
-            } else {
+            }
+            else {
                 // 10 attempts to get the modules failed, clear process
                 std::cout << "Failed to fetch required Modules." << std::endl;
                 CloseHandle(this->process);
 
-                this->process = nullptr;
+                clearModuleMap();
+                this->process = 0;
                 this->id = 0;
 
-                return;
+                return false;
             }
         }
+
+        this->process = pHandle;
+        this->id = pId;
+        this->is_valid = true;
+
+        return true;
     }
 
-    ~Memory()
+    void invalidate()
     {
-        if (this->process)
-            CloseHandle(this->process);
+        const std::scoped_lock sl{ this->mutex };
 
-        clearModuleMap();
+        assert(this->is_valid && "Cannot invalidate Memory Object twice!");
+
+        this->is_valid = false;
     }
 
-    DWORD getProcessId() const { return this->id; }
-    HANDLE getProcessHandle() const { return this->process; }
+    const bool isValid()
+    {
+        const std::scoped_lock sl{ this->mutex };
 
-    uintptr_t GetModuleAddress(const wchar_t *moduleName) const
+        return this->is_valid;
+    }
+
+
+    // Normal functions for access & Co.
+
+    const DWORD getProcessId() const { return this->id; }
+    const HANDLE getProcessHandle() const { return this->process; }
+
+    const uintptr_t GetModuleAddress(const wchar_t *moduleName) const
     {
         if (!modules.contains(moduleName))
             std::wcout << "Failed to find module: " << moduleName << std::endl;
@@ -183,35 +233,44 @@ public:
     T Read(uintptr_t address) const
     {
         T value{};
-        ReadProcessMemory(this->process, (LPCVOID)address, &value, sizeof(T), NULL);
+
+        if (this->processIsAlive())
+            ReadProcessMemory(this->process, (LPCVOID)address, &value, sizeof(T), NULL);
+
         return value;
     }
 
-
-    // Returns non-zero on success
-    bool ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
+    // Returns number of bytes read
+    size_t ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
     {
-        return ReadProcessMemory(this->process, (LPCVOID)address, buffer, nBytes, NULL);
+        size_t nBytesRead{ 0 };
+
+        if (nBytes && this->processIsAlive())
+            ReadProcessMemory(this->process, (LPCVOID)address, buffer, nBytes, &nBytesRead);
+
+        return nBytesRead;
     }
 
     template <typename T>
     bool Write(uintptr_t address, T value) const
     {
-        return WriteProcessMemory(this->process, (LPVOID)address, &value, sizeof(T), NULL);
+        if (this->processIsAlive())
+            return WriteProcessMemory(this->process, (LPVOID)address, &value, sizeof(T), NULL);
+
+        return false;
     }
 
     void Inspect(uintptr_t address, size_t nBytes) const
     {
-        size_t nBytesRead = 0;
-        byte *data = new byte[nBytes];
+        byte *buffer = new byte[nBytes];
 
-        bool ret = ReadProcessMemory(this->process, (LPCVOID)address, data, nBytes, &nBytesRead);
+        size_t nBytesRead = this->ReadBytes(address, buffer, nBytes);
 
-        if (!ret)
+        if (!nBytesRead)
         {
             std::cout << "Inspect " << nBytes << " bytes at 0x" << std::hex << address << std::dec << " failed." << std::endl;
 
-            delete[] data;
+            delete[] buffer;
             return;
         }
 
@@ -232,7 +291,7 @@ public:
                 if (j % 8 == 0 && j != 0)
                     byteString << " ";
 
-                byteString << std::setw(2) << std::setfill('0') << (unsigned int)data[i + j] << " ";
+                byteString << std::setw(2) << std::setfill('0') << (unsigned int)buffer[i + j] << " ";
             }
             byteString << std::endl;
         }
@@ -245,6 +304,6 @@ public:
 
         std::cout << byteString.str();
 
-        delete[] data;
+        delete[] buffer;
     }
 };

@@ -15,6 +15,7 @@ struct RGB {
 namespace rgbColors {
     constexpr ImU32 black = IM_COL32(0, 0, 0, 255);    // Black
     constexpr ImU32 white = IM_COL32(255, 255, 255, 255);  // White
+    constexpr ImU32 off_white = IM_COL32(240, 248, 255, 255);
     constexpr ImU32 red = IM_COL32(255, 0, 0, 255);    // Red
     constexpr ImU32 green = IM_COL32(0, 255, 0, 255);  // Green
     constexpr ImU32 blue = IM_COL32(0, 0, 255, 255);   // Blue

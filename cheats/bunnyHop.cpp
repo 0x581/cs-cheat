@@ -5,33 +5,33 @@
 #include <thread>
 
 #include "../shared/defines.hpp"
-#include "../shared/sharedVariables.hpp"
+#include "../config/config.hpp"
 #include "../shared/offsets.hpp"
 
 
-void runBunnyHopLoop(Memory** mem)
+void runBunnyHopLoop(Memory& mem)
 {
     // const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 
     while (true)
     {
 
-        if (!activeCheats.bunnyHop.load())
+        if (!config.activeCheats.bunnyHop)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;
         }
 
-        if (!*mem) {
+        if (!mem.isValid()) {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
         std::this_thread::sleep_for(delays::bunnyHop::sleep);
 
-        const auto client = (*mem)->GetModuleAddress(modules::client);
+        const auto client = mem.GetModuleAddress(modules::client);
 
-        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
@@ -40,8 +40,8 @@ void runBunnyHopLoop(Memory** mem)
         if (!GetAsyncKeyState(keybinds::bunnyHop))
             continue;
 
-        (*mem)->Write<int>(client + offsets::jump, 256);
+        mem.Write<int>(client + offsets::jump, 256);
         std::this_thread::sleep_for(delays::bunnyHop::keyPressTime);
-        (*mem)->Write<int>(client + offsets::jump, 65537);
+        mem.Write<int>(client + offsets::jump, 65537);
     }
 }

@@ -7,6 +7,7 @@
 #include "../shared/offsets.hpp"
 #include "../shared/colors.hpp"
 #include "../shared/string_utils.hpp"
+#include "../config/config.hpp"
 
 #include "../entityListInteraction.hpp"
 
@@ -89,31 +90,32 @@ static void runEsp(const Memory& mem, const uintptr_t client)
     }
 }
 
-void runEspLoop(Memory** mem)
+void runEspLoop(Memory& mem)
 {
     while (true)
     {
-        if (!activeCheats.esp.load())
+        if (!config.activeCheats.esp)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;
         }
 
-        if (!*mem) {
+        if (!mem.isValid()) {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
+
         std::this_thread::sleep_for(delays::esp::sleep);
 
-        const auto client = (*mem)->GetModuleAddress(modules::client);
+        const auto client = mem.GetModuleAddress(modules::client);
 
-        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
             continue;
 
-        runEsp(**mem, client);
+        runEsp(mem, client);
     }
 }

@@ -17,17 +17,6 @@ struct EspRenderData {
     ImVec2 max{ 0, 0 };
 };
 
-struct CheatController {
-    std::atomic<bool> bunnyHop{ false };
-    std::atomic<bool> antiFlash{ true };
-    std::atomic<bool> triggerBot{ true };
-    std::atomic<bool> radar{ true };
-    std::atomic<bool> fovChanger{ false };
-    std::atomic<bool> esp{ true };
-    std::atomic<bool> bombHack{ true };
-    std::atomic<bool> aimBot{ true };
-};
-
 struct FOVData {
     unsigned int desiredFov{ 60 };
 };
@@ -41,8 +30,6 @@ struct BombData {
     bool planted{ false };
     float timeRemaining{ 0.f };
 };
-
-extern CheatController activeCheats;
 
 extern FOVData fovData;
 extern ESPData espData;

@@ -20,6 +20,12 @@ namespace keybinds
     constexpr auto aimBot = VK_RBUTTON;
 }
 
+namespace files
+{
+    constexpr auto persistentConfig = L"persistent";
+}
+
+
 namespace delays
 {
     constexpr auto memConnectionWaitTime = std::chrono::seconds(1);

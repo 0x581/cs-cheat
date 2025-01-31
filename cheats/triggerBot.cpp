@@ -3,7 +3,7 @@
 #include <thread>
 
 #include "../shared/defines.hpp"
-#include "../shared/sharedVariables.hpp"
+#include "../config/config.hpp"
 #include "../shared/offsets.hpp"
 
 #include "../entityListInteraction.hpp"
@@ -20,32 +20,32 @@ static void runTriggerBot(const Memory& mem, const uintptr_t client)
     }
 }
 
-void runTriggerBotLoop(Memory** mem)
+void runTriggerBotLoop(Memory& mem)
 {
     while (true)
     {
-        if (!activeCheats.triggerBot.load())
+        if (!config.activeCheats.triggerBot)
         {
             std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
             continue;
         }
 
-        if (!*mem) {
+        if (!mem.isValid()) {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
 
         std::this_thread::sleep_for(delays::triggerBot::sleep);
 
-        const auto client = (*mem)->GetModuleAddress(modules::client);
+        const auto client = mem.GetModuleAddress(modules::client);
 
-        const auto localPlayer = (*mem)->Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
         // No local player -> No match currently going on
         if (!localPlayer)
             continue;
 
         if (GetAsyncKeyState(keybinds::triggerbot))
-            runTriggerBot(**mem, client);
+            runTriggerBot(mem, client);
     }
 }
