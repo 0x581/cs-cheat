@@ -180,7 +180,7 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
             continue;
         }
 
-
+        std::cout << "." << std::flush;
         if (GetProcessId(duplicatedHandle) == dwTargetProcessId)
         {
 
