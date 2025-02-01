@@ -47,6 +47,8 @@ public:
 
 	BOOL msg_loop();
 	
+	void initConfigVariables();
+
 	VOID init_draw_list();
 	VOID box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width = 2.f);
 	VOID line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width = 2.f);

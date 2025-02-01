@@ -5,6 +5,8 @@
 #include "../../config/config.hpp"
 #include "../../shared/consoleControl.cpp"
 
+#include <map>
+
 
 // microsoft safe release of pointers
 template <typename T>
@@ -14,26 +16,22 @@ inline VOID c_overlay::safe_release(T*& p) {
 		p = NULL;
 	}
 }
-int sliderValue = 100; // ignore (fck nicolas das bleib da)
-float Fovaimbot = 0.f; // ignore (fck nicolas das bleib da)
-float smooth = 0.f; // ignore (fck nicolas das bleib da)
 
 static bool l_test = false;
-static bool box_glow = false;
-int selectedColorIndex = 0;
-static ImU32 selectedColor = rgbColors::green;  
 
-
-const char* colorNames[] = {
-	"Green", "Red", "Blue", "Yellow", "Black", "White",
-	"Purple", "Dark Purple"
+const std::map<std::string_view, const ImU32> availableColors
+{
+	{"Green", rgbColors::green},
+	{"Red", rgbColors::red},
+	{"Blue", rgbColors::blue},
+	{"Yellow", rgbColors::yellow},
+	{"Black", rgbColors::black},
+	{"White", rgbColors::white},
+	{"Purple", rgbColors::purple1},
+	{"Dark Purple", rgbColors::purple2},
 };
 
-ImU32 colors[] = {
-	rgbColors::green, rgbColors::red, rgbColors::blue, rgbColors::yellow,
-	rgbColors::black, rgbColors::white,
-	rgbColors::purple1, rgbColors::purple2
-};
+auto selectedColorIt = availableColors.begin();
 
 
 ImGuiContext* menuContext = ImGui::CreateContext();
@@ -317,6 +315,9 @@ const void c_overlay::renderCheats()
 
 	if (config.activeCheats.esp)
 	{
+		const auto& enemyColor = selectedColorIt->second;
+		const auto& friendlyColor = rgbColors::black;
+
 		for (const auto& espRenderData : espData.boxes)
 		{
 			if (!espRenderData.isValid)
@@ -324,32 +325,29 @@ const void c_overlay::renderCheats()
 
 			if (config.esp.boxGlow)
 			{
-			float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
+				float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
 
-			if (box_glow)
-			{
 				if (!espRenderData.isFriendly)
-					box_with_glow(espRenderData.min, espRenderData.max, selectedColor, 2.0f, dynamicGlowSize);
+					box_with_glow(espRenderData.min, espRenderData.max, enemyColor, 2.0f, dynamicGlowSize);
 				else if (config.esp.renderFriendlies)
-					box_with_glow(espRenderData.min, espRenderData.max, rgbColors::black, 2.0f, dynamicGlowSize);
+					box_with_glow(espRenderData.min, espRenderData.max, friendlyColor, 2.0f, dynamicGlowSize);
 			}
 			else
 			{
 				if (!espRenderData.isFriendly)
-					box(espRenderData.min, espRenderData.max, selectedColor);
+					box(espRenderData.min, espRenderData.max, enemyColor);
 				else if (config.esp.renderFriendlies)
-					box(espRenderData.min, espRenderData.max, rgbColors::black);
+					box(espRenderData.min, espRenderData.max, friendlyColor);
 			}
 
 			const auto name_text = espRenderData.playerName;
-
 			const auto text_size = ImGui::CalcTextSize(name_text);
 
 			const auto text_pos = ImVec2{
 				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f), espRenderData.max.y
 			};
 
-			text(text_pos, name_text, selectedColor);
+			text(text_pos, name_text, enemyColor);
 		}
 	}
 
@@ -405,12 +403,22 @@ void c_overlay::draw_menu()
 				ImGui::Checkbox("esp", &config.activeCheats.esp);
 				if (config.activeCheats.esp == true)
 				{
-					if (ImGui::BeginCombo("Color", colorNames[selectedColorIndex])) {
-						for (int i = 0; i < IM_ARRAYSIZE(colorNames); i++) {
-							bool isSelected = (selectedColor == colors[i]);
-							if (ImGui::Selectable(colorNames[i], isSelected)) {
-								selectedColor = colors[i];
-								selectedColorIndex = i; // Update the selected color index
+					if (ImGui::BeginCombo("Color", selectedColorIt->first.data())) {
+						// Draw all colors names to combobox
+						for (auto it = availableColors.begin(); it != availableColors.end(); ++it)
+						{
+							const auto& [colorName, color] = *it;
+
+							bool isSelected = (selectedColorIt->first == colorName);
+
+							if (ImGui::Selectable(colorName.data(), isSelected))
+							{
+								// Update selection if something was selected
+								memset(config.esp.selectedColor, 0, COLOR_NAME_MAX_LENGTH);
+								colorName.copy(config.esp.selectedColor, min(colorName.length(), COLOR_NAME_MAX_LENGTH));
+								config.esp.selectedColor[COLOR_NAME_MAX_LENGTH - 1] = '\0';
+
+								selectedColorIt = it;
 							}
 							if (isSelected)
 								ImGui::SetItemDefaultFocus(); // Keep the selected item focused
@@ -528,6 +536,20 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		return;
 
 	draw_menu();
+}
+
+void c_overlay::initConfigVariables()
+{
+	for (auto it = availableColors.begin(); it != availableColors.end(); ++it)
+	{
+		const auto& [colorName, color] = *it;
+
+		if (std::string_view(config.esp.selectedColor) == colorName)
+		{
+			selectedColorIt = it;
+			break;
+		}
+	}
 }
 
 BOOL c_overlay::msg_loop() {
