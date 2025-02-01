@@ -93,9 +93,6 @@ static bool checkProcessName(HANDLE hProcess, const wchar_t* processName)
 
 HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
 {
-    std::wcout << "Trying to hook process with pid " << dwTargetProcessId << std::endl;
-
-
     if (dwTargetProcessId == 0)
     {
         return 0;
@@ -195,6 +192,8 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
         delete[] hInfo;
         return duplicatedHandle;
     }
+
+    std::cout << "Failed to find hook to " << dwTargetProcessId << std::endl;
 
     delete[] hInfo;
     return 0;
