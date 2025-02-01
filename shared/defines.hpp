@@ -93,7 +93,7 @@ namespace delays
 
     namespace bombHack
     {
-        constexpr auto sleep = std::chrono::milliseconds(10);
+        constexpr auto sleep = std::chrono::milliseconds(50);
     }
 
     namespace esp
