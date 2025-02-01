@@ -186,14 +186,6 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
             continue;
         }
 
-        std::cout << "." << std::flush;
-        if (GetProcessId(duplicatedHandle) == dwTargetProcessId)
-        {
-
-            std::cout << "Found a matching handle..." << std::endl;
-
-        }
-
         if (GetProcessId(duplicatedHandle) != dwTargetProcessId || !checkProcessName(hProcess, fromProcess))
         {
             CloseHandle(hProcess);
@@ -208,6 +200,13 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
     }
 
     delete[] hInfo;
+
+    if (GetProcessId(duplicatedHandle) == dwTargetProcessId)
+    {
+        std::cout << "No matching handles found..." << std::endl;
+        return OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwTargetProcessId);
+    }
+    
     return 0;
 }
 
