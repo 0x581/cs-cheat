@@ -6,6 +6,10 @@
 #include "../../shared/consoleControl.cpp"
 
 #include <map>
+#include "../../shared/offsets.hpp"
+#include "../../entityListInteraction.hpp"
+#include "../../math/math.hpp"
+#include "../../shared/string_utils.hpp"
 
 
 // microsoft safe release of pointers
@@ -309,57 +313,119 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 }
 
 
+void c_overlay::renderEsp(Memory &mem)
+{
+	if (!config.activeCheats.esp || !mem.isValid())
+	{
+		return;
+	}
+
+	const auto client = mem.GetModuleAddress(modules::client);
+
+	const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+
+	// No local player -> No match currently going on
+	if (!localPlayerPawn)
+		return;
+
+
+	const auto& enemyColor = selectedColorIt->second;
+	const auto& friendlyColor = rgbColors::black;
+
+
+	const auto localPlayerTeam = mem.Read<PlayerTeam_t>(localPlayerPawn + offsets::teamNum);
+
+	const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
+
+	for (int i = 0; i < 64; i++) {
+		const auto controller = getPlayerControllerPtr(mem, i);
+		const auto playerPawn = getPawnPtrFromControllerPtr(mem, controller);
+
+		if (!playerPawn)
+		{
+			continue;
+		}
+
+		const auto health = mem.Read<int>(playerPawn + offsets::health);
+
+		if (health <= 0 || health > 100)
+		{
+			continue;
+		}
+
+		const auto movementServices = mem.Read<intptr_t>(playerPawn + offsets::movementServices);
+
+		if (!movementServices)
+		{
+			continue;
+		}
+
+		const auto friendly = localPlayerTeam == mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
+
+		const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
+
+		Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
+		Vector3 headPos = { footPos.x, footPos.y, footPos.z + 72.f };
+
+		auto screenFootPos = worldToScreen(footPos, view_matrix);
+		auto screenHeadPos = worldToScreen(headPos, view_matrix);
+
+		if (screenFootPos.z == 0.f || screenHeadPos.z == 0.f)
+		{
+			continue;
+		}
+
+		float width = (screenFootPos.y - screenHeadPos.y) / 2.4F;
+
+		if (crouchAmount != 0.f)
+		{
+			headPos = { footPos.x, footPos.y, footPos.z + 72.f - (crouchAmount * 17.f) };
+			screenHeadPos = worldToScreen(headPos, view_matrix);
+		}
+
+		char buffer[PLAYER_NAME_LENGTH]{ 0 };
+		if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH))
+		{
+			continue;
+		}
+
+		char out_buf[PLAYER_NAME_LENGTH]{ 0 };
+		parseString(buffer, out_buf, PLAYER_NAME_LENGTH);
+
+		const ImVec2 min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
+		const ImVec2 max = { screenHeadPos.x + width / 2, screenFootPos.y };
+
+		if (config.esp.boxGlow)
+		{
+			float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
+
+			if (!friendly)
+				box_with_glow(min, max, enemyColor, 2.0f, dynamicGlowSize);
+			else if (config.esp.renderFriendlies)
+				box_with_glow(min, max, friendlyColor, 2.0f, dynamicGlowSize);
+		}
+		else
+		{
+			if (!friendly)
+				box(min, max, enemyColor);
+			else if (config.esp.renderFriendlies)
+				box(min, max, friendlyColor);
+		}
+
+
+		const auto text_pos = ImVec2{(max.x + min.x) / 2.f - (ImGui::CalcTextSize(out_buf).x / 2.f), max.y};
+
+		text(text_pos, out_buf, enemyColor);
+	}
+}
+
+
 const void c_overlay::renderCheats()
 {
-	printFPS;
-
 	if (config.activeCheats.esp)
 	{
-		static int ctr = 0;
-		if (ctr++ % 10 == 0)
-		{
-			using std::chrono::duration_cast;
+		this->renderEsp(*this->mem);
 
-			const auto time_taken = std::chrono::high_resolution_clock::now() - espData.time;
-
-			std::cout << duration_cast<std::chrono::microseconds>(time_taken) << std::endl;
-		}
-
-
-		const auto& enemyColor = selectedColorIt->second;
-		const auto& friendlyColor = rgbColors::black;
-
-		for (const auto& espRenderData : espData.boxes)
-		{
-			if (!espRenderData.isValid)
-				continue;
-
-			if (config.esp.boxGlow)
-			{
-				float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
-
-				if (!espRenderData.isFriendly)
-					box_with_glow(espRenderData.min, espRenderData.max, enemyColor, 2.0f, dynamicGlowSize);
-				else if (config.esp.renderFriendlies)
-					box_with_glow(espRenderData.min, espRenderData.max, friendlyColor, 2.0f, dynamicGlowSize);
-			}
-			else
-			{
-				if (!espRenderData.isFriendly)
-					box(espRenderData.min, espRenderData.max, enemyColor);
-				else if (config.esp.renderFriendlies)
-					box(espRenderData.min, espRenderData.max, friendlyColor);
-			}
-
-			const auto name_text = espRenderData.playerName;
-			const auto text_size = ImGui::CalcTextSize(name_text);
-
-			const auto text_pos = ImVec2{
-				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f), espRenderData.max.y
-			};
-
-			text(text_pos, name_text, enemyColor);
-		}
 	}
 
 	if (config.activeCheats.aimBot)
