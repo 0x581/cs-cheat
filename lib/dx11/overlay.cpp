@@ -379,7 +379,7 @@ void c_overlay::draw_menu()
 
 	// imgui menu itself
 	ImGui::Begin(
-		"Misc",
+		"Main GUI",
 		0,
 		ImGuiWindowFlags_NoTitleBar
 		| ImGuiWindowFlags_NoResize
@@ -395,8 +395,8 @@ void c_overlay::draw_menu()
 			ImGui::Checkbox("aimbot", &config.activeCheats.aimBot);
 			if (config.activeCheats.aimBot == true)
 			{
-				(ImGui::SliderFloat("Fov",  &Fovaimbot, 0, 400));
-				(ImGui::SliderFloat("Smooth", &smooth, 0, 2));
+				(ImGui::SliderFloat("Fov",  &config.aimBot.pixelRadius, 0, 400));
+				(ImGui::SliderFloat("Smooth", &config.aimBot.speedFactor, 0, 2));
 			}
 			ImGui::EndTabItem();
 		}
@@ -438,7 +438,7 @@ void c_overlay::draw_menu()
 			ImGui::Checkbox("Fov changer", &config.activeCheats.fovChanger);
 			if (config.activeCheats.fovChanger == true)
 			{
-				(ImGui::SliderInt("Fov", &sliderValue, 60, 140));
+				(ImGui::SliderInt("Fov", &config.fov.desiredFov, 60, 140));
 			}
 			ImGui::Checkbox("bomb info", &config.activeCheats.bombHack);
 			ImGui::Checkbox("soon", &l_test);
@@ -469,7 +469,7 @@ void c_overlay::draw_bomb()
 	ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 	ImGui::SetNextWindowSize(ImVec2(300, 100));
 	ImGui::Begin(
-		"lol",
+		"Bomb GUI",
 		0,
 		ImGuiWindowFlags_NoTitleBar
 		| ImGuiWindowFlags_NoResize
@@ -512,6 +512,12 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 
 	init_draw_list(); // we only do this once a loop
 
+//#define pos_sin(x) ((sin(x) + 1.) / 2.)
+//	const auto time = ImGui::GetTime();
+//	const auto col1 = IM_COL32(255.f * pos_sin(time + 0.f), 255.f * pos_sin(time + 1.f), 255.f * pos_sin(time + 2.f), 64.f);
+//	const auto col2 = IM_COL32(255.f * pos_sin(time + 1.f), 255.f * pos_sin(time + 2.f), 255.f * pos_sin(time + 3.f), 64.f);
+//	radial_gradient(ImVec2(window_width / 2.f, window_height / 2.f), 400, col2, col1);
+
 	std::string name = "Merkur Cheats";
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x - 5, 0 }, name, rgbColors::off_white, true);
 
@@ -522,10 +528,6 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 
 	if (!show_menu)
 		return;
-
-	fovData.desiredFov = sliderValue;
-	config.aimBot.pixelRadius = Fovaimbot;
-	config.aimBot.speedFactor = smooth;
 
 	draw_menu();
 }
@@ -638,7 +640,7 @@ VOID c_overlay::text(const ImVec2& pos, const std::string& text, ImU32 color, bo
 	}
 	draw_list->AddText(font->im_font, font->im_font->FontSize, pos, color, text.c_str());
 }
-//?
+// Filled circle. creates a gradient from middle color to outer color
 VOID c_overlay::radial_gradient(const ImVec2& center, float radius, ImU32 col_in, ImU32 col_out) {
 	if (((col_in | col_out) & IM_COL32_A_MASK) == 0 || radius < 0.5f)
 		return;
