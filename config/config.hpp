@@ -10,6 +10,15 @@ struct MainWindowSettings {
     ImVec2 windowPosition;
 };
 
+struct BombSettings {
+    ImVec2 windowPosition;
+};
+
+struct PersistentConfigData {
+    MainWindowSettings mainWindow;
+    BombSettings bombWindow;
+};
+
 struct ActiveCheats {
     bool aimBot;
     bool antiFlash;
@@ -26,37 +35,15 @@ struct EspSettings {
     bool renderFriendlies;
 };
 
-struct BombSettings {
-    ImVec2 windowPosition;
+struct AimBotSettings {
+    float pixelRadius;
+    float speedFactor;
 };
 
 struct ConfigData {
     ActiveCheats activeCheats;
     EspSettings esp;
-};
-
-struct PersistentConfigData {
-    MainWindowSettings mainWindow;
-    BombSettings bombWindow;
-};
-
-static constexpr const ConfigData default_config{
-    .activeCheats {
-        .aimBot = true,
-        .antiFlash = true,
-        .bombHack = true,
-        .bunnyHop = false,
-        .esp = true,
-        .fovChanger = false,
-        .radar = true,
-        .triggerBot = true,
-    },
-    .esp {.selectedColor{0}, .renderFriendlies = false },
-};
-
-static constexpr const PersistentConfigData default_shared_config{
-    .mainWindow {.windowPosition = ImVec2(50, 100) },
-    .bombWindow {.windowPosition = ImVec2(50, 50)},
+    AimBotSettings aimBot;
 };
 
 template <typename T>
