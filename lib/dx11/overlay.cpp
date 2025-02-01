@@ -15,6 +15,8 @@ inline VOID c_overlay::safe_release(T*& p) {
 	}
 }
 int sliderValue = 100; // ignore (fck nicolas das bleib da)
+float Fovaimbot = 0.f; // ignore (fck nicolas das bleib da)
+float smooth = 0.f; // ignore (fck nicolas das bleib da)
 
 static bool l_test = false;
 static bool box_glow = false;
@@ -386,11 +388,16 @@ void c_overlay::draw_menu()
 
 	persistentConfig.mainWindow.windowPosition = ImGui::GetWindowPos();
 
-	ImGui::Text("0x581 external");
+	ImGui::Text("Merkur external");
 	if (ImGui::BeginTabBar("MyTabBar")) {
 		if (ImGui::BeginTabItem("aim")) {
 			ImGui::Checkbox("triggerbot", &config.activeCheats.triggerBot);
-			ImGui::Checkbox("soon", &l_test);
+			ImGui::Checkbox("aimbot", &config.activeCheats.aimBot);
+			if (config.activeCheats.aimBot == true)
+			{
+				(ImGui::SliderFloat("Fov",  &Fovaimbot, 0, 400));
+				(ImGui::SliderFloat("Smooth", &smooth, 0, 2));
+			}
 			ImGui::EndTabItem();
 		}
 		
@@ -418,7 +425,7 @@ void c_overlay::draw_menu()
 			ImGui::EndChild();
 
 
-			ImGui::SetCursorPos({ 285, 85 });
+			ImGui::SetCursorPos({ 285, 95 });
 			ImGui::BeginChild("##container1", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
 				ImGui::Checkbox("radar", &config.activeCheats.radar);
 				ImGui::Checkbox("antiflash", &config.activeCheats.antiFlash);
@@ -517,6 +524,8 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 		return;
 
 	fovData.desiredFov = sliderValue;
+	config.aimBot.pixelRadius = Fovaimbot;
+	config.aimBot.speedFactor = smooth;
 
 	draw_menu();
 }
