@@ -27,9 +27,11 @@ namespace offsets
     constexpr auto OldOrigin = 0x1324;                       // Member of C_BasePlayerPawn, Vector
     constexpr auto GameRules = 0x1A8FBD8;                    // C_CSGameRules
     constexpr auto BombPlanted = 0x9A5;                      // Member of C_CSGameRules, bool
-    constexpr auto plantedC4 = 0x1A986D0;                    // C_PlantedC4
+    constexpr auto plantedC4 = 0x1A986D0;                    // C_PlantedC4 * (Need to dereference twice)
     constexpr auto BombTicking = 0xF90;                      // Member of C_PlantedC4, bool
     constexpr auto m_bC4Activated = 0xFD8;                   // Member of C_PlantedC4, bool
     constexpr auto BombSite = 0xF94;                         // Member of C_PlantedC4, int32
     constexpr auto crouchAmount = 0x228;                     // Member of CPlayer_MovementServices, float
+    constexpr auto globalVars = 0x1870BA8;                   // Pointer to the global vars struct
+    constexpr auto c4ExplosionTime = 0xFC0;                  // Member of C_PlantedC4, float
 }

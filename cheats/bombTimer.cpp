@@ -8,63 +8,37 @@
 #include "../config/config.hpp"
 #include "../shared/offsets.hpp"
 
+#include "../shared/sharedVariables.hpp"
+
 #include "../entityListInteraction.hpp"
 
 
 static void runBombHack(const Memory& mem, const uintptr_t client)
 {
-	const auto plantedC4 = mem.Read<int>(client + offsets::plantedC4);
+	const auto c4IsPlanted = mem.Read<bool>(client + offsets::plantedC4 - 0x8);
 
-	//std::cout << "PlantedC4: 0x" << plantedC4 << std::endl;
-
-	if (!plantedC4)
+	if (!c4IsPlanted)
+	{
+		bombData.planted = false;
 		return;
+	}
 
-	auto ptr = getObjectPtrFromHandle(mem, plantedC4);
-
-	//const auto gameRules = mem.Read<intptr_t>(client + offsets::GameRules);
-
-	//if (!gameRules) 
-	//	return;
-
-	//auto bombplanted = mem.Read<bool>(gameRules + offsets::BombPlanted);
-
-	//if (!bombplanted)
-	//	return;
-
-	//bombData.planted = true;
-
-	mem.Inspect(ptr + 0xF90, 8);
-
-	//auto ticking = mem.Read<bool>(plantedC4 + 0xF90);
-	//auto site = mem.Read<int>(plantedC4 + 0xF94);
-	//auto c4blow = mem.Read<GameTime_t>(plantedC4 + 0xFC0);
-	//auto timerLength = mem.Read<float>(plantedC4 + 0xFC8);
-	//auto c4activated = mem.Read<bool>(plantedC4 + 0xFD8);
-
-	//std::cout << "Ticking: " << ticking;
-	//std::cout << ", site: " << site;
-	//std::cout << ", c4blow: " << c4blow;
-	//std::cout << ", timerLength: " << timerLength;
-	//std::cout << ", c4activated: " << c4activated;
-	//std::cout << std::endl;
+	const auto plantedC4Address = mem.Read<uintptr_t>(client + offsets::plantedC4);
+	const auto plantedC4 = mem.Read<uintptr_t>(plantedC4Address);
 
 
-	return;
+	const auto globalVarsPtr = mem.Read<uintptr_t>(client + offsets::globalVars);
+	const auto globalVars = mem.Read<CGlobalVarsBase>(globalVarsPtr);
 
 
-	//for (int timeLeft = 40; timeLeft >= 0; timeLeft--) //count 40sec from bombplanted
-	//{
-	//	bombData.timeRemaining = float(timeLeft);
-	//	auto bombplanted = mem.Read<bool>(gameRules + offsets::BombPlanted); //refresh
+	const auto explosionTime = mem.Read<GameTime_t>(plantedC4 + offsets::c4ExplosionTime);
 
-	//	if (!bombplanted)// end loop if bomb is not planted anymore
-	//		break;
+	const auto timeRemaining = explosionTime - globalVars.currentTime;
 
-	//	std::this_thread::sleep_for(std::chrono::seconds(1));
-	//}
+	std::cout << timeRemaining << std::endl;
 
-	//bombData.planted = false;
+	bombData.timeRemaining = timeRemaining;
+	bombData.planted = true;
 }
 
 void runBombHackLoop(Memory& mem)
