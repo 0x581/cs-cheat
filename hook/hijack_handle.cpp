@@ -81,6 +81,8 @@ static bool checkProcessName(HANDLE hProcess, const wchar_t* processName)
 
     const auto targetProcessLength = wcslen(processName);
 
+    std::wcout << "Checking " << buffer << std::endl;
+
     if (processLength < targetProcessLength)
     {
         return false;
