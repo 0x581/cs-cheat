@@ -33,6 +33,7 @@ struct ActiveCheats {
 struct EspSettings {
     char selectedColor[COLOR_NAME_MAX_LENGTH];
     bool renderFriendlies;
+    bool boxGlow;
 };
 
 struct AimBotSettings {

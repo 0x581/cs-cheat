@@ -322,6 +322,8 @@ const void c_overlay::renderCheats()
 			if (!espRenderData.isValid)
 				continue;
 
+			if (config.esp.boxGlow)
+			{
 			float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
 
 			if (box_glow)
@@ -343,12 +345,8 @@ const void c_overlay::renderCheats()
 
 			const auto text_size = ImGui::CalcTextSize(name_text);
 
-			auto width = espRenderData.max.x - espRenderData.min.x;
-			auto t_width = text_size.x;
-
-			auto text_pos = ImVec2{
-				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f),
-				espRenderData.max.y
+			const auto text_pos = ImVec2{
+				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f), espRenderData.max.y
 			};
 
 			text(text_pos, name_text, selectedColor);
@@ -419,7 +417,7 @@ void c_overlay::draw_menu()
 						}
 						ImGui::EndCombo();
 					}
-					ImGui::Checkbox("box glow", &box_glow);
+					ImGui::Checkbox("box glow", &config.esp.boxGlow);
 				}
 			}
 			ImGui::EndChild();

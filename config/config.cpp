@@ -24,7 +24,7 @@ static constexpr const ConfigData default_config{
         .radar = true,
         .triggerBot = true,
     },
-    .esp {.selectedColor{0}, .renderFriendlies = false},
+    .esp {.selectedColor{ "Green" }, .renderFriendlies = false, .boxGlow = false },
     .aimBot {.pixelRadius = 100.f, .speedFactor = 0.7f},
     .fov { .desiredFov = 90 },
 };
@@ -90,7 +90,7 @@ bool loadConfigData(T* buffer, const wchar_t* configName) {
 
     if (fileSize != sizeof(MAGIC_BYTES) + sizeof(T))
     {
-        std::cerr << "Error: Config file is either outdated or invalid.\n";
+        std::cout << "Error: Config file is either outdated or invalid.\n";
         return false;
     }
 
