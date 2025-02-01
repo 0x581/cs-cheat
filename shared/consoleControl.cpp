@@ -40,9 +40,9 @@ inline static const HANDLE getConsoleErrorHandle() { return GetStdHandle(STD_ERR
 	if (++counter % 8 == 0)	{																								\
 		const auto fps = std::to_string(std::chrono::seconds(1) / (std::chrono::high_resolution_clock::now() - last));		\
 		const auto terminalSize = getTerminalSize();																		\
-		const auto prev = setCursorPosition(terminalSize.X - (fps.length() + 4), 0);										\
+		const auto prev = setCursorPosition((short)(terminalSize.X - (fps.length() + 4)), 0);								\
 		std::cout << fps << " fps";																							\
-		setCursorPosition(prev.X, prev.Y);																					\
+		setCursorPosition((short)prev.X, (short)prev.Y);																	\
 	}																														\
 	last = std::chrono::high_resolution_clock::now();																		\
 } while (false)
