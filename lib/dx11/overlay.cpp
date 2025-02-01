@@ -308,7 +308,32 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 }
 
 
-const void c_overlay::renderCheats() {
+const void c_overlay::renderCheats()
+{
+
+	//using std::chrono::duration_cast;
+	//using std::chrono::duration;
+	//using std::chrono::time_point;
+	//using std::chrono::steady_clock;
+
+	//static auto counter = 0;
+
+	//static time_point<steady_clock> last{ };
+
+	//if (counter++ % 8 == 0)
+	//{
+	//	auto taken = duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - last);
+
+	//	auto fps = std::chrono::seconds(1) / taken;
+
+	//	std::cout << fps << " fps" << std::endl;
+	//}
+
+	//last = std::chrono::high_resolution_clock::now();
+
+
+
+
 	if (config.activeCheats.esp)
 	{
 		for (const auto& espRenderData : espData.boxes)
@@ -351,6 +376,11 @@ const void c_overlay::renderCheats() {
 
 			text(text_pos, name_text, selectedColor);
 		}
+	}
+
+	if (config.activeCheats.aimBot && GetAsyncKeyState(keybinds::aimBot))
+	{
+		circle(ImVec2(window_width / 2.f, window_height / 2.f), config.aimBot.pixelRadius, rgbColors::transparent_white);
 	}
 }
 
@@ -455,7 +485,7 @@ void c_overlay::draw_bomb()
 	}
 
 	ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-	ImGui::SetNextWindowSize(ImVec2(200, 200));
+	ImGui::SetNextWindowSize(ImVec2(300, 100));
 	ImGui::Begin(
 		"lol",
 		0,
@@ -470,13 +500,20 @@ void c_overlay::draw_bomb()
 	if (bombData.planted == true)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-		ImGui::Text("bomb is planted");
-		ImGui::Text("Time remaining:", bombData.timeRemaining);
+		ImGui::Text("Bomb has been planted.");
+		if (bombData.timeRemaining > 0)
+		{
+			ImGui::Text("Time remaining: %.2f", bombData.timeRemaining);
+		}
+		else
+		{
+			ImGui::Text("If I was you i would RUN!!");
+		}
 	}
 	else
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
-		ImGui::Text("is not planted");
+		ImGui::Text("Bomb is not planted.");
 
 	}
 	ImGui::PopStyleColor();

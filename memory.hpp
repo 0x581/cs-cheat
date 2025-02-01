@@ -14,9 +14,7 @@
 #include <mutex>
 #include <cassert>
 
-
-#include <string>
-
+#include "hook/hijack_handle.hpp"
 
 struct WCharHash
 {
@@ -55,15 +53,14 @@ private:
     std::mutex mutex{};
 
 
-    DWORD id = 0;          // PID
-    HANDLE process = NULL; // Process handle
+    HANDLE hProcess = NULL; // Process handle
 
 
     std::unordered_map<const wchar_t *, uintptr_t, WCharHash, WCharEqual> modules{};
 
     bool updateModuleMap() {
 
-        if (!this->id || !this->process) {
+        if (!this->hProcess) {
             std::cout << "Tried to read modules of invalid process." << std::endl;
             exit(-1);
         }
@@ -71,7 +68,7 @@ private:
         MODULEENTRY32W moduleEntry{};
         moduleEntry.dwSize = sizeof(MODULEENTRY32W);
 
-        const auto moduleSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, this->id);
+        const auto moduleSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPALL, GetProcessId(this->hProcess));
 
         if (moduleSnapShot == INVALID_HANDLE_VALUE)
         {
@@ -112,15 +109,15 @@ private:
 public:
     const bool processIsAlive() const {
         DWORD exitCode;
-        return GetExitCodeProcess(this->process, &exitCode) && (exitCode == STILL_ACTIVE);
+        return GetExitCodeProcess(this->hProcess, &exitCode) && (exitCode == STILL_ACTIVE);
     }
 
     Memory() {}
 
     ~Memory()
     {
-        if (this->process)
-            CloseHandle(this->process);
+        if (this->hProcess)
+            CloseHandle(this->hProcess);
 
         clearModuleMap();
     }
@@ -132,48 +129,18 @@ public:
         // Clean up previous connection if exists
         assert(!this->is_valid && "Cannot connect to process while already connected.");
 
-        if (this->process)
-            CloseHandle(this->process);
+        if (this->hProcess)
+            CloseHandle(this->hProcess);
 
-        this->process = 0;
-        this->id = 0;
+        this->hProcess = 0;
         clearModuleMap();
 
-        // Get the process handle
-        DWORD pId = 0;
-        HANDLE pHandle = NULL;
+        HANDLE pHandle = hijackHandle(processName, L"steam.exe");
 
-        PROCESSENTRY32W processEntry{};
-        processEntry.dwSize = sizeof(PROCESSENTRY32W);
-
-        const auto processSnapShot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-
-        if (processSnapShot == INVALID_HANDLE_VALUE)
-        {
-            DWORD error = GetLastError();
-            std::cout << "Process snapshot failed: " << error << std::endl;
-
-            return false;
-        }
-
-        while (Process32NextW(processSnapShot, &processEntry))
-        {
-            if (!wcscmp(processName, processEntry.szExeFile))
-            {
-                pId = processEntry.th32ProcessID;
-                pHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, pId);
-                break;
-            }
-        }
-
-        if (processSnapShot)
-            CloseHandle(processSnapShot);
-
-        if (!pHandle || !pId)
+        if (!pHandle)
             return false;
 
-        this->process = pHandle;
-        this->id = pId;
+        this->hProcess = pHandle;
 
         // Initialize the module hashmap
         this->updateModuleMap();
@@ -197,18 +164,16 @@ public:
             else {
                 // 10 attempts to get the modules failed, clear process
                 std::cout << "Failed to fetch required Modules." << std::endl;
-                CloseHandle(this->process);
+                CloseHandle(this->hProcess);
 
                 clearModuleMap();
-                this->process = 0;
-                this->id = 0;
+                this->hProcess = 0;
 
                 return false;
             }
         }
 
-        this->process = pHandle;
-        this->id = pId;
+        this->hProcess = pHandle;
         this->is_valid = true;
 
         return true;
@@ -222,25 +187,23 @@ public:
 
         this->is_valid = false;
 
-        if (this->process)
-            CloseHandle(this->process);
+        if (this->hProcess)
+            CloseHandle(this->hProcess);
 
-        this->process = 0;
-        this->id = 0;
+        this->hProcess = 0;
     }
 
     const bool isValid()
     {
         const std::scoped_lock sl{ this->mutex };
 
-        return this->id && this->process && this->is_valid;
+        return this->hProcess && this->is_valid;
     }
 
 
     // Normal functions for access & Co.
 
-    const DWORD getProcessId() const { return this->id; }
-    const HANDLE getProcessHandle() const { return this->process; }
+    const HANDLE getProcessHandle() const { return this->hProcess; }
 
     const uintptr_t GetModuleAddress(const wchar_t *moduleName) const
     {
@@ -256,7 +219,7 @@ public:
         T value{};
 
         if (this->processIsAlive())
-            ReadProcessMemory(this->process, (LPCVOID)address, &value, sizeof(T), NULL);
+            ReadProcessMemory(this->hProcess, (LPCVOID)address, &value, sizeof(T), NULL);
 
         return value;
     }
@@ -267,7 +230,7 @@ public:
         size_t nBytesRead{ 0 };
 
         if (nBytes && this->processIsAlive())
-            ReadProcessMemory(this->process, (LPCVOID)address, buffer, nBytes, &nBytesRead);
+            ReadProcessMemory(this->hProcess, (LPCVOID)address, buffer, nBytes, &nBytesRead);
 
         return nBytesRead;
     }
@@ -276,7 +239,7 @@ public:
     bool Write(uintptr_t address, T value) const
     {
         if (this->processIsAlive())
-            return WriteProcessMemory(this->process, (LPVOID)address, &value, sizeof(T), NULL);
+            return WriteProcessMemory(this->hProcess, (LPVOID)address, &value, sizeof(T), NULL);
 
         return false;
     }

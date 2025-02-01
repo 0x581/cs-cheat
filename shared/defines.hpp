@@ -7,6 +7,33 @@ typedef unsigned int CEntityIndex;
 typedef float GameTime_t;
 typedef uint8_t PlayerTeam_t;
 
+class CGlobalVarsBase
+{
+public:
+    float realTime;
+    int frameCount;
+    float absoluteFrameTime;
+    float absoluteFrameStartTimeStdDev;
+    int maxClients;
+    float intervalPerTick;
+private:
+    byte pad1[0x1C];
+public:
+    float currentTime;
+    float currentTime2;
+private:
+    byte pad2[0xC];
+public:
+    int32_t tickCount;
+    float intervalPerTick2;
+private:
+    byte pad3[0x138];
+public:
+    uint64_t currentMap;
+    uint64_t currentMapName;
+};
+// Don't trust this struct. I had to manually fix some parts of it already. It should be fine until currentTime2 tho...
+
 constexpr auto PLAYER_NAME_LENGTH = 128;
 
 namespace keybinds
@@ -66,7 +93,7 @@ namespace delays
 
     namespace bombHack
     {
-        constexpr auto sleep = std::chrono::milliseconds(10);
+        constexpr auto sleep = std::chrono::milliseconds(50);
     }
 
     namespace esp

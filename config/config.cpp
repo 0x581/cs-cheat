@@ -13,6 +13,28 @@ using std::ifstream;
 using std::ofstream;
 
 
+static constexpr const ConfigData default_config{
+    .activeCheats {
+        .aimBot = true,
+        .antiFlash = true,
+        .bombHack = true,
+        .bunnyHop = false,
+        .esp = true,
+        .fovChanger = false,
+        .radar = true,
+        .triggerBot = true,
+    },
+    .esp {.selectedColor{0}, .renderFriendlies = false},
+    .aimBot {.pixelRadius = 100.f, .speedFactor = 0.7f},
+};
+
+static constexpr const PersistentConfigData default_shared_config{
+    .mainWindow {.windowPosition = ImVec2(50, 100) },
+    .bombWindow {.windowPosition = ImVec2(50, 50)},
+};
+
+
+
 ConfigData config = default_config;
 PersistentConfigData persistentConfig = default_shared_config;
 

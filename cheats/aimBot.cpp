@@ -18,7 +18,7 @@ static void runAimBot(const Memory& mem, const uintptr_t client)
 
 	const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
 
-	Vector2 screenCenter{ (float)GetSystemMetrics(0) / 2.f, (float)GetSystemMetrics(1) / 2.f };
+	Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };
 
 	auto lowestDistance = HUGE_VAL;
 	uintptr_t closestPawnPtr = 0;
@@ -70,8 +70,20 @@ static void runAimBot(const Memory& mem, const uintptr_t client)
 	if (lowestDistance == INFINITY)
 		return;
 
-	auto new_x = (DWORD)(closestPoint.x - screenCenter.x);
-	auto new_y = (DWORD)(closestPoint.y - screenCenter.y);
+	const auto radius = config.aimBot.pixelRadius;
+
+	const auto maxDistance = radius * radius;
+
+	if (lowestDistance > maxDistance)
+		return;
+
+	const auto diff_x = closestPoint.x - screenCenter.x;
+	const auto diff_y = closestPoint.y - screenCenter.y;
+
+	const auto speedFactor = config.aimBot.speedFactor;
+
+	auto new_x = (DWORD)(diff_x * speedFactor);
+	auto new_y = (DWORD)(diff_y * speedFactor);
 
 	mouse_event(MOUSEEVENTF_MOVE, new_x, new_y, 0, 0);
 }
