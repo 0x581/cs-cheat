@@ -18,6 +18,7 @@ struct EspRenderData {
 };
 
 struct ESPData {
+    std::chrono::steady_clock::time_point time{ };
     EspRenderData boxes[64] {};
 };
 

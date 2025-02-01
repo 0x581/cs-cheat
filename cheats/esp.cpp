@@ -22,6 +22,8 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
     const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
 
+    espData.time = std::chrono::high_resolution_clock::now();
+
     for (int i = 0; i < 64; i++) {
         const auto controller = getPlayerControllerPtr(mem, i);
         const auto playerPawn = getPawnPtrFromControllerPtr(mem, controller);
