@@ -115,7 +115,7 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
     // Give our program SeDeugPrivileges whcih allows us to get a handle to every process, even the highest privileged SYSTEM level processes.
     NTSTATUS NtRet = RtlAdjustPrivilege(SeDebugPriv, TRUE, FALSE, &OldPriv);
 
-    if (!NT_SUCCESS(NtRet)
+    if (!NT_SUCCESS(NtRet))
     {
         std::cout << "Failed to adjust privilege level! (" << NtRet << ")" << std::endl;
         return 0;
