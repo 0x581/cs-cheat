@@ -35,14 +35,20 @@ static void connectionHandler(Memory &mem) {
     }
 }
 
+static void cleanUp()
+{
+    overlay.~c_overlay();
+
+    storeConfigData(persistentConfig, files::persistentConfig);
+    storeConfigData(config, L"default");
+}
+
 static int exitHandler(DWORD fdwCtrlType) {
     switch (fdwCtrlType)
     {
     case CTRL_CLOSE_EVENT:
     case CTRL_C_EVENT:
-        overlay.~c_overlay();
-
-        storeConfigData(persistentConfig, files::persistentConfig);
+        cleanUp();
         return TRUE;
     }
     return FALSE;
@@ -52,6 +58,7 @@ static int exitHandler(DWORD fdwCtrlType) {
 int main()
 {
     loadConfigData(&persistentConfig, files::persistentConfig);
+    loadConfigData(&config, L"default");
 
     SetConsoleCtrlHandler(exitHandler, TRUE);
 
@@ -70,5 +77,5 @@ int main()
 
     while (overlay.msg_loop() && !overlay.ready_to_close) {}
 
-    overlay.~c_overlay();
+    cleanUp();
 }
