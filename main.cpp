@@ -75,6 +75,8 @@ int main()
     std::thread bombHack{runBombHackLoop, std::ref(mem) };
     std::thread aimBot{runAimBotLoop, std::ref(mem) };
 
+    overlay.initConfigVariables();
+
     while (overlay.msg_loop() && !overlay.ready_to_close) {}
 
     cleanUp();
