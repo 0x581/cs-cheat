@@ -93,6 +93,8 @@ static bool checkProcessName(HANDLE hProcess, const wchar_t* processName)
 
 HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
 {
+    std::cout << "Trying to hijack handle to Process. (PID: " << dwTargetProcessId << ")" << std::endl;
+
     if (dwTargetProcessId == 0)
     {
         return 0;
@@ -117,7 +119,7 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
     if (!NT_SUCCESS(NtRet))
     {
         std::cout << "Failed to adjust privilege level! Consider opening as Admin. (" << NtRet << ")" << std::endl;
-        return 0;
+        //return 0;
     }
 
     _NtQuerySystemInformation NtQuerySystemInformation = (_NtQuerySystemInformation)GetProcAddress(Ntdll, "NtQuerySystemInformation");
@@ -200,7 +202,7 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
 
     delete[] hInfo;
 
-    std::cout << "No matching handles found..." << std::endl;
+    std::cout << "No matching handles found. Manually opening Handle (insecure!)." << std::endl;
     return OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwTargetProcessId);
     
     //return 0;
