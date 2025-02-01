@@ -172,7 +172,7 @@ OFFSETS: list[Offset] = [
         "plantedC4",
         "offsets.hpp",
         "dwPlantedC4",
-        "C_PlantedC4",
+        "C_PlantedC4 * (Need to dereference twice)",
     ),
     Offset(
         "BombTicking",
@@ -197,6 +197,18 @@ OFFSETS: list[Offset] = [
         "client_dll.hpp",
         "m_flDuckAmount",
         "Member of CPlayer_MovementServices, float",
+    ),
+    Offset(
+        "globalVars",
+        "offsets.hpp",
+        "dwGlobalVars",
+        "Pointer to the global vars struct",
+    ),
+    Offset(
+        "c4ExplosionTime",
+        "client_dll.hpp",
+        "m_flC4Blow",
+        "Member of C_PlantedC4, float",
     ),
 ]
 
