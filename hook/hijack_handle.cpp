@@ -113,7 +113,13 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
     boolean OldPriv; 
 
     // Give our program SeDeugPrivileges whcih allows us to get a handle to every process, even the highest privileged SYSTEM level processes.
-    RtlAdjustPrivilege(SeDebugPriv, TRUE, FALSE, &OldPriv);
+    NTSTATUS NtRet = RtlAdjustPrivilege(SeDebugPriv, TRUE, FALSE, &OldPriv);
+
+    if (!NT_SUCCESS(NtRet)
+    {
+        std::cout << "Failed to adjust privilege level! (" << NtRet << ")" << std::endl;
+        return 0;
+    }
 
     _NtQuerySystemInformation NtQuerySystemInformation = (_NtQuerySystemInformation)GetProcAddress(Ntdll, "NtQuerySystemInformation");
 
@@ -133,7 +139,7 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
     auto hInfo = (SYSTEM_HANDLE_INFORMATION *) new byte[HANDLE_BUFFER_SIZE];
 
     // Query all open handles in the system
-    NTSTATUS NtRet = NtQuerySystemInformation(SystemHandleInformation, hInfo, HANDLE_BUFFER_SIZE, NULL);
+    NtRet = NtQuerySystemInformation(SystemHandleInformation, hInfo, HANDLE_BUFFER_SIZE, NULL);
 
     if (!NT_SUCCESS(NtRet))
     {
@@ -169,13 +175,6 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
             continue;
         }
 
-        std::cout << "." << std::flush;
-        if (GetProcessId(hProcess) == dwTargetProcessId)
-        {
-
-            std::cout << "Found a matching handle..." << std::endl;
-
-        }
 
         HANDLE duplicatedHandle{ 0 };
 
@@ -187,6 +186,13 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
             continue;
         }
 
+        std::cout << "." << std::flush;
+        if (GetProcessId(duplicatedHandle) == dwTargetProcessId)
+        {
+
+            std::cout << "Found a matching handle..." << std::endl;
+
+        }
 
         if (GetProcessId(duplicatedHandle) != dwTargetProcessId || !checkProcessName(hProcess, fromProcess))
         {
