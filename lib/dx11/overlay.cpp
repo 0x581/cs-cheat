@@ -3,6 +3,7 @@
 #include "../../shared/defines.hpp"
 #include "../../shared/colors.hpp"
 #include "../../config/config.hpp"
+#include "../../shared/consoleControl.cpp"
 
 
 // microsoft safe release of pointers
@@ -310,29 +311,7 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 
 const void c_overlay::renderCheats()
 {
-
-	//using std::chrono::duration_cast;
-	//using std::chrono::duration;
-	//using std::chrono::time_point;
-	//using std::chrono::steady_clock;
-
-	//static auto counter = 0;
-
-	//static time_point<steady_clock> last{ };
-
-	//if (counter++ % 8 == 0)
-	//{
-	//	auto taken = duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - last);
-
-	//	auto fps = std::chrono::seconds(1) / taken;
-
-	//	std::cout << fps << " fps" << std::endl;
-	//}
-
-	//last = std::chrono::high_resolution_clock::now();
-
-
-
+	printFPS;
 
 	if (config.activeCheats.esp)
 	{
@@ -364,10 +343,6 @@ const void c_overlay::renderCheats()
 
 			auto width = espRenderData.max.x - espRenderData.min.x;
 			auto t_width = text_size.x;
-
-			//std::cout << "Text width: " << t_width << ", box width: " << width << std::endl;
-
-
 
 			auto text_pos = ImVec2{
 				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f),
