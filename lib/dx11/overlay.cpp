@@ -308,7 +308,32 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 }
 
 
-const void c_overlay::renderCheats() {
+const void c_overlay::renderCheats()
+{
+
+	//using std::chrono::duration_cast;
+	//using std::chrono::duration;
+	//using std::chrono::time_point;
+	//using std::chrono::steady_clock;
+
+	//static auto counter = 0;
+
+	//static time_point<steady_clock> last{ };
+
+	//if (counter++ % 8 == 0)
+	//{
+	//	auto taken = duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - last);
+
+	//	auto fps = std::chrono::seconds(1) / taken;
+
+	//	std::cout << fps << " fps" << std::endl;
+	//}
+
+	//last = std::chrono::high_resolution_clock::now();
+
+
+
+
 	if (config.activeCheats.esp)
 	{
 		for (const auto& espRenderData : espData.boxes)
