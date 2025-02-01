@@ -36,6 +36,12 @@ public:
 
 constexpr auto PLAYER_NAME_LENGTH = 128;
 
+namespace keys
+{
+    constexpr auto X = 0x58;
+}
+
+
 namespace keybinds
 {
     constexpr auto showMenu = VK_PRIOR;
@@ -43,7 +49,7 @@ namespace keybinds
 
     constexpr auto slowMode = VK_MENU;
     constexpr auto bunnyHop = VK_SPACE;
-    constexpr auto triggerbot = 0x58;;
+    constexpr auto triggerbot = keys::X;
     constexpr auto aimBot = VK_RBUTTON;
 }
 
