@@ -23,7 +23,8 @@ namespace rgbColors {
     // Purple shades
     constexpr ImU32 purple1 = IM_COL32(153, 0, 204, 255); // Vivid purple
     constexpr ImU32 purple2 = IM_COL32(102, 0, 204, 255); // Darker purple
- 
+
+    constexpr ImU32 transparent_white = IM_COL32(255, 255, 255, 64);
 }
 
 

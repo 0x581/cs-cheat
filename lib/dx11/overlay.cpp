@@ -352,6 +352,11 @@ const void c_overlay::renderCheats() {
 			text(text_pos, name_text, selectedColor);
 		}
 	}
+
+	if (config.activeCheats.aimBot && GetAsyncKeyState(keybinds::aimBot))
+	{
+		circle(ImVec2(window_width / 2.f, window_height / 2.f), config.aimBot.pixelRadius, rgbColors::transparent_white);
+	}
 }
 
 
