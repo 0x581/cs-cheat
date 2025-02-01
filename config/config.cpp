@@ -26,6 +26,7 @@ static constexpr const ConfigData default_config{
     },
     .esp {.selectedColor{0}, .renderFriendlies = false},
     .aimBot {.pixelRadius = 100.f, .speedFactor = 0.7f},
+    .fov { .desiredFov = 90 },
 };
 
 static constexpr const PersistentConfigData default_shared_config{

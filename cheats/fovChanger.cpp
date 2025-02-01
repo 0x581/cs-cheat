@@ -41,6 +41,6 @@ void runFovChangerLoop(Memory& mem)
         auto cameraservices = mem.Read<uintptr_t>(localPlayer + offsets::CameraServices);
 
         if (!isScoped)
-            mem.Write<UINT>(cameraservices + offsets::FOV, fovData.desiredFov);
+            mem.Write<UINT>(cameraservices + offsets::FOV, config.fov.desiredFov);
     }
 }

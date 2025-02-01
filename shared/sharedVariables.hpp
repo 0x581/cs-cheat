@@ -17,11 +17,6 @@ struct EspRenderData {
     ImVec2 max{ 0, 0 };
 };
 
-struct FOVData {
-    unsigned int desiredFov{ 60 };
-};
-
-
 struct ESPData {
     EspRenderData boxes[64] {};
 };
@@ -31,7 +26,6 @@ struct BombData {
     float timeRemaining{ 0.f };
 };
 
-extern FOVData fovData;
 extern ESPData espData;
 extern BombData bombData;
 

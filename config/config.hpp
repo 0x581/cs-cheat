@@ -40,10 +40,15 @@ struct AimBotSettings {
     float speedFactor;
 };
 
+struct FovSettings {
+    int desiredFov;
+};
+
 struct ConfigData {
     ActiveCheats activeCheats;
     EspSettings esp;
     AimBotSettings aimBot;
+    FovSettings fov;
 };
 
 template <typename T>
