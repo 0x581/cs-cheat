@@ -142,6 +142,8 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
         return 0;
     }
 
+    std::cout << "Open handles: " << hInfo->HandleCount << std::endl;
+
 
     for (size_t i = 0; i < hInfo->HandleCount; ++i)
     {
@@ -192,8 +194,6 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
         delete[] hInfo;
         return duplicatedHandle;
     }
-
-    std::cout << "Failed to find hook to " << dwTargetProcessId << std::endl;
 
     delete[] hInfo;
     return 0;
