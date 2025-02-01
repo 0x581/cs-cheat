@@ -4,6 +4,6 @@
 
 DWORD getPID(const wchar_t* processName);
 
-HANDLE HijackExistingHandle(DWORD dwTargetProcessId, const wchar_t* fromProcess);
+HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t* fromProcess);
 
-HANDLE HijackExistingHandle(const wchar_t* targetProcess, const wchar_t* fromProcess);
+HANDLE hijackHandle(const wchar_t* targetProcess, const wchar_t* fromProcess);

@@ -79,8 +79,6 @@ static bool checkProcessName(HANDLE hProcess, const wchar_t* processName)
 
     const auto processLength = GetProcessImageFileName(hProcess, buffer, FILE_NAME_BUFFER_SIZE);
 
-    CloseHandle(hProcess);
-
     const auto targetProcessLength = wcslen(processName);
 
     if (processLength < targetProcessLength)
@@ -88,41 +86,39 @@ static bool checkProcessName(HANDLE hProcess, const wchar_t* processName)
         return false;
     }
 
-    std::wcout << "Comparing " << processName << " with " << &buffer[processLength - targetProcessLength] << std::endl;
-
     return wcscmp(processName, &buffer[processLength - targetProcessLength]) == 0;
 }
 
-HANDLE HijackExistingHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
+HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
 {
+    if (dwTargetProcessId == 0)
+    {
+        return 0;
+    }
+
     // Get the base address of ntdll.dll
     const HMODULE Ntdll = GetModuleHandle(L"ntdll");
 
     if (!Ntdll)
     {
         std::cout << "Failed to acquire Ntdll!" << std::endl;
-        return 0;
+        exit(-1);
     }
 
     // Get the address of RtlAdjustPrivilege in ntdll.dll so we can grant our process the highest permission possible
     _RtlAdjustPrivilege RtlAdjustPrivilege = (_RtlAdjustPrivilege)GetProcAddress(Ntdll, "RtlAdjustPrivilege");
 
-    boolean OldPriv; //store the old privileges
+    boolean OldPriv; 
 
     // Give our program SeDeugPrivileges whcih allows us to get a handle to every process, even the highest privileged SYSTEM level processes.
     RtlAdjustPrivilege(SeDebugPriv, TRUE, FALSE, &OldPriv);
 
-    //get the address of NtQuerySystemInformation in ntdll.dll so we can find all the open handles on our system
     _NtQuerySystemInformation NtQuerySystemInformation = (_NtQuerySystemInformation)GetProcAddress(Ntdll, "NtQuerySystemInformation");
 
-    //get the address of NtDuplicateObject in ntdll.dll so we can duplicate an existing handle into our cheat, basically performing the hijacking
     _NtDuplicateObject NtDuplicateObject = (_NtDuplicateObject)GetProcAddress(Ntdll, "NtDuplicateObject");
 
-    //get the address of NtOpenProcess in ntdll.dll so wecan create a Duplicate handle
     _NtOpenProcess NtOpenProcess = (_NtOpenProcess)GetProcAddress(Ntdll, "NtOpenProcess");
 
-
-    //initialize the Object Attributes structure, you can just set each member to NULL rather than create a function like i did
     OBJECT_ATTRIBUTES Obj_Attribute{
         .Length = sizeof(OBJECT_ATTRIBUTES),
         .RootDirectory = 0,
@@ -134,7 +130,7 @@ HANDLE HijackExistingHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
 
     auto hInfo = (SYSTEM_HANDLE_INFORMATION *) new byte[HANDLE_BUFFER_SIZE];
 
-    //we use this for checking if the Native functions succeed
+    // Query all open handles in the system
     NTSTATUS NtRet = NtQuerySystemInformation(SystemHandleInformation, hInfo, HANDLE_BUFFER_SIZE, NULL);
 
     if (!NT_SUCCESS(NtRet))
@@ -200,7 +196,7 @@ HANDLE HijackExistingHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
 }
 
 
-HANDLE HijackExistingHandle(const wchar_t* targetProcess, const wchar_t* fromProcess)
+HANDLE hijackHandle(const wchar_t* targetProcess, const wchar_t* fromProcess)
 {
-    return HijackExistingHandle(getPID(targetProcess), fromProcess);
+    return hijackHandle(getPID(targetProcess), fromProcess);
 }

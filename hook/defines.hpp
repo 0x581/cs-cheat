@@ -88,3 +88,7 @@ typedef NTSTATUS(NTAPI* _NtQuerySystemInformation)(
     ULONG SystemInformationLength,
     PULONG ReturnLength
     );
+
+typedef NTSTATUS(NTAPI* _NtClose)(
+    HANDLE Handle
+    );
