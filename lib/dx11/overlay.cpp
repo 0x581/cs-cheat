@@ -485,7 +485,7 @@ void c_overlay::draw_bomb()
 	}
 
 	ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-	ImGui::SetNextWindowSize(ImVec2(200, 200));
+	ImGui::SetNextWindowSize(ImVec2(300, 100));
 	ImGui::Begin(
 		"lol",
 		0,
@@ -500,13 +500,20 @@ void c_overlay::draw_bomb()
 	if (bombData.planted == true)
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-		ImGui::Text("bomb is planted");
-		ImGui::Text("Time remaining:", bombData.timeRemaining);
+		ImGui::Text("Bomb has been planted.");
+		if (bombData.timeRemaining > 0)
+		{
+			ImGui::Text("Time remaining: %.2f", bombData.timeRemaining);
+		}
+		else
+		{
+			ImGui::Text("If I was you i would RUN!!");
+		}
 	}
 	else
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
-		ImGui::Text("is not planted");
+		ImGui::Text("Bomb is not planted.");
 
 	}
 	ImGui::PopStyleColor();
