@@ -17,4 +17,3 @@ void runFovChangerLoop(Memory& mem);
 void runRadarLoop(Memory& mem);
 
 void runTriggerBotLoop(Memory& mem);
-
