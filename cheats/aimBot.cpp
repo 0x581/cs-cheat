@@ -18,7 +18,7 @@ static void runAimBot(const Memory& mem, const uintptr_t client)
 
 	const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
 
-	Vector2 screenCenter{ (float)GetSystemMetrics(0) / 2.f, (float)GetSystemMetrics(1) / 2.f };
+	Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };
 
 	auto lowestDistance = HUGE_VAL;
 	uintptr_t closestPawnPtr = 0;
@@ -72,7 +72,7 @@ static void runAimBot(const Memory& mem, const uintptr_t client)
 
 	const auto radius = config.aimBot.pixelRadius;
 
-	const auto maxDistance = 2.f * radius * radius;
+	const auto maxDistance = radius * radius;
 
 	if (lowestDistance > maxDistance)
 		return;
