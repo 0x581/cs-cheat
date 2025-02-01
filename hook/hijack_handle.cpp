@@ -142,8 +142,6 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
         return 0;
     }
 
-    std::cout << "Open handles: " << hInfo->HandleCount << std::endl;
-
 
     for (size_t i = 0; i < hInfo->HandleCount; ++i)
     {
@@ -180,6 +178,14 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
         {
             CloseHandle(hProcess);
             continue;
+        }
+
+
+        if (GetProcessId(duplicatedHandle) == dwTargetProcessId)
+        {
+
+            std::cout << "Found a matching handle..." << std::endl;
+
         }
 
         if (GetProcessId(duplicatedHandle) != dwTargetProcessId || !checkProcessName(hProcess, fromProcess))
