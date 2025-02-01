@@ -355,7 +355,7 @@ const void c_overlay::renderCheats()
 		}
 	}
 
-	if (config.activeCheats.aimBot && GetAsyncKeyState(keybinds::aimBot))
+	if (config.activeCheats.aimBot)
 	{
 		circle(ImVec2(window_width / 2.f, window_height / 2.f), config.aimBot.pixelRadius, rgbColors::transparent_white);
 	}
@@ -626,7 +626,7 @@ VOID c_overlay::line(const ImVec2& point1, const ImVec2 point2, ImU32 color, con
 }
 //aimbot fov circle
 VOID c_overlay::circle(const ImVec2& point, const FLOAT radius, ImU32 color) {
-	draw_list->AddCircleFilled(point, radius, color, 200); // num segments is how circular the circle actually is
+	draw_list->AddCircle(point, radius, color, 200, 3.f); // num segments is how circular the circle actually is
 }
 //esp names
 VOID c_overlay::text(const ImVec2& pos, const std::string& text, ImU32 color, bool outline) {
