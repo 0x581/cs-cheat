@@ -77,6 +77,7 @@ int main()
 
     overlay.initConfigVariables();
 
+    overlay.mem = &mem;
     while (overlay.msg_loop() && !overlay.ready_to_close) {}
 
     cleanUp();
