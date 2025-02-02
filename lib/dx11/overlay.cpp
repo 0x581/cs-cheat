@@ -315,17 +315,6 @@ const void c_overlay::renderCheats()
 
 	if (config.activeCheats.esp)
 	{
-		static int ctr = 0;
-		if (ctr++ % 10 == 0)
-		{
-			using std::chrono::duration_cast;
-
-			const auto time_taken = std::chrono::high_resolution_clock::now() - espData.time;
-
-			std::cout << duration_cast<std::chrono::microseconds>(time_taken) << std::endl;
-		}
-
-
 		const auto& enemyColor = selectedColorIt->second;
 		const auto& friendlyColor = rgbColors::black;
 
