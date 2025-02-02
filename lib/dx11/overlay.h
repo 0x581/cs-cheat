@@ -1,4 +1,3 @@
-#include "../../memory.hpp"
 #ifndef OVERLAY_H_
 #define OVERLAY_H_
 
@@ -41,10 +40,8 @@ private:
 	VOID draw_menu();
 	VOID draw_bomb();
 
-	void renderEsp(Memory& mem);
 
 public:
-	Memory *mem;
 	c_overlay();
 	~c_overlay();
 
