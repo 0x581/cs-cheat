@@ -583,7 +583,7 @@ BOOL c_overlay::msg_loop() {
 		device_context->OMSetRenderTargets(1, &render_target_view, NULL);
 		device_context->ClearRenderTargetView(render_target_view, (float*)&clear_clr); // might break, if so then put cheat color of type ImVec4 { 0,0,0,0 }
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		swap_chain->Present(1, 0);
+		swap_chain->Present(0, 0);
 
 		return msg.message != WM_QUIT;
 	}
