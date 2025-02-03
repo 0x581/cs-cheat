@@ -35,8 +35,6 @@ static void runBombHack(const Memory& mem, const uintptr_t client)
 
 	const auto timeRemaining = explosionTime - globalVars.currentTime;
 
-	std::cout << timeRemaining << std::endl;
-
 	bombData.timeRemaining = timeRemaining;
 	bombData.planted = true;
 }
