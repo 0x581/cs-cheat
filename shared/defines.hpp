@@ -147,7 +147,15 @@ namespace modules
     constexpr auto client = L"client.dll";
 }
 
-namespace errors
+namespace exit_codes
 {
+    constexpr auto SUCCESS = 0x6969;
 
+    constexpr auto NTDLL_ERROR = 0x100;
+    constexpr auto HANDLE_LIMIT_EXCEEDED = 0x101;
+
+    constexpr auto ENTITY_LIST_OOR = 0x200;
+
+    constexpr auto MEMORY_READ_MODULES_ERROR = 0x300;
+    constexpr auto MEMORY_INSPECT_ERROR = 0x301;
 }
