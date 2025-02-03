@@ -210,6 +210,18 @@ OFFSETS: list[Offset] = [
         "m_flC4Blow",
         "Member of C_PlantedC4, float",
     ),
+    Offset(
+        "itemServices",
+        "client_dll.hpp",
+        "m_pItemServices",
+        "Member of C_BasePlayerPawn, CPlayer_ItemServices *",
+    ),
+    Offset(
+        "hasDefuser",
+        "client_dll.hpp",
+        "m_bHasDefuser",
+        "Member of CCSPlayer_ItemServices, bool",
+    ),
 ]
 
 

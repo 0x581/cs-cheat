@@ -24,6 +24,7 @@ struct ESPData {
 
 struct BombData {
     bool planted{ false };
+    bool canBeDefused{ false };
     float timeRemaining{ 0.f };
 };
 

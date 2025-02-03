@@ -35,6 +35,14 @@ static void runBombHack(const Memory& mem, const uintptr_t client)
 
 	const auto timeRemaining = explosionTime - globalVars.currentTime;
 
+	const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+
+	const auto itemServices = mem.Read<uintptr_t>(localPlayer + offsets::itemServices);
+	const auto hasDefuser = mem.Read<bool>(itemServices + offsets::hasDefuser);
+
+	const auto defuseTime = hasDefuser ? 5.0 : 10.0;
+
+	bombData.canBeDefused = timeRemaining > defuseTime;
 	bombData.timeRemaining = timeRemaining;
 	bombData.planted = true;
 }
