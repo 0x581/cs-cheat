@@ -400,7 +400,7 @@ void c_overlay::draw_menu()
 		if (ImGui::BeginTabItem("visuals")) {
 			ImGui::BeginChild("##container", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
 				
-				ImGui::Checkbox("esp", &config.activeCheats.esp);
+				ImGui::Checkbox("esp buggy", &config.activeCheats.esp);
 				if (config.activeCheats.esp == true)
 				{
 					if (ImGui::BeginCombo("Color", selectedColorIt->first.data())) {
@@ -444,7 +444,7 @@ void c_overlay::draw_menu()
 			ImGui::Checkbox("Fov changer", &config.activeCheats.fovChanger);
 			if (config.activeCheats.fovChanger == true)
 			{
-				(ImGui::SliderInt("Fov", &config.fov.desiredFov, 60, 140));
+				(ImGui::SliderInt("Fov buggy", &config.fov.desiredFov, 60, 140));
 			}
 			ImGui::Checkbox("bomb info", &config.activeCheats.bombHack);
 			ImGui::Checkbox("soon", &l_test);
