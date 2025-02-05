@@ -62,7 +62,7 @@ private:
 
         if (!this->hProcess) {
             std::cout << "Tried to read modules of invalid process." << std::endl;
-            exit(-1);
+            exit(exit_codes::MEMORY_READ_MODULES_ERROR);
         }
 
         MODULEENTRY32W moduleEntry{};
@@ -269,7 +269,7 @@ public:
                 if (i + j >= nBytes)
                 {
                     std::cout << "Read over the limit." << std::endl;
-                    exit(-1);
+                    exit(exit_codes::MEMORY_INSPECT_ERROR);
                 }
 
                 if (j % 8 == 0 && j != 0)

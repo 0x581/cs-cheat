@@ -311,8 +311,6 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 
 const void c_overlay::renderCheats()
 {
-	printFPS;
-
 	if (config.activeCheats.esp)
 	{
 		const auto& enemyColor = selectedColorIt->second;

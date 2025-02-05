@@ -80,4 +80,6 @@ int main()
     while (overlay.msg_loop() && !overlay.ready_to_close) {}
 
     cleanUp();
+
+    return exit_codes::SUCCESS;
 }

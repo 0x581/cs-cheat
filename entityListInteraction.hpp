@@ -58,7 +58,7 @@ static uintptr_t getControllerPtrFromPawnPtr(const Memory& mem, uintptr_t pawnPt
 static uintptr_t getPlayerControllerPtr(const Memory& mem, uintptr_t index, bool skipLocalPlayer = true)
 {
     if (index >= 64)
-        exit(-1);
+        exit(exit_codes::ENTITY_LIST_OOR);
 
     const auto entityList = getEntityListPtr(mem);
 

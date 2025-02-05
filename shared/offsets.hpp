@@ -34,4 +34,6 @@ namespace offsets
     constexpr auto crouchAmount = 0x228;                     // Member of CPlayer_MovementServices, float
     constexpr auto globalVars = 0x1870BA8;                   // Pointer to the global vars struct
     constexpr auto c4ExplosionTime = 0xFC0;                  // Member of C_PlantedC4, float
+    constexpr auto itemServices = 0x11B0;                    // Member of C_BasePlayerPawn, CPlayer_ItemServices *
+    constexpr auto hasDefuser = 0x40;                        // Member of CCSPlayer_ItemServices, bool
 }

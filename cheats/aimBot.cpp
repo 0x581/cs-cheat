@@ -67,7 +67,7 @@ static void runAimBot(const Memory& mem, const uintptr_t client)
 		closestPoint = screenHeadPos;
 	}
 
-	if (lowestDistance == INFINITY)
+	if (lowestDistance == HUGE_VAL)
 		return;
 
 	const auto radius = config.aimBot.pixelRadius;

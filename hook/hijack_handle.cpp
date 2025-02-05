@@ -7,6 +7,7 @@
 #include <Psapi.h>
 
 #include "defines.hpp"
+#include "../shared/defines.hpp"
 
 constexpr auto HANDLE_BUFFER_SIZE = 1024 * 1024 * sizeof(SYSTEM_HANDLE);
 constexpr auto FILE_NAME_BUFFER_SIZE = 512;
@@ -93,12 +94,8 @@ static bool checkProcessName(HANDLE hProcess, const wchar_t* processName)
 
 HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
 {
-    std::cout << "Trying to hijack handle to Process. (PID: " << dwTargetProcessId << ")" << std::endl;
-
     if (dwTargetProcessId == 0)
-    {
         return 0;
-    }
 
     // Get the base address of ntdll.dll
     const HMODULE Ntdll = GetModuleHandle(L"ntdll");
@@ -106,7 +103,7 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
     if (!Ntdll)
     {
         std::cout << "Failed to acquire Ntdll!" << std::endl;
-        exit(-1);
+        exit(exit_codes::NTDLL_ERROR);
     }
 
     // Get the address of RtlAdjustPrivilege in ntdll.dll so we can grant our process the highest permission possible
@@ -157,7 +154,7 @@ HANDLE hijackHandle(DWORD dwTargetProcessId, const wchar_t *fromProcess)
         if (checkHandleCount())
         {
             std::cout << "Error: Handle Leakage Detected. Handle count exceeded " << MAX_HANDLE_COUNT << "!" << std::endl;
-            exit(-1);
+            exit(exit_codes::HANDLE_LIMIT_EXCEEDED);
         }
 
         if (!isHandleValid(system_handle) || !isProcessHandle(system_handle))
