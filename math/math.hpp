@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <iomanip>
+#include "../lib/imgui/imgui.h"
 
 #define ROW_MAJOR
 
@@ -13,18 +15,35 @@ struct Matrix4x4 {
 	}
 };
 
-struct Vector4 {
+struct Vector2 {
 	union {
 		struct {
-			float x, y, z, w;
+			float x, y;
 		};
-		float values[4];
+		float values[2];
 	};
 
-	Vector4(float x = 0, float y = 0, float z = 0, float w = 0): x(x), y(y), z(z), w(w) {}
+	Vector2(float x = 0, float y = 0) : x(x), y(y) {}
 
 	const float& operator[] (int index) const {
 		return values[index];
+	}
+
+	operator ImVec2() const {
+		return ImVec2(x, y);
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Vector2& v) {
+		std::ios_base::fmtflags f = os.flags();
+		std::streamsize p = os.precision();
+
+		os << std::fixed << std::setprecision(2);
+		os << "(" << v.x << ", " << v.y << ")";
+
+		os.flags(f);
+		os.precision(p);
+
+		return os;
 	}
 };
 
@@ -41,17 +60,39 @@ struct Vector3 {
 	const float& operator[] (int index) const {
 		return values[index];
 	}
+
+	operator ImVec2() const {
+		return ImVec2(x, y);
+	}
+
+	Vector2 xy() const {
+		return Vector2(x, y);
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Vector3& v) {
+		std::ios_base::fmtflags f = os.flags();
+		std::streamsize p = os.precision();
+
+		os << std::fixed << std::setprecision(2);
+		os << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+
+		os.flags(f);
+		os.precision(p);
+
+		return os;
+	}
 };
 
-struct Vector2 {
+
+struct Vector4 {
 	union {
 		struct {
-			float x, y;
+			float x, y, z, w;
 		};
-		float values[2];
+		float values[4];
 	};
 
-	Vector2(float x = 0, float y = 0) : x(x), y(y) {}
+	Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
 
 	const float& operator[] (int index) const {
 		return values[index];
@@ -85,7 +126,7 @@ static Vector3 worldToScreen(const Vector3& world_pos, const Matrix4x4& view_mat
 	auto clip_coords = view_matrix * Vector4(world_pos.x, world_pos.y, world_pos.z, 1);
 
 	if (clip_coords.w < 0.01f)
-		return { 0.f, 0.f, 0.f };
+		return { -1.f, -1.f, -1.f };
 
 	auto ndc_coords = Vector3(
 		clip_coords.x / clip_coords.w,

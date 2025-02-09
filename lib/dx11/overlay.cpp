@@ -321,29 +321,65 @@ const void c_overlay::renderCheats()
 			if (!espRenderData.isValid)
 				continue;
 
+			const BoneData& bones = espRenderData.bones;
+
+			line(bones.head, bones.neck, enemyColor);
+			line(bones.neck, bones.spine4, enemyColor);
+			line(bones.spine4, bones.spine3, enemyColor);
+			line(bones.spine3, bones.spine2, enemyColor);
+			line(bones.spine2, bones.spine1, enemyColor);
+			line(bones.spine1, bones.hip, enemyColor);
+			line(bones.spine4, bones.l_shoulder, enemyColor);
+			line(bones.l_shoulder, bones.l_arm, enemyColor);
+			line(bones.l_arm, bones.l_wrist, enemyColor);
+			line(bones.l_wrist, bones.l_hand, enemyColor);
+			line(bones.spine4, bones.r_shoulder, enemyColor);
+			line(bones.r_shoulder, bones.r_arm, enemyColor);
+			line(bones.r_arm, bones.r_wrist, enemyColor);
+			line(bones.r_wrist, bones.r_hand, enemyColor);
+			line(bones.hip, bones.l_hip, enemyColor);
+			line(bones.l_hip, bones.l_knee, enemyColor);
+			line(bones.l_knee, bones.l_foot, enemyColor);
+			line(bones.hip, bones.r_hip, enemyColor);
+			line(bones.r_hip, bones.r_knee, enemyColor);
+			line(bones.r_knee, bones.r_foot, enemyColor);
+
+			circle(bones.head, 10.f, enemyColor);
+
+			circle(bones.unknown1, 10.f, enemyColor);
+			//circle(bones.unknown15, 10.f, friendlyColor);
+
+
+			const auto min = espRenderData.min;
+			const auto max = espRenderData.max;
+
+
+			if (!((min.x >= 0.f && min.y >= 0.f && min.x < window_width && min.y < window_height)
+				|| (max.x >= 0.f && max.y >= 0.f && max.x < window_width && max.y < window_height)))
+				continue;
+
+
 			if (config.esp.boxGlow)
 			{
 				float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
 
 				if (!espRenderData.isFriendly)
-					box_with_glow(espRenderData.min, espRenderData.max, enemyColor, 2.0f, dynamicGlowSize);
+					box_with_glow(min, max, enemyColor, 2.0f, dynamicGlowSize);
 				else if (config.esp.renderFriendlies)
-					box_with_glow(espRenderData.min, espRenderData.max, friendlyColor, 2.0f, dynamicGlowSize);
+					box_with_glow(min, max, friendlyColor, 2.0f, dynamicGlowSize);
 			}
 			else
 			{
 				if (!espRenderData.isFriendly)
-					box(espRenderData.min, espRenderData.max, enemyColor);
+					box(min, max, enemyColor);
 				else if (config.esp.renderFriendlies)
-					box(espRenderData.min, espRenderData.max, friendlyColor);
+					box(min, max, friendlyColor);
 			}
 
 			const auto name_text = espRenderData.playerName;
 			const auto text_size = ImGui::CalcTextSize(name_text);
 
-			const auto text_pos = ImVec2{
-				(espRenderData.max.x + espRenderData.min.x) / 2.f - (text_size.x / 2.f), espRenderData.max.y
-			};
+			const auto text_pos = ImVec2{(max.x + min.x) / 2.f - (text_size.x / 2.f), max.y};
 
 			text(text_pos, name_text, enemyColor);
 		}
@@ -635,14 +671,15 @@ VOID c_overlay::init_draw_list() {
 
 //to make esp box
 VOID c_overlay::box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width) {
-	// The anti-aliasing for the box is handled through the rasterizer state in DirectX.
 	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
 }
 
 
 //esp tracer
 VOID c_overlay::line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width) {
-	draw_list->AddLine(point1, point2, color, line_width);
+	if ((point1.x >= 0.f && point1.y >= 0.f && point1.x < window_width && point1.y < window_height)
+		|| (point2.x >= 0.f && point2.y >= 0.f && point2.x < window_width && point2.y < window_height))
+		draw_list->AddLine(point1, point2, color, line_width);
 }
 //aimbot fov circle
 VOID c_overlay::circle(const ImVec2& point, const FLOAT radius, ImU32 color) {

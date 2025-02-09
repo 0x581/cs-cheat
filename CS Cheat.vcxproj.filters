@@ -179,6 +179,7 @@
     </ClInclude>
     <ClInclude Include="hook\hijack_handle.hpp" />
     <ClInclude Include="hook\defines.hpp" />
+    <ClInclude Include="shared\boneData.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini">

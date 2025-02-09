@@ -272,7 +272,7 @@ public:
                     exit(exit_codes::MEMORY_INSPECT_ERROR);
                 }
 
-                if (j % 8 == 0 && j != 0)
+                if (j % 4 == 0 && j != 0)
                     byteString << " ";
 
                 byteString << std::setw(2) << std::setfill('0') << (unsigned int)buffer[i + j] << " ";

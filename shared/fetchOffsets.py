@@ -222,6 +222,18 @@ OFFSETS: list[Offset] = [
         "m_bHasDefuser",
         "Member of CCSPlayer_ItemServices, bool",
     ),
+    Offset(
+        "gameSceneNode",
+        "client_dll.hpp",
+        "m_pGameSceneNode",
+        "Member of C_BaseEntity, CSkeletonInstance*",
+    ),
+    Offset(
+        "modelState",
+        "client_dll.hpp",
+        "m_modelState",
+        "Member of CSkeletonInstance, CModelState",
+    ),
 ]
 
 

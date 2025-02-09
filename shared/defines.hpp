@@ -2,10 +2,21 @@
 
 #include <Windows.h>
 #include <chrono>
+#include "../math/math.hpp"
 
 typedef unsigned int CEntityIndex;
 typedef float GameTime_t;
 typedef uint8_t PlayerTeam_t;
+
+struct Quaternion { float x, y, z, w; };
+struct CBoneData
+{
+    Vector3 location;
+    float scale;
+    Quaternion rotation;
+};
+
+typedef std::array<CBoneData, 30> CBoneArray;
 
 class CGlobalVarsBase
 {

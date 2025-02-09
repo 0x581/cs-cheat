@@ -25,14 +25,13 @@ static void runEsp(const Memory& mem, const uintptr_t client)
     espData.time = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < 64; i++) {
+        espData.boxes[i].isValid = false;
+
         const auto controller = getPlayerControllerPtr(mem, i);
         const auto playerPawn = getPawnPtrFromControllerPtr(mem, controller);
 
-        if (!playerPawn)
-        {
-            espData.boxes[i].isValid = false;
+        if (!playerPawn || playerPawn == localPlayerPawn)
             continue;
-        }
 
         const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
 
@@ -40,19 +39,15 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         const auto health = mem.Read<int>(playerPawn + offsets::health);
 
+        espData.boxes[i].health = health;
+
         if (health <= 0 || health > 100)
-        {
-            espData.boxes[i].isValid = false;
             continue;
-        }
 
         const auto movementServices = mem.Read<intptr_t>(playerPawn + offsets::movementServices);
 
         if (!movementServices)
-        {
-            espData.boxes[i].isValid = false;
             continue;
-        }
 
         const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
 
@@ -64,7 +59,6 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         if (screenFootPos.z == 0.f || screenHeadPos.z == 0.f)
         {
-            espData.boxes[i].isValid = false;
             continue;
         }
 
@@ -78,16 +72,20 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         char buffer[PLAYER_NAME_LENGTH]{ 0 };
         if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH)) 
-        {
-            espData.boxes[i].isValid = false;
             continue;
-        }
 
         parseString(buffer, espData.boxes[i].playerName, PLAYER_NAME_LENGTH);
 
         espData.boxes[i].min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
         espData.boxes[i].max = { screenHeadPos.x + width / 2, screenFootPos.y };
 
+        const auto skeletonInstance = mem.Read<uintptr_t>(playerPawn + offsets::gameSceneNode);
+
+        const auto boneArrayPtr = mem.Read<uintptr_t>(skeletonInstance + offsets::modelState + 0x80);
+
+        const auto boneArray = mem.Read<CBoneArray>(boneArrayPtr);
+
+        espData.boxes[i].bones = BoneData::fromVector(boneArray, view_matrix);
         espData.boxes[i].isValid = true;
     }
 }

@@ -172,6 +172,7 @@
     <ClInclude Include="config\config.hpp" />
     <ClInclude Include="hook\defines.hpp" />
     <ClInclude Include="hook\hijack_handle.hpp" />
+    <ClInclude Include="shared\boneData.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
     <ClInclude Include="lib\dx11\overlay.h" />
