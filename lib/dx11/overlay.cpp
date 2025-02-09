@@ -321,7 +321,7 @@ const void c_overlay::renderCheats()
 		const auto& enemyColor = selectedColorIt->second;
 		const auto& friendlyColor = rgbColors::black;
 
-		for (const auto& espRenderData : espData.boxes)
+		for (const auto& espRenderData : espData.data)
 		{
 			if (!espRenderData.isValid)
 				continue;

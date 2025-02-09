@@ -25,7 +25,7 @@ static void runEsp(const Memory& mem, const uintptr_t client)
     espData.time = std::chrono::high_resolution_clock::now();
 
     for (int i = 0; i < 64; i++) {
-        espData.boxes[i].isValid = false;
+        espData.data[i].isValid = false;
 
         const auto controller = getPlayerControllerPtr(mem, i);
         const auto playerPawn = getPawnPtrFromControllerPtr(mem, controller);
@@ -35,11 +35,11 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
 
-        espData.boxes[i].isFriendly = localPlayerTeam == playerTeam;
+        espData.data[i].isFriendly = localPlayerTeam == playerTeam;
 
         const auto health = mem.Read<int>(playerPawn + offsets::health);
 
-        espData.boxes[i].health = health;
+        espData.data[i].health = health;
 
         if (health <= 0 || health > 100)
             continue;
@@ -74,10 +74,10 @@ static void runEsp(const Memory& mem, const uintptr_t client)
         if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH)) 
             continue;
 
-        parseString(buffer, espData.boxes[i].playerName, PLAYER_NAME_LENGTH);
+        parseString(buffer, espData.data[i].playerName, PLAYER_NAME_LENGTH);
 
-        espData.boxes[i].min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
-        espData.boxes[i].max = { screenHeadPos.x + width / 2, screenFootPos.y };
+        espData.data[i].min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
+        espData.data[i].max = { screenHeadPos.x + width / 2, screenFootPos.y };
 
         const auto skeletonInstance = mem.Read<uintptr_t>(playerPawn + offsets::gameSceneNode);
 
@@ -85,8 +85,8 @@ static void runEsp(const Memory& mem, const uintptr_t client)
 
         const auto boneArray = mem.Read<CBoneArray>(boneArrayPtr);
 
-        espData.boxes[i].bones = BoneData::fromVector(boneArray, view_matrix);
-        espData.boxes[i].isValid = true;
+        espData.data[i].bones = BoneData::fromVector(boneArray, view_matrix);
+        espData.data[i].isValid = true;
     }
 }
 
