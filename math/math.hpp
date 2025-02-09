@@ -61,8 +61,16 @@ struct Vector3 {
 		return values[index];
 	}
 
-	operator ImVec2() const {
-		return ImVec2(x, y);
+	Vector3 operator+ (const Vector3 &other) const {
+		return { x + other.x, y + other.y, z + other.z };
+	}
+
+	Vector3 operator- (const Vector3& other) const {
+		return { x - other.x, y - other.y, z - other.z };
+	}
+
+	float length() const {
+		return pow(x * x + y * y + z * z, 0.5f);
 	}
 
 	Vector2 xy() const {

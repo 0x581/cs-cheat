@@ -20,6 +20,8 @@ static void runEsp(const Memory& mem, const uintptr_t client)
     const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
     const auto localPlayerTeam = mem.Read<PlayerTeam_t>(localPlayerPawn + offsets::teamNum);
 
+    const auto localPlayerPos = mem.Read<Vector3>(localPlayerPawn + offsets::OldOrigin);
+
     const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
 
     espData.time = std::chrono::high_resolution_clock::now();
@@ -49,6 +51,19 @@ static void runEsp(const Memory& mem, const uintptr_t client)
         if (!movementServices)
             continue;
 
+
+        char buffer[PLAYER_NAME_LENGTH]{ 0 };
+        if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH))
+            continue;
+
+        parseString(buffer, espData.data[i].playerName, PLAYER_NAME_LENGTH);
+
+        const auto skeletonInstance = mem.Read<uintptr_t>(playerPawn + offsets::gameSceneNode);
+        const auto boneArrayPtr = mem.Read<uintptr_t>(skeletonInstance + offsets::modelState + 0x80);
+        const auto boneArray = mem.Read<CBoneArray>(boneArrayPtr);
+        espData.data[i].bones = BoneData::fromVector(boneArray, view_matrix);
+
+        // Esp box
         const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
 
         Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
@@ -57,10 +72,7 @@ static void runEsp(const Memory& mem, const uintptr_t client)
         auto screenFootPos = worldToScreen(footPos, view_matrix);
         auto screenHeadPos = worldToScreen(headPos, view_matrix);
 
-        if (screenFootPos.z == 0.f || screenHeadPos.z == 0.f)
-        {
-            continue;
-        }
+        const auto distance = (localPlayerPos - footPos).length();
 
         float width = (screenFootPos.y - screenHeadPos.y) / 2.4F;
 
@@ -70,22 +82,10 @@ static void runEsp(const Memory& mem, const uintptr_t client)
             screenHeadPos = worldToScreen(headPos, view_matrix);
         }
 
-        char buffer[PLAYER_NAME_LENGTH]{ 0 };
-        if (!mem.ReadBytes(controller + offsets::playerName, (byte*)buffer, PLAYER_NAME_LENGTH)) 
-            continue;
-
-        parseString(buffer, espData.data[i].playerName, PLAYER_NAME_LENGTH);
-
         espData.data[i].min = { screenHeadPos.x - width / 2,  screenHeadPos.y };
         espData.data[i].max = { screenHeadPos.x + width / 2, screenFootPos.y };
+        espData.data[i].distance = distance;
 
-        const auto skeletonInstance = mem.Read<uintptr_t>(playerPawn + offsets::gameSceneNode);
-
-        const auto boneArrayPtr = mem.Read<uintptr_t>(skeletonInstance + offsets::modelState + 0x80);
-
-        const auto boneArray = mem.Read<CBoneArray>(boneArrayPtr);
-
-        espData.data[i].bones = BoneData::fromVector(boneArray, view_matrix);
         espData.data[i].isValid = true;
     }
 }
