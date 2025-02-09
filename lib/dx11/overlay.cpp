@@ -351,9 +351,6 @@ const void c_overlay::renderCheats()
 
 			circle(bones.head, 10.f, enemyColor);
 
-			circle(bones.unknown1, 10.f, enemyColor);
-			//circle(bones.unknown15, 10.f, friendlyColor);
-
 
 			const auto min = espRenderData.min;
 			const auto max = espRenderData.max;
