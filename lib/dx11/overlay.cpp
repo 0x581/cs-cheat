@@ -6,7 +6,12 @@
 #include "../../shared/consoleControl.cpp"
 
 #include <map>
+#include <vector>
+#include <string>
 
+std::vector<std::string> configs = { "Default", "Legit", "Rage" };  // Beispiel-Configs
+char configNameBuffer[64] = "";  // Eingabefeld für neue Config-Namen
+int selectedConfig = -1;  // Index der aktuell ausgewählten Config
 
 // microsoft safe release of pointers
 template <typename T>
@@ -434,7 +439,7 @@ void c_overlay::draw_menu()
 		if (ImGui::BeginTabItem("visuals")) {
 			ImGui::BeginChild("##container", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
 				
-				ImGui::Checkbox("esp", &config.activeCheats.esp);
+				ImGui::Checkbox("esp buggy", &config.activeCheats.esp);
 				if (config.activeCheats.esp == true)
 				{
 					if (ImGui::BeginCombo("Color", selectedColorIt->first.data())) {
@@ -478,15 +483,44 @@ void c_overlay::draw_menu()
 			ImGui::Checkbox("Fov changer", &config.activeCheats.fovChanger);
 			if (config.activeCheats.fovChanger == true)
 			{
-				(ImGui::SliderInt("Fov", &config.fov.desiredFov, 60, 140));
+				(ImGui::SliderInt("Fov buggy", &config.fov.desiredFov, 60, 140));
 			}
 			ImGui::Checkbox("bomb info", &config.activeCheats.bombHack);
 			ImGui::Checkbox("soon", &l_test);
 			ImGui::EndTabItem();
 		}
 		
-		if (ImGui::BeginTabItem("config")) {
+		if (ImGui::BeginTabItem("Config")) {
+			ImGui::Text("Config Manager");
+
+			// ListBox mit gespeicherten Configs
+			if (ImGui::ListBoxHeader("##ConfigList", ImVec2(200, 100))) {
+				for (int i = 0; i < configs.size(); i++) {
+					bool isSelected = (selectedConfig == i);
+					if (ImGui::Selectable(configs[i].c_str(), isSelected)) {
+						selectedConfig = i;
+					}
+				}
+				ImGui::ListBoxFooter();
+			}
+
 			
+			ImGui::InputText("Name", configNameBuffer, IM_ARRAYSIZE(configNameBuffer));
+
+			
+			if (ImGui::Button("Save Config")) {
+				if (strlen(configNameBuffer) > 0) {
+					configs.push_back(configNameBuffer);
+					memset(configNameBuffer, 0, sizeof(configNameBuffer)); 
+				}
+			}
+
+			
+			if (ImGui::Button("Delete Config") && selectedConfig >= 0) {
+				configs.erase(configs.begin() + selectedConfig);
+				selectedConfig = -1;  
+			}
+
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
