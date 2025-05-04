@@ -114,17 +114,19 @@ public:
 	}
 
 	Memory() {
-		const HANDLE driver = CreateFile(L"\\\\.\\AssPileDriver", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+		driver_handle = CreateFile(L"\\\\.\\AssPileDriver", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
-		if (driver == INVALID_HANDLE_VALUE)
+		if (driver_handle == INVALID_HANDLE_VALUE)
 		{
-			std::cout << "Failed to create our driver handle.\n";
+			const auto error = GetLastError();
+
+			std::cout << "Failed to create our driver handle: " << error << std::endl;
 			std::cin.get();
 
 			throw std::runtime_error("Failed to create driver handle");
 		}
 
-		const auto old_debug_level = driver::set_debug_flags(driver, DEFAULT_FLAGS);
+		const auto old_debug_level = driver::set_debug_flags(driver_handle, DEFAULT_FLAGS);
 	}
 
 	~Memory() {
