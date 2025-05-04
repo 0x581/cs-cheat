@@ -9,6 +9,8 @@
 #include <vector>
 #include <string>
 
+bool bone = true;
+bool boxesp = false;
 std::vector<std::string> configs = { "Default", "Legit", "Rage" };  // Beispiel-Configs
 char configNameBuffer[64] = "";  // Eingabefeld für neue Config-Namen
 int selectedConfig = -1;  // Index der aktuell ausgewählten Config
@@ -325,31 +327,37 @@ const void c_overlay::renderCheats()
 		{
 			if (!espRenderData.isValid)
 				continue;
+			if (bone == true)
+			{
+				const BoneData& bones = espRenderData.bones;
+				if (!espRenderData.isFriendly)
+				{
+					line(bones.head, bones.neck, enemyColor);
+					line(bones.neck, bones.spine4, enemyColor);
+					line(bones.spine4, bones.spine3, enemyColor);
+					line(bones.spine3, bones.spine2, enemyColor);
+					line(bones.spine2, bones.spine1, enemyColor);
+					line(bones.spine1, bones.hip, enemyColor);
+					line(bones.spine4, bones.l_shoulder, enemyColor);
+					line(bones.l_shoulder, bones.l_arm, enemyColor);
+					line(bones.l_arm, bones.l_wrist, enemyColor);
+					line(bones.l_wrist, bones.l_hand, enemyColor);
+					line(bones.spine4, bones.r_shoulder, enemyColor);
+					line(bones.r_shoulder, bones.r_arm, enemyColor);
+					line(bones.r_arm, bones.r_wrist, enemyColor);
+					line(bones.r_wrist, bones.r_hand, enemyColor);
+					line(bones.hip, bones.l_hip, enemyColor);
+					line(bones.l_hip, bones.l_knee, enemyColor);
+					line(bones.l_knee, bones.l_foot, enemyColor);
+					line(bones.hip, bones.r_hip, enemyColor);
+					line(bones.r_hip, bones.r_knee, enemyColor);
+					line(bones.r_knee, bones.r_foot, enemyColor);
+				}
+				
 
-			const BoneData& bones = espRenderData.bones;
-
-			line(bones.head, bones.neck, enemyColor);
-			line(bones.neck, bones.spine4, enemyColor);
-			line(bones.spine4, bones.spine3, enemyColor);
-			line(bones.spine3, bones.spine2, enemyColor);
-			line(bones.spine2, bones.spine1, enemyColor);
-			line(bones.spine1, bones.hip, enemyColor);
-			line(bones.spine4, bones.l_shoulder, enemyColor);
-			line(bones.l_shoulder, bones.l_arm, enemyColor);
-			line(bones.l_arm, bones.l_wrist, enemyColor);
-			line(bones.l_wrist, bones.l_hand, enemyColor);
-			line(bones.spine4, bones.r_shoulder, enemyColor);
-			line(bones.r_shoulder, bones.r_arm, enemyColor);
-			line(bones.r_arm, bones.r_wrist, enemyColor);
-			line(bones.r_wrist, bones.r_hand, enemyColor);
-			line(bones.hip, bones.l_hip, enemyColor);
-			line(bones.l_hip, bones.l_knee, enemyColor);
-			line(bones.l_knee, bones.l_foot, enemyColor);
-			line(bones.hip, bones.r_hip, enemyColor);
-			line(bones.r_hip, bones.r_knee, enemyColor);
-			line(bones.r_knee, bones.r_foot, enemyColor);
-
-			circle(bones.head, 10.f, enemyColor);
+				//circle(bones.head, 10.f, enemyColor);
+			}
+			
 
 
 			const auto min = espRenderData.min;
@@ -360,36 +368,39 @@ const void c_overlay::renderCheats()
 				|| (max.x >= 0.f && max.y >= 0.f && max.x < window_width && max.y < window_height)))
 				continue;
 
-
-			if (config.esp.boxGlow)
+			if (boxesp == true)
 			{
-				float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
+				if (config.esp.boxGlow)
+				{
+					float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
 
-				if (!espRenderData.isFriendly)
-					box_with_glow(min, max, enemyColor, 2.0f, dynamicGlowSize);
-				else if (config.esp.renderFriendlies)
-					box_with_glow(min, max, friendlyColor, 2.0f, dynamicGlowSize);
+					if (!espRenderData.isFriendly)
+						box_with_glow(min, max, enemyColor, 2.0f, dynamicGlowSize);
+					else if (config.esp.renderFriendlies)
+						box_with_glow(min, max, friendlyColor, 2.0f, dynamicGlowSize);
+				}
+				else
+				{
+					if (!espRenderData.isFriendly)
+						box(min, max, enemyColor);
+					else if (config.esp.renderFriendlies)
+						box(min, max, friendlyColor);
+				}
 			}
-			else
-			{
-				if (!espRenderData.isFriendly)
-					box(min, max, enemyColor);
-				else if (config.esp.renderFriendlies)
-					box(min, max, friendlyColor);
-			}
+			
 
 			const auto name_text = espRenderData.playerName;
 			const auto text_size = ImGui::CalcTextSize(name_text);
-
+			
 			const auto text_pos = ImVec2{(max.x + min.x) / 2.f - (text_size.x / 2.f), max.y};
-
+			if (!espRenderData.isFriendly)
 			text(text_pos, name_text, enemyColor);
 		}
 	}
 
 	if (config.activeCheats.aimBot)
 	{
-		circle(ImVec2(window_width / 2.f, window_height / 2.f), config.aimBot.pixelRadius, rgbColors::transparent_white);
+		circle(ImVec2(window_width / 2.f, window_height / 2.f), config.aimBot.pixelRadius, rgbColors::purple2);
 	}
 }
 
@@ -436,31 +447,38 @@ void c_overlay::draw_menu()
 		if (ImGui::BeginTabItem("visuals")) {
 			ImGui::BeginChild("##container", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
 				
-				ImGui::Checkbox("esp buggy", &config.activeCheats.esp);
+				ImGui::Checkbox("esp", &config.activeCheats.esp);
 				if (config.activeCheats.esp == true)
 				{
-					if (ImGui::BeginCombo("Color", selectedColorIt->first.data())) {
-						// Draw all colors names to combobox
-						for (auto it = availableColors.begin(); it != availableColors.end(); ++it)
-						{
-							const auto& [colorName, color] = *it;
-
-							bool isSelected = (selectedColorIt->first == colorName);
-
-							if (ImGui::Selectable(colorName.data(), isSelected))
+					
+						if (ImGui::BeginCombo("Color", selectedColorIt->first.data())) {
+							// Draw all colors names to combobox
+							for (auto it = availableColors.begin(); it != availableColors.end(); ++it)
 							{
-								// Update selection if something was selected
-								memset(config.esp.selectedColor, 0, COLOR_NAME_MAX_LENGTH);
-								colorName.copy(config.esp.selectedColor, min(colorName.length(), COLOR_NAME_MAX_LENGTH));
-								config.esp.selectedColor[COLOR_NAME_MAX_LENGTH - 1] = '\0';
+								const auto& [colorName, color] = *it;
 
-								selectedColorIt = it;
+								bool isSelected = (selectedColorIt->first == colorName);
+
+								if (ImGui::Selectable(colorName.data(), isSelected))
+								{
+									// Update selection if something was selected
+									memset(config.esp.selectedColor, 0, COLOR_NAME_MAX_LENGTH);
+									colorName.copy(config.esp.selectedColor, min(colorName.length(), COLOR_NAME_MAX_LENGTH));
+									config.esp.selectedColor[COLOR_NAME_MAX_LENGTH - 1] = '\0';
+
+									selectedColorIt = it;
+								}
+								if (isSelected)
+									ImGui::SetItemDefaultFocus(); // Keep the selected item focused
 							}
-							if (isSelected)
-								ImGui::SetItemDefaultFocus(); // Keep the selected item focused
+							ImGui::EndCombo();
+						
 						}
-						ImGui::EndCombo();
-					}
+						
+
+					ImGui::Checkbox("bone esp", &bone);
+					ImGui::Checkbox("box esp", &boxesp);
+					if(boxesp == true)
 					ImGui::Checkbox("box glow", &config.esp.boxGlow);
 				}
 			}
