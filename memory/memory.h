@@ -12,10 +12,9 @@
 #include <mutex>
 #include <cassert>
 
-#include "driver.h"
+#include "./driver.h"
 
 #include "../shared/defines.hpp"
-#include "../hook/hijack_handle.hpp"
 
 struct WCharHash {
 	size_t operator()(const wchar_t* const str) const noexcept {
@@ -173,7 +172,10 @@ public:
 
 	template <typename T>
 	T Read(uintptr_t address) const {
-		return driver::read_memory<T>(driver_handle, address);
+		T value{};
+		const bool success = driver::read_memory(driver_handle, address, &value, sizeof(T));
+
+		return success ? value : T{};
 	}
 
 	// Returns number of bytes read
@@ -183,7 +185,7 @@ public:
 
 	template <typename T>
 	bool Write(uintptr_t address, T value) const {
-		return driver::write_memory<T>(driver_handle, address, value);
+		return driver::write_memory(driver_handle, address, &value, sizeof(T));
 	}
 
 	void Inspect(uintptr_t address, size_t nBytes) const {

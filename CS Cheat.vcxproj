@@ -162,6 +162,7 @@
     <ClCompile Include="cheats\fovChanger.cpp" />
     <ClCompile Include="cheats\radarHack.cpp" />
     <ClCompile Include="cheats\triggerBot.cpp" />
+    <ClCompile Include="memory\driver.cpp" />
     <ClCompile Include="shared\consoleControl.cpp" />
     <ClCompile Include="shared\sharedVariables.cpp" />
     <ClCompile Include="shared\string_utils.cpp" />
@@ -169,6 +170,7 @@
   <ItemGroup>
     <ClInclude Include="cheats\cheats.hpp" />
     <ClInclude Include="config\config.hpp" />
+    <ClInclude Include="memory\driver.h" />
     <ClInclude Include="shared\boneData.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
