@@ -113,6 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\ioctldriver\driver\um_driver\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -128,8 +129,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\ioctldriver\driver\um_driver\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,7 +144,6 @@
   <ItemGroup>
     <ClCompile Include="cheats\aimBot.cpp" />
     <ClCompile Include="config\config.cpp" />
-    <ClCompile Include="hook\hijack_handle.cpp" />
     <ClCompile Include="lib\dx11\overlay.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
@@ -170,8 +169,6 @@
   <ItemGroup>
     <ClInclude Include="cheats\cheats.hpp" />
     <ClInclude Include="config\config.hpp" />
-    <ClInclude Include="hook\defines.hpp" />
-    <ClInclude Include="hook\hijack_handle.hpp" />
     <ClInclude Include="shared\boneData.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
@@ -189,7 +186,7 @@
     <ClInclude Include="lib\pch.h" />
     <ClInclude Include="lib\timer\timer.h" />
     <ClInclude Include="math\math.hpp" />
-    <ClInclude Include="memory.hpp" />
+    <ClInclude Include="memory\memory.h" />
     <ClInclude Include="shared\sharedVariables.hpp" />
     <ClInclude Include="entityListInteraction.hpp" />
     <ClInclude Include="shared\offsets.hpp" />

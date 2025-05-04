@@ -103,12 +103,9 @@
     <ClCompile Include="config\config.cpp">
       <Filter>config</Filter>
     </ClCompile>
-    <ClCompile Include="hook\hijack_handle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="memory.hpp">
+    <ClInclude Include="memory\memory.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="lib\imgui\imconfig.h">
@@ -177,8 +174,6 @@
     <ClInclude Include="config\config.hpp">
       <Filter>config</Filter>
     </ClInclude>
-    <ClInclude Include="hook\hijack_handle.hpp" />
-    <ClInclude Include="hook\defines.hpp" />
     <ClInclude Include="shared\boneData.hpp" />
   </ItemGroup>
   <ItemGroup>

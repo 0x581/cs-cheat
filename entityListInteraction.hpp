@@ -1,172 +1,162 @@
 #pragma once
 
-#include "memory.hpp"
+#include "memory/memory.h"
 #include "shared/offsets.hpp"
 #include "shared/defines.hpp"
 
-static uintptr_t getEntityListPtr(const Memory& mem)
-{
-    const auto client = mem.GetModuleAddress(modules::client);
+static uintptr_t getEntityListPtr(const Memory& mem) {
+	const auto client = mem.GetModuleAddress(modules::client);
 
-    return mem.Read<uintptr_t>(client + offsets::entityList);
+	return mem.Read<uintptr_t>(client + offsets::entityList);
 }
 
 
-static uintptr_t getObjectPtrFromHandle(const Memory& mem, uintptr_t handle)
-{
-    if (handle == 0)
-        return 0;
+static uintptr_t getObjectPtrFromHandle(const Memory& mem, uintptr_t handle) {
+	if (handle == 0)
+		return 0;
 
-    const auto entityListPtr = getEntityListPtr(mem);
+	const auto entityListPtr = getEntityListPtr(mem);
 
-    // The handle's 15 lower bits are used to get its pointer.
-    // The higher 6 bits are used to get the index into the entity lists
-    const auto entityListIndex = (handle & 0x7FFF) >> 9;
+	// The handle's 15 lower bits are used to get its pointer.
+	// The higher 6 bits are used to get the index into the entity lists
+	const auto entityListIndex = (handle & 0x7FFF) >> 9;
 
-    // The lower 9 bits are used to get the index into the sub list
-    const auto subListIndex = handle & 0x1FF;
+	// The lower 9 bits are used to get the index into the sub list
+	const auto subListIndex = handle & 0x1FF;
 
-    // Multiply by 8 because pointers have a size of 8 bytes
-    const auto subList = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * entityListIndex);
+	// Multiply by 8 because pointers have a size of 8 bytes
+	const auto subList = mem.Read<uintptr_t>(entityListPtr + 0x10 + 0x8 * entityListIndex);
 
-    // The index is multiplied by 0x78 as that is the distance from one Ptr to the next
-    return mem.Read<uintptr_t>(subList + 0x78 * subListIndex);
+	// The index is multiplied by 0x78 as that is the distance from one Ptr to the next
+	return mem.Read<uintptr_t>(subList + 0x78 * subListIndex);
 }
 
 
-static uintptr_t getPawnPtrFromControllerPtr(const Memory& mem, uintptr_t controllerPtr)
-{
-    if (!controllerPtr)
-        return 0;
+static uintptr_t getPawnPtrFromControllerPtr(const Memory& mem, uintptr_t controllerPtr) {
+	if (!controllerPtr)
+		return 0;
 
-    const auto pawnHandle = mem.Read<uintptr_t>(controllerPtr + offsets::pawnOfController);
+	const auto pawnHandle = mem.Read<uintptr_t>(controllerPtr + offsets::pawnOfController);
 
-    return getObjectPtrFromHandle(mem, pawnHandle);
+	return getObjectPtrFromHandle(mem, pawnHandle);
 }
 
-static uintptr_t getControllerPtrFromPawnPtr(const Memory& mem, uintptr_t pawnPtr)
-{
-    if (!pawnPtr)
-        return 0;
+static uintptr_t getControllerPtrFromPawnPtr(const Memory& mem, uintptr_t pawnPtr) {
+	if (!pawnPtr)
+		return 0;
 
-    const auto controllerHandle = mem.Read<uintptr_t>(pawnPtr + offsets::controllerOfPawn);
+	const auto controllerHandle = mem.Read<uintptr_t>(pawnPtr + offsets::controllerOfPawn);
 
-    return getObjectPtrFromHandle(mem, controllerHandle);
-}
-
-
-static uintptr_t getPlayerControllerPtr(const Memory& mem, uintptr_t index, bool skipLocalPlayer = true)
-{
-    if (index >= 64)
-        exit(exit_codes::ENTITY_LIST_OOR);
-
-    const auto entityList = getEntityListPtr(mem);
-
-    if (!entityList)
-        return 0;
-
-    const auto controllerList = mem.Read<uintptr_t>(entityList + 0x10);
-
-    if (!controllerList)
-        return 0;
-
-    // The index is multiplied by 0x78 as that is the distance from one Controller Ptr to the next
-    // https://youtu.be/nB9metCiG7A?si=r5Qlorcxqdzs0Wjg&t=870
-    const auto controllerPtr = mem.Read<uintptr_t>(controllerList + index * 0x78);
-
-    if (skipLocalPlayer)
-    {
-        const auto client = mem.GetModuleAddress(modules::client);
-
-        const auto localPlayerController = mem.Read<uintptr_t>(client + offsets::localPlayerController);
-
-        if (localPlayerController == controllerPtr)
-            return 0;
-    }
-
-    return controllerPtr;
-}
-
-static uintptr_t getPlayerPawnPtr(const Memory& mem, uintptr_t index)
-{
-    const auto controller = getPlayerControllerPtr(mem, index);
-    return getPawnPtrFromControllerPtr(mem, controller);
+	return getObjectPtrFromHandle(mem, controllerHandle);
 }
 
 
-static uintptr_t getCurrentLookatEnemyPawn(const Memory& mem)
-{
-    const auto client = mem.GetModuleAddress(modules::client);
+static uintptr_t getPlayerControllerPtr(const Memory& mem, uintptr_t index, bool skipLocalPlayer = true) {
+	if (index >= 64)
+		exit(exit_codes::ENTITY_LIST_OOR);
 
-    const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+	const auto entityList = getEntityListPtr(mem);
 
-    const auto entIndex = mem.Read<CEntityIndex>(localPlayer + offsets::IDEntIndex);
+	if (!entityList)
+		return 0;
 
-    if (entIndex == (unsigned int)-1)
-        return 0;
+	const auto controllerList = mem.Read<uintptr_t>(entityList + 0x10);
 
-    // Get the local player's team and entity index
-    const auto team = mem.Read<PlayerTeam_t>(localPlayer + offsets::teamNum);
+	if (!controllerList)
+		return 0;
 
-    const auto entityPtr = getObjectPtrFromHandle(mem, entIndex);
+	// The index is multiplied by 0x78 as that is the distance from one Controller Ptr to the next
+	// https://youtu.be/nB9metCiG7A?si=r5Qlorcxqdzs0Wjg&t=870
+	const auto controllerPtr = mem.Read<uintptr_t>(controllerList + index * 0x78);
 
-    bool isPlayer = false;
+	if (skipLocalPlayer)
+	{
+		const auto client = mem.GetModuleAddress(modules::client);
 
-    for (size_t i = 0; i < 64; i++)
-    {
-        const auto playerPawnPtr = getPlayerPawnPtr(mem, i);
+		const auto localPlayerController = mem.Read<uintptr_t>(client + offsets::localPlayerController);
 
-        if (entityPtr == playerPawnPtr)
-        {
-            isPlayer = true;
-            break;
-        }
-    }
+		if (localPlayerController == controllerPtr)
+			return 0;
+	}
 
-    if (!isPlayer)
-        return 0;
-
-
-    // Get the enemy's team (target entity)
-    const auto otherTeam = mem.Read<PlayerTeam_t>(entityPtr + offsets::teamNum);
-
-    // Check if the target is an enemy (i.e. not on the same team)
-    if (team != otherTeam)
-        return entityPtr;
-
-    // TODO: Add check for Player
-
-    return 0;
+	return controllerPtr;
 }
 
-static uintptr_t getCurrentLookatEnemyController(const Memory& mem)
-{
-    const auto pawn = getCurrentLookatEnemyPawn(mem);
-    return getControllerPtrFromPawnPtr(mem, pawn);
+static uintptr_t getPlayerPawnPtr(const Memory& mem, uintptr_t index) {
+	const auto controller = getPlayerControllerPtr(mem, index);
+	return getPawnPtrFromControllerPtr(mem, controller);
 }
 
 
-static uintptr_t getCurrentLookatPlayerPawn(const Memory& mem)
-{
-    const auto client = mem.GetModuleAddress(modules::client);
+static uintptr_t getCurrentLookatEnemyPawn(const Memory& mem) {
+	const auto client = mem.GetModuleAddress(modules::client);
 
-    const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+	const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
-    const auto entIndex = mem.Read<CEntityIndex>(localPlayer + offsets::IDEntIndex);
+	const auto entIndex = mem.Read<CEntityIndex>(localPlayer + offsets::IDEntIndex);
 
-    if (entIndex == (unsigned int)-1)
-        return 0;
+	if (entIndex == (unsigned int)-1)
+		return 0;
 
-    // Get the local player's team and entity index
-    // const auto team = mem.Read<PlayerTeam_t>(localPlayer + offsets::teamNum);
+	// Get the local player's team and entity index
+	const auto team = mem.Read<PlayerTeam_t>(localPlayer + offsets::teamNum);
 
-    // TODO: Add check for Player
+	const auto entityPtr = getObjectPtrFromHandle(mem, entIndex);
 
-    return getObjectPtrFromHandle(mem, entIndex);
+	bool isPlayer = false;
+
+	for (size_t i = 0; i < 64; i++)
+	{
+		const auto playerPawnPtr = getPlayerPawnPtr(mem, i);
+
+		if (entityPtr == playerPawnPtr)
+		{
+			isPlayer = true;
+			break;
+		}
+	}
+
+	if (!isPlayer)
+		return 0;
+
+
+	// Get the enemy's team (target entity)
+	const auto otherTeam = mem.Read<PlayerTeam_t>(entityPtr + offsets::teamNum);
+
+	// Check if the target is an enemy (i.e. not on the same team)
+	if (team != otherTeam)
+		return entityPtr;
+
+	// TODO: Add check for Player
+
+	return 0;
 }
 
-static uintptr_t getCurrentLookatPlayerController(const Memory& mem)
-{
-    const auto pawn = getCurrentLookatPlayerPawn(mem);
-    return getControllerPtrFromPawnPtr(mem, pawn);
+static uintptr_t getCurrentLookatEnemyController(const Memory& mem) {
+	const auto pawn = getCurrentLookatEnemyPawn(mem);
+	return getControllerPtrFromPawnPtr(mem, pawn);
+}
+
+
+static uintptr_t getCurrentLookatPlayerPawn(const Memory& mem) {
+	const auto client = mem.GetModuleAddress(modules::client);
+
+	const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+
+	const auto entIndex = mem.Read<CEntityIndex>(localPlayer + offsets::IDEntIndex);
+
+	if (entIndex == (unsigned int)-1)
+		return 0;
+
+	// Get the local player's team and entity index
+	// const auto team = mem.Read<PlayerTeam_t>(localPlayer + offsets::teamNum);
+
+	// TODO: Add check for Player
+
+	return getObjectPtrFromHandle(mem, entIndex);
+}
+
+static uintptr_t getCurrentLookatPlayerController(const Memory& mem) {
+	const auto pawn = getCurrentLookatPlayerPawn(mem);
+	return getControllerPtrFromPawnPtr(mem, pawn);
 }

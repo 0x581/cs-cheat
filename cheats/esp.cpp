@@ -100,7 +100,7 @@ void runEspLoop(Memory& mem)
             continue;
         }
 
-        if (!mem.isValid()) {
+        if (!mem.is_valid) {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             continue;
         }
