@@ -114,6 +114,17 @@ public:
 	}
 
 	Memory() {
+
+		const wchar_t* symbolicLinkName = L"AssPileDriver";
+
+		// The target NT Device Path
+		const wchar_t* targetDeviceName = L"\\Device\\AssPileDriver";
+
+		// DDD_RAW_TARGET_PATH indicates targetDeviceName is an NT path, not a DOS path.
+		// DDD_REMOVE_DEFINITION can be used later to remove it.
+		// DDD_EXACT_MATCH_ON_REMOVE ensures you only remove the exact definition.
+		DefineDosDeviceW(DDD_RAW_TARGET_PATH, symbolicLinkName, targetDeviceName);
+
 		driver_handle = CreateFile(L"\\\\.\\AssPileDriver", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
 
 		if (driver_handle == INVALID_HANDLE_VALUE)
