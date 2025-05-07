@@ -23,7 +23,7 @@ static void connectionHandler(Memory& mem) {
 		if (!mem.is_valid)
 			if (mem.connectToProcess(L"cs2.exe", requiredModules))
 				std::cout << "Connection to CS2 established." << std::endl;
-			else if (!mem.processIsAlive())
+			else if (!mem.isProcessAlive())
 				std::cout << "Connection to CS2 lost." << std::endl;
 
 		std::this_thread::sleep_for(delays::memConnectionWaitTime);

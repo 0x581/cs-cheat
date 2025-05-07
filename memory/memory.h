@@ -1,20 +1,12 @@
 #pragma once
 
-#include <thread>
 
 #include <Windows.h>
-#include <iostream>
-#include <sstream>
-#include <iomanip>
 
+#include <thread>
 #include <unordered_map>
 
-#include <mutex>
-#include <cassert>
-
-#include "./driver.h"
-
-#include "../shared/defines.hpp"
+#include "asspiledriver.h"
 
 struct WCharHash {
 	size_t operator()(const wchar_t* const str) const noexcept {
@@ -37,213 +29,45 @@ struct WCharEqual {
 	}
 };
 
-constexpr auto BYTES_PER_ROW = 32;
-
 
 class Memory {
 private:
-	std::mutex mutex{};
-
-
-	HANDLE driver_handle = NULL;
+	HANDLE driver_handle;
 
 
 	std::unordered_map<const wchar_t*, uintptr_t, WCharHash, WCharEqual> modules{};
 
-	bool loadModuleMap() {
-
-		if (!driver::process_is_alive(driver_handle))
-		{
-			std::cout << "Tried to read modules of invalid process." << std::endl;
-			exit(exit_codes::MEMORY_READ_MODULES_ERROR);
-		}
-
-
-		const auto requiredModules = std::vector<const wchar_t*>({ modules::client });
-
-		size_t tries = 0;
-
-		for (auto& module : requiredModules)
-		{
-			uintptr_t address = 0;
-
-			do
-			{
-				address = driver::get_module_base(driver_handle, module);
-
-				if (address == 0)
-				{
-					std::this_thread::sleep_for(delays::memory::moduleFetchWaitTime);
-					++tries;
-				}
-
-			} while (address == 0 && tries < 10);
-
-			if (tries >= 10)
-			{
-				// 10 attempts to get the modules failed, clear process
-				std::cout << "Failed to fetch required Modules." << std::endl;
-
-				clearModuleMap();
-
-				return 0;
-			}
-
-			this->modules[module] = address;
-		}
-
-		return true;
-	}
-
-	void clearModuleMap() {
-		for (auto& module : this->modules)
-		{
-			delete[] module.first;
-		}
-
-		this->modules.clear();
-	}
+	bool loadModuleMap();
+	void clearModuleMap();
 
 public:
 	bool is_valid{ false };
 
-	const bool processIsAlive() {
-		this->is_valid = this->is_valid && driver::process_is_alive(driver_handle);
+	Memory();
+	~Memory();
 
-		return this->is_valid;
-	}
+	const bool connectToProcess(const wchar_t* processName, const std::vector<const wchar_t*>& requiredModules);
+	const uintptr_t GetModuleAddress(const wchar_t* moduleName) const;
 
-	Memory() {
-
-		const wchar_t* symbolicLinkName = L"AssPileDriver";
-
-		// The target NT Device Path
-		const wchar_t* targetDeviceName = L"\\Device\\AssPileDriver";
-
-		// DDD_RAW_TARGET_PATH indicates targetDeviceName is an NT path, not a DOS path.
-		// DDD_REMOVE_DEFINITION can be used later to remove it.
-		// DDD_EXACT_MATCH_ON_REMOVE ensures you only remove the exact definition.
-		DefineDosDeviceW(DDD_RAW_TARGET_PATH, symbolicLinkName, targetDeviceName);
-
-		driver_handle = CreateFile(L"\\\\.\\AssPileDriver", GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
-
-		if (driver_handle == INVALID_HANDLE_VALUE)
-		{
-			const auto error = GetLastError();
-
-			std::cout << "Failed to create our driver handle: " << error << std::endl;
-			std::cin.get();
-
-			throw std::runtime_error("Failed to create driver handle");
-		}
-
-		const auto old_debug_level = driver::set_debug_flags(driver_handle, DEFAULT_FLAGS);
-	}
-
-	~Memory() {
-		driver::unattach_from_process(driver_handle);
-
-		CloseHandle(driver_handle);
-
-		clearModuleMap();
-	}
-
-	const bool connectToProcess(const wchar_t* processName, const std::vector<const wchar_t*>& requiredModules) {
-		const std::scoped_lock sl{ this->mutex };
-
-		// Clean up previous connection if exists
-		assert(!this->is_valid && "Cannot connect to process while already connected.");
-
-		clearModuleMap();
-
-		if (driver::attach_to_process(driver_handle, processName))
-			std::cout << "Attachment successful.\n";
-		else
-			return false;
-
-		// Initialize the module hashmap
-		if (!this->loadModuleMap())
-		{
-			std::cout << "Failed to load module map." << std::endl;
-			return false;
-		}
-
-		this->is_valid = true;
-
-		return true;
-	}
-
+	const bool isProcessAlive();
 
 	// Normal functions for access & Co.
-
-	const uintptr_t GetModuleAddress(const wchar_t* moduleName) const {
-		if (!modules.contains(moduleName))
-			std::wcout << "Failed to find module: " << moduleName << std::endl;
-
-		return modules.at(moduleName);
-	}
 
 	template <typename T>
 	T Read(uintptr_t address) const {
 		T value{};
-		const bool success = driver::read_memory(driver_handle, address, &value, sizeof(T));
+		const bool success = apd::read_memory(driver_handle, address, &value, sizeof(T));
 
 		return success ? value : T{};
 	}
 
-	// Returns number of bytes read
-	size_t ReadBytes(uintptr_t address, byte* buffer, size_t nBytes) const {
-		return driver::read_memory(driver_handle, address, buffer, nBytes);
-	}
-
 	template <typename T>
 	bool Write(uintptr_t address, T value) const {
-		return driver::write_memory(driver_handle, address, &value, sizeof(T));
+		return apd::write_memory(driver_handle, address, &value, sizeof(T));
 	}
 
-	void Inspect(uintptr_t address, size_t nBytes) const {
-		byte* buffer = new byte[nBytes];
+	// Returns number of bytes read
+	size_t ReadBytes(uintptr_t address, byte* buffer, size_t nBytes) const;
 
-		size_t nBytesRead = this->ReadBytes(address, buffer, nBytes);
-
-		if (!nBytesRead)
-		{
-			std::cout << "Inspect " << nBytes << " bytes at 0x" << std::hex << address << std::dec << " failed." << std::endl;
-
-			delete[] buffer;
-			return;
-		}
-
-		std::ostringstream byteString{};
-
-		byteString << std::hex;
-
-		for (size_t i = 0; i < nBytesRead; i += BYTES_PER_ROW)
-		{
-			for (size_t j = 0; (i + j < nBytesRead) && j < BYTES_PER_ROW; j++)
-			{
-				if (i + j >= nBytes)
-				{
-					std::cout << "Read over the limit." << std::endl;
-					exit(exit_codes::MEMORY_INSPECT_ERROR);
-				}
-
-				if (j % 4 == 0 && j != 0)
-					byteString << " ";
-
-				byteString << std::setw(2) << std::setfill('0') << (unsigned int)buffer[i + j] << " ";
-			}
-			byteString << std::endl;
-		}
-		byteString << std::dec;
-
-		if (nBytesRead != nBytes)
-		{
-			byteString << "Inspect read " << nBytesRead << "/" << nBytes << " bytes." << std::endl;
-		}
-
-		std::cout << byteString.str();
-
-		delete[] buffer;
-	}
+	void Inspect(uintptr_t address, size_t nBytes) const;
 };
