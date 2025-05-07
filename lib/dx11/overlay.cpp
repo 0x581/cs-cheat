@@ -9,8 +9,11 @@
 #include <vector>
 #include <string>
 
-bool bone = true;
-bool boxesp = false;
+#define COLOR_NAME_MAX_LENGTH 64
+static int current_main_nav_item = 0;
+const char* nav_items[] = { "Aim", "Visuals", "Misc", "Config" };
+
+
 std::vector<std::string> configs = { "Default", "Legit", "Rage" };  // Beispiel-Configs
 char configNameBuffer[64] = "";  // Eingabefeld für neue Config-Namen
 int selectedConfig = -1;  // Index der aktuell ausgewählten Config
@@ -142,62 +145,124 @@ VOID c_overlay::dest_device() {
 
 VOID c_overlay::init_imgui() {
 	IMGUI_CHECKVERSION();
+	ImGui::SetCurrentContext(menuContext); // Wichtig: Kontext setzen, bevor Style geändert wird
 
-	ImVec4* colors = ImGui::GetStyle().Colors;
-
-	ImGui::SetCurrentContext(menuContext);
-	ImGui::StyleColorsClassic();
 	ImGuiStyle& style = ImGui::GetStyle();
+	ImVec4* colors = style.Colors;
 
-	style.WindowTitleAlign.x = 0.50f;
-	style.WindowPadding = ImVec2(20, 20);
-	style.WindowRounding = 20.0f;
-	style.FramePadding = ImVec2(10, 4);
-	style.FrameRounding = 12.0f;
-	style.ItemSpacing = ImVec2(12, 8);
-	style.ItemInnerSpacing = ImVec2(12, 6);
-	style.IndentSpacing = 25.0f;
-	style.ScrollbarSize = 15.0f;
+	// --- Theme Colors with Purple Accent ---
+	ImVec4 almostBlack = ImVec4(0.06f, 0.06f, 0.07f, 0.95f);
+	ImVec4 darkGray = ImVec4(0.10f, 0.10f, 0.12f, 0.95f);
+	// Lila Akzentfarben
+	ImVec4 brightPurple = ImVec4(0.5f, 0.2f, 0.8f, 1.00f);      // Ein kräftiges Lila
+	ImVec4 brightPurpleHover = ImVec4(0.6f, 0.3f, 0.9f, 1.00f); // Etwas helleres Lila für Hover/Aktiv
+	ImVec4 lightText = ImVec4(0.90f, 0.90f, 0.90f, 1.00f);
+	ImVec4 darkOutline = ImVec4(0.12f, 0.12f, 0.15f, 0.90f);
+
+	// --- General Style Variables ---
+	style.WindowPadding = ImVec2(15, 15);
+	style.WindowRounding = 5.0f;
+	style.FramePadding = ImVec2(8, 4);
+	style.FrameRounding = 4.0f;
+	style.ItemSpacing = ImVec2(10, 6);
+	style.ItemInnerSpacing = ImVec2(6, 6);
+	style.IndentSpacing = 20.0f;
+	style.ScrollbarSize = 12.0f;
 	style.ScrollbarRounding = 9.0f;
-	style.GrabMinSize = 5.0f;
-	style.GrabRounding = 3.0f;
-	style.WindowBorderSize = 5.0f;
-
-	style.TabBorderSize = 2.0f;
-	style.FrameBorderSize = 2.0f;
 	style.GrabMinSize = 10.0f;
+	style.GrabRounding = 3.0f;
 
-	colors[ImGuiCol_Border] = ImVec4(0.46f, 0.00f, 0.53f, 0.70f);
-	colors[ImGuiCol_CheckMark] = ImVec4(0.96f, 0.01f, 0.01f, 1.00f);
-	colors[ImGuiCol_WindowBg] = ImVec4(0.05f, 0.00f, 0.12f, 0.85f);
-	//colors[ImGuiCol_Border] = ImVec4(1.00f, 0.00f, 0.00f, 0.30f);
-	colors[ImGuiCol_CheckMark] = ImVec4(1.00f, 0.00f, 0.00f, 1.00f);
-	colors[ImGuiCol_SliderGrab] = ImVec4(1.00f, 0.00f, 0.00f, 0.84f);
-	colors[ImGuiCol_SliderGrabActive] = ImVec4(1.00f, 0.06f, 0.00f, 1.00f);
-	colors[ImGuiCol_Tab] = ImVec4(0.05f, 0.00f, 0.12f, 0.85f);
-	colors[ImGuiCol_TabHovered] = ImVec4(1.00f, 0.04f, 0.00f, 0.71f);
-	colors[ImGuiCol_TabActive] = ImVec4(1.00f, 0.04f, 0.00f, 0.71f);
+	style.WindowBorderSize = 1.0f;
+	style.ChildBorderSize = 1.0f;
+	style.PopupBorderSize = 1.0f;
+	style.FrameBorderSize = 0.0f;
+	style.TabBorderSize = 0.0f;
+
+	// --- Color Scheme ---
+	colors[ImGuiCol_Text] = lightText;
+	colors[ImGuiCol_TextDisabled] = ImVec4(0.50f, 0.50f, 0.50f, 1.00f);
+
+	colors[ImGuiCol_WindowBg] = almostBlack;
+	colors[ImGuiCol_ChildBg] = ImVec4(0.07f, 0.07f, 0.09f, 0.95f);
+	colors[ImGuiCol_PopupBg] = almostBlack;
+	colors[ImGuiCol_Border] = brightPurple;           // Fensterrahmenfarbe (Akzent)
+	colors[ImGuiCol_BorderShadow] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+
+	colors[ImGuiCol_FrameBg] = darkGray;
+	colors[ImGuiCol_FrameBgHovered] = ImVec4(0.12f, 0.12f, 0.14f, 1.00f);
+	colors[ImGuiCol_FrameBgActive] = ImVec4(0.14f, 0.14f, 0.16f, 1.00f);
+
+	colors[ImGuiCol_TitleBg] = almostBlack;
+	colors[ImGuiCol_TitleBgActive] = darkGray;
+	colors[ImGuiCol_TitleBgCollapsed] = almostBlack;
+
+	colors[ImGuiCol_MenuBarBg] = darkGray;
+
+	colors[ImGuiCol_ScrollbarBg] = ImVec4(0.02f, 0.02f, 0.02f, 0.53f);
+	colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.31f, 0.31f, 0.31f, 1.00f);
+	colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.41f, 0.41f, 0.41f, 1.00f);
+	colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.51f, 0.51f, 0.51f, 1.00f);
+
+	colors[ImGuiCol_CheckMark] = brightPurple;
+
+	colors[ImGuiCol_SliderGrab] = brightPurple;
+	colors[ImGuiCol_SliderGrabActive] = brightPurpleHover;
+
+	colors[ImGuiCol_Button] = darkGray;
+	colors[ImGuiCol_ButtonHovered] = ImVec4(0.15f, 0.15f, 0.17f, 1.00f);
+	colors[ImGuiCol_ButtonActive] = brightPurple;         // Aktiver Button (z.B. in der NavBar)
+
+	colors[ImGuiCol_Header] = darkGray;           // CollapsingHeader Hintergrund
+	colors[ImGuiCol_HeaderHovered] = brightPurpleHover;
+	colors[ImGuiCol_HeaderActive] = brightPurple;
+
+	colors[ImGuiCol_Separator] = darkOutline;
+	colors[ImGuiCol_SeparatorHovered] = brightPurple; // Kann auch Akzentfarbe sein
+	colors[ImGuiCol_SeparatorActive] = brightPurpleHover;
+
+	colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	colors[ImGuiCol_ResizeGripHovered] = brightPurple; // Thematisiert
+	colors[ImGuiCol_ResizeGripActive] = brightPurpleHover; // Thematisiert
+
+	colors[ImGuiCol_Tab] = darkGray;
+	colors[ImGuiCol_TabHovered] = ImVec4(0.15f, 0.15f, 0.17f, 1.00f);
+	colors[ImGuiCol_TabActive] = brightPurple; // Aktiver Nav-Button
+	colors[ImGuiCol_TabUnfocused] = darkGray;
+	colors[ImGuiCol_TabUnfocusedActive] = brightPurple;
+
+	colors[ImGuiCol_PlotLines] = ImVec4(0.61f, 0.61f, 0.61f, 1.00f);
+	colors[ImGuiCol_PlotLinesHovered] = brightPurpleHover;
+	colors[ImGuiCol_PlotHistogram] = brightPurple;
+	colors[ImGuiCol_PlotHistogramHovered] = brightPurpleHover;
+
+	colors[ImGuiCol_TableHeaderBg] = ImVec4(0.19f, 0.19f, 0.20f, 1.00f);
+	colors[ImGuiCol_TableBorderStrong] = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);
+	colors[ImGuiCol_TableBorderLight] = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);
+	colors[ImGuiCol_TableRowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+	colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
+
+	colors[ImGuiCol_TextSelectedBg] = ImVec4(brightPurple.x, brightPurple.y, brightPurple.z, 0.35f); // Lila mit Alpha
+	colors[ImGuiCol_DragDropTarget] = brightPurpleHover;
+	colors[ImGuiCol_NavHighlight] = brightPurple; // Farbe für Tastaturnavigation
+	colors[ImGuiCol_NavWindowingHighlight] = ImVec4(1.00f, 1.00f, 1.00f, 0.70f);
+	colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
+	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.04f, 0.04f, 0.05f, 0.65f);
 
 
-	//style.Colors[ImGuiCol_Border] = ImVec4(0.012f, 0.91f, 0.957f, ((breath / (float)breath_anim_time) * .7f) + .3f);
-
-	style.Colors[ImGuiCol_ResizeGrip] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-	style.Colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.56f, 0.56f, 0.58f, 1.00f);
-	style.Colors[ImGuiCol_ResizeGripActive] = ImVec4(0.06f, 0.05f, 0.07f, 1.00f);
-	style.Colors[ImGuiCol_PlotLines] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
-	style.Colors[ImGuiCol_PlotLinesHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-	style.Colors[ImGuiCol_PlotHistogram] = ImVec4(0.40f, 0.39f, 0.38f, 0.63f);
-	style.Colors[ImGuiCol_PlotHistogramHovered] = ImVec4(0.25f, 1.00f, 0.00f, 1.00f);
-	style.Colors[ImGuiCol_TextSelectedBg] = ImVec4(0.25f, 1.00f, 0.00f, 0.43f);
-	style.Colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.043f, 0.043f, 0.043f, 0.73f);
-
+	// --- Font Laden (dein Code) ---
 	ImGuiIO& io = ImGui::GetIO();
-	font->im_font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 24.0f);
-	font->font_size = 24.f;
+	if (font) {
+		font->im_font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f);
+		font->font_size = 16.f;
+	}
+	else {
+		io.Fonts->AddFontDefault();
+	}
 
 	ImGui_ImplWin32_Init(window_handle);
 	ImGui_ImplDX11_Init(d3d_device, device_context);
 }
+
 
 VOID c_overlay::dest_imgui() {
 	ImGui_ImplDX11_Shutdown();
@@ -316,233 +381,289 @@ void c_overlay::box_with_glow(const ImVec2 & min, const ImVec2 & max, ImU32 colo
 }
 
 
-const void c_overlay::renderCheats()
+const void c_overlay::renderCheats() 
 {
-	if (config.activeCheats.esp)
+	if (config.activeCheats.esp) 
 	{
-		const auto& enemyColor = selectedColorIt->second;
-		const auto& friendlyColor = rgbColors::black;
 
-		for (const auto& espRenderData : espData.data)
-		{
+		const ImU32 enemyColorU32 = ImGui::ColorConvertFloat4ToU32(config.esp.colorEnemyVisible);
+		const ImU32 teamColorU32 = ImGui::ColorConvertFloat4ToU32(config.esp.colorTeamVisible);
+
+		for (const auto& espRenderData : espData.data) {
 			if (!espRenderData.isValid)
 				continue;
-			if (bone == true)
-			{
-				const BoneData& bones = espRenderData.bones;
-				if (!espRenderData.isFriendly)
-				{
-					line(bones.head, bones.neck, enemyColor);
-					line(bones.neck, bones.spine4, enemyColor);
-					line(bones.spine4, bones.spine3, enemyColor);
-					line(bones.spine3, bones.spine2, enemyColor);
-					line(bones.spine2, bones.spine1, enemyColor);
-					line(bones.spine1, bones.hip, enemyColor);
-					line(bones.spine4, bones.l_shoulder, enemyColor);
-					line(bones.l_shoulder, bones.l_arm, enemyColor);
-					line(bones.l_arm, bones.l_wrist, enemyColor);
-					line(bones.l_wrist, bones.l_hand, enemyColor);
-					line(bones.spine4, bones.r_shoulder, enemyColor);
-					line(bones.r_shoulder, bones.r_arm, enemyColor);
-					line(bones.r_arm, bones.r_wrist, enemyColor);
-					line(bones.r_wrist, bones.r_hand, enemyColor);
-					line(bones.hip, bones.l_hip, enemyColor);
-					line(bones.l_hip, bones.l_knee, enemyColor);
-					line(bones.l_knee, bones.l_foot, enemyColor);
-					line(bones.hip, bones.r_hip, enemyColor);
-					line(bones.r_hip, bones.r_knee, enemyColor);
-					line(bones.r_knee, bones.r_foot, enemyColor);
-				}
-				
 
-				//circle(bones.head, 10.f, enemyColor);
+			ImU32 currentColorU32;
+			if (!espRenderData.isFriendly) {
+				currentColorU32 = enemyColorU32;
 			}
-			
+			else {
+				if (!config.esp.renderFriendlies) { 
+					continue;
+				}
+				currentColorU32 = teamColorU32;
+			}
 
+			// boneesp ESP
+			if (config.esp.bone) { 
+				const BoneData& bones = espRenderData.bones;
+				if (!espRenderData.isFriendly || config.esp.renderFriendlies) {
+					line(bones.head, bones.neck, currentColorU32);
+					line(bones.neck, bones.spine4, currentColorU32);
+					line(bones.spine4, bones.spine3, currentColorU32);
+					line(bones.spine3, bones.spine2, currentColorU32);
+					line(bones.spine2, bones.spine1, currentColorU32);
+					line(bones.spine1, bones.hip, currentColorU32);
+					line(bones.spine4, bones.l_shoulder, currentColorU32);
+					line(bones.l_shoulder, bones.l_arm, currentColorU32);
+					line(bones.l_arm, bones.l_wrist, currentColorU32);
+					line(bones.l_wrist, bones.l_hand, currentColorU32);
+					line(bones.spine4, bones.r_shoulder, currentColorU32);
+					line(bones.r_shoulder, bones.r_arm, currentColorU32);
+					line(bones.r_arm, bones.r_wrist, currentColorU32);
+					line(bones.r_wrist, bones.r_hand, currentColorU32);
+					line(bones.hip, bones.l_hip, currentColorU32);
+					line(bones.l_hip, bones.l_knee, currentColorU32);
+					line(bones.l_knee, bones.l_foot, currentColorU32);
+					line(bones.hip, bones.r_hip, currentColorU32);
+					line(bones.r_hip, bones.r_knee, currentColorU32);
+					line(bones.r_knee, bones.r_foot, currentColorU32);
+				}
+			}
 
 			const auto min = espRenderData.min;
 			const auto max = espRenderData.max;
 
-
-			if (!((min.x >= 0.f && min.y >= 0.f && min.x < window_width && min.y < window_height)
-				|| (max.x >= 0.f && max.y >= 0.f && max.x < window_width && max.y < window_height)))
+			if (!((min.x >= 0.f && min.y >= 0.f && min.x < window_width && min.y < window_height) ||
+				(max.x >= 0.f && max.y >= 0.f && max.x < window_width && max.y < window_height)))
 				continue;
 
-			if (boxesp == true)
-			{
-				if (config.esp.boxGlow)
-				{
-					float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
-
-					if (!espRenderData.isFriendly)
-						box_with_glow(min, max, enemyColor, 2.0f, dynamicGlowSize);
-					else if (config.esp.renderFriendlies)
-						box_with_glow(min, max, friendlyColor, 2.0f, dynamicGlowSize);
-				}
-				else
-				{
-					if (!espRenderData.isFriendly)
-						box(min, max, enemyColor);
-					else if (config.esp.renderFriendlies)
-						box(min, max, friendlyColor);
+			// Box ESP
+			if (config.esp.boxesp) { 
+	
+				if (!espRenderData.isFriendly || config.esp.renderFriendlies) {
+					if (config.esp.boxGlow) {
+						float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
+						box_with_glow(min, max, currentColorU32, 2.0f, dynamicGlowSize);
+					}
+					else {
+						box(min, max, currentColorU32);
+					}
 				}
 			}
-			
 
-			const auto name_text = espRenderData.playerName;
-			const auto text_size = ImGui::CalcTextSize(name_text);
-			
-			const auto text_pos = ImVec2{(max.x + min.x) / 2.f - (text_size.x / 2.f), max.y};
-			if (!espRenderData.isFriendly)
-			text(text_pos, name_text, enemyColor);
+			if (config.esp.nameesp == true) {
+				if (!espRenderData.isFriendly || config.esp.renderFriendlies) {
+					const auto name_text = espRenderData.playerName;
+					// const auto text_size = ImGui::CalcTextSize(name_text); 
+					const auto text_pos = ImVec2{ (max.x + min.x) / 2.f - (ImGui::CalcTextSize(name_text).x / 2.f), max.y };
+					text(text_pos, name_text, currentColorU32);
+				}
+			}
 		}
 	}
 
-	if (config.activeCheats.aimBot)
-	{
-		circle(ImVec2(window_width / 2.f, window_height / 2.f), config.aimBot.pixelRadius, rgbColors::purple2);
+	if (config.activeCheats.aimBot) {
+		if (config.aimBot.drawFovCircle) {
+			ImU32 circleColorU32 = ImGui::ColorConvertFloat4ToU32(config.aimBot.fovCircleColor);
+			circle(ImVec2(window_width / 2.f, window_height / 2.f), config.aimBot.pixelRadius, circleColorU32);
+		}
 	}
 }
 
 
-void c_overlay::draw_menu()
-{
+
+
+
+void c_overlay::draw_menu() {
 	ImGui::SetCurrentContext(menuContext);
+	ImGuiStyle& style = ImGui::GetStyle();
 
 	static bool isFirstIteration = true;
-
-	if (isFirstIteration)
-	{
-		// Main window position
+	if (isFirstIteration) {
 		ImGui::SetNextWindowPos(persistentConfig.mainWindow.windowPosition);
 		isFirstIteration = false;
 	}
 
-	ImGui::SetNextWindowSize(ImVec2(500, 500));
+	ImGui::SetNextWindowSize(ImVec2(650, 500), ImGuiCond_FirstUseEver); 
 
-	// imgui menu itself
-	ImGui::Begin(
-		"Main GUI",
-		0,
-		ImGuiWindowFlags_NoTitleBar
-		| ImGuiWindowFlags_NoResize
-		| ImGuiWindowFlags_NoSavedSettings
-	);
+	ImGui::Begin("Main GUI",
+		nullptr,
+		ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_NoSavedSettings);
 
 	persistentConfig.mainWindow.windowPosition = ImGui::GetWindowPos();
 
-	ImGui::Text("Merkur external");
-	if (ImGui::BeginTabBar("MyTabBar")) {
-		if (ImGui::BeginTabItem("aim")) {
-			ImGui::Checkbox("triggerbot", &config.activeCheats.triggerBot);
-			ImGui::Checkbox("aimbot", &config.activeCheats.aimBot);
-			if (config.activeCheats.aimBot == true)
-			{
-				(ImGui::SliderFloat("Fov",  &config.aimBot.pixelRadius, 0, 400));
-				(ImGui::SliderFloat("Smooth", &config.aimBot.speedFactor, 0, 2));
+	float nav_bar_width = 130.0f;
+	ImGui::BeginChild("NavBar", ImVec2(nav_bar_width, 0), true, ImGuiWindowFlags_NoScrollbar);
+	{
+		ImGui::PushFont(font->im_font);
+		ImGui::Text("Merkur");
+		ImGui::PopFont();
+		ImGui::Separator();
+		ImGui::Spacing();
+		for (int i = 0; i < IM_ARRAYSIZE(nav_items); ++i) {
+			bool is_selected = (current_main_nav_item == i);
+			if (is_selected) {
+				ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_TabActive]);
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, style.Colors[ImGuiCol_TabActive]);
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, style.Colors[ImGuiCol_TabActive]);
 			}
-			ImGui::EndTabItem();
+			else {
+				ImGui::PushStyleColor(ImGuiCol_Button, style.Colors[ImGuiCol_Tab]);
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, style.Colors[ImGuiCol_TabHovered]);
+				ImGui::PushStyleColor(ImGuiCol_ButtonActive, style.Colors[ImGuiCol_TabActive]);
+			}
+			if (ImGui::Button(nav_items[i], ImVec2(nav_bar_width - style.WindowPadding.x * 2, 30))) {
+				current_main_nav_item = i;
+			}
+			ImGui::PopStyleColor(3);
+			ImGui::Spacing();
 		}
-		
-		if (ImGui::BeginTabItem("visuals")) {
-			ImGui::BeginChild("##container", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
-				
-				ImGui::Checkbox("esp", &config.activeCheats.esp);
-				if (config.activeCheats.esp == true)
-				{
-					
-						if (ImGui::BeginCombo("Color", selectedColorIt->first.data())) {
-							// Draw all colors names to combobox
-							for (auto it = availableColors.begin(); it != availableColors.end(); ++it)
-							{
-								const auto& [colorName, color] = *it;
+	}
+	ImGui::EndChild();
 
-								bool isSelected = (selectedColorIt->first == colorName);
+	ImGui::SameLine();
 
-								if (ImGui::Selectable(colorName.data(), isSelected))
-								{
-									// Update selection if something was selected
-									memset(config.esp.selectedColor, 0, COLOR_NAME_MAX_LENGTH);
-									colorName.copy(config.esp.selectedColor, min(colorName.length(), COLOR_NAME_MAX_LENGTH));
-									config.esp.selectedColor[COLOR_NAME_MAX_LENGTH - 1] = '\0';
+	ImGui::BeginChild("ContentArea", ImVec2(0, 0), true);
+	{
+		ImGui::Text("%s Settings", nav_items[current_main_nav_item]);
+		ImGui::Separator();
+		ImGui::Spacing();
 
-									selectedColorIt = it;
-								}
-								if (isSelected)
-									ImGui::SetItemDefaultFocus(); // Keep the selected item focused
-							}
-							ImGui::EndCombo();
-						
-						}
-						
+		float label_width = 80.0f;
 
-					ImGui::Checkbox("bone esp", &bone);
-					ImGui::Checkbox("box esp", &boxesp);
-					if(boxesp == true)
-					ImGui::Checkbox("box glow", &config.esp.boxGlow);
+		switch (current_main_nav_item) {
+		case 0: // Aim
+			if (ImGui::CollapsingHeader("Aimbot Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::Checkbox("Triggerbot", &config.activeCheats.triggerBot);
+				ImGui::Checkbox("Enable Aimbot", &config.activeCheats.aimBot);
+				if (config.activeCheats.aimBot) {
+					ImGui::Indent();
+
+					ImGui::Checkbox("Draw FOV Circle", &config.aimBot.drawFovCircle);
+					if (config.aimBot.drawFovCircle) { 
+						ImGui::SameLine(0, style.ItemSpacing.x * 2); 
+						ImGui::ColorEdit4("##FovCircleColor", (float*)&config.aimBot.fovCircleColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
+						ImGui::Text("FOV");
+						ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
+						ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
+						ImGui::SliderFloat("##FOV", &config.aimBot.pixelRadius, 0.0f, 400.0f, "%.0fpx");
+						ImGui::PopItemWidth();
+					}
+					ImGui::Text("Smooth");
+					ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
+					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
+					ImGui::SliderFloat("##Smooth", &config.aimBot.speedFactor, 0.0f, 2.0f, "%.2f");
+					ImGui::PopItemWidth();
+					ImGui::Checkbox("Ignore Team", &config.aimBot.ignoreteam);
+					ImGui::Checkbox("visible(soon)", &config.aimBot.visible);
+
+
+					ImGui::Unindent();
 				}
 			}
-			ImGui::EndChild();
+			break;
 
-
-			ImGui::SetCursorPos({ 285, 95 });
-			ImGui::BeginChild("##container1", ImVec2(190, 275), false, ImGuiWindowFlags_NoScrollbar); {
-				ImGui::Checkbox("radar", &config.activeCheats.radar);
-				ImGui::Checkbox("antiflash", &config.activeCheats.antiFlash);
+		case 1: // Visuals
+			if (ImGui::CollapsingHeader("ESP General", ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::Checkbox("Enable ESP", &config.activeCheats.esp);
+				if (config.activeCheats.esp) {
+					ImGui::Indent();
+					ImGui::Checkbox("Show Teammates", &config.esp.renderFriendlies);
+					ImGui::Checkbox("Bone ESP", &config.esp.bone); 
+					ImGui::Checkbox("Name ESP", &config.esp.nameesp);
+					ImGui::Checkbox("Box ESP", &config.esp.boxesp);   
+					if (config.esp.boxesp) { 
+						ImGui::Indent();
+						ImGui::Checkbox("Box Glow", &config.esp.boxGlow);
+						ImGui::Unindent();
+					}
+					ImGui::Unindent();
+				}
 			}
-			ImGui::EndChild();
-			ImGui::EndTabItem();
-		}
-		
-		if (ImGui::BeginTabItem("misc")) {
-			ImGui::Checkbox("Fov changer", &config.activeCheats.fovChanger);
-			if (config.activeCheats.fovChanger == true)
-			{
-				(ImGui::SliderInt("Fov buggy", &config.fov.desiredFov, 60, 140));
-			}
-			ImGui::Checkbox("bomb info", &config.activeCheats.bombHack);
-			ImGui::Checkbox("soon", &l_test);
-			ImGui::EndTabItem();
-		}
-		
-		if (ImGui::BeginTabItem("Config")) {
-			ImGui::Text("Config Manager");
+			ImGui::Separator();
 
-			// ListBox mit gespeicherten Configs
-			if (ImGui::ListBoxHeader("##ConfigList", ImVec2(200, 100))) {
-				for (int i = 0; i < configs.size(); i++) {
-					bool isSelected = (selectedConfig == i);
-					if (ImGui::Selectable(configs[i].c_str(), isSelected)) {
-						selectedConfig = i;
+			if (config.activeCheats.esp) { 
+				if (ImGui::CollapsingHeader("ESP Colors", ImGuiTreeNodeFlags_DefaultOpen)) {
+					
+					float color_label_width = 180.0f; 
+					ImGui::Text("Enemy Visible");
+					ImGui::SameLine(color_label_width);
+					ImGui::ColorEdit4("##EnemyVisColor", (float*)&config.esp.colorEnemyVisible, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
+
+					ImGui::Text("Enemy Hidden(soon)"); 
+					ImGui::SameLine(color_label_width);
+					ImGui::ColorEdit4("##EnemyHidColor", (float*)&config.esp.colorEnemyHidden, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
+
+					if (config.esp.renderFriendlies) { 
+						ImGui::Text("Team Visible");
+						ImGui::SameLine(color_label_width);
+						ImGui::ColorEdit4("##TeamVisColor", (float*)&config.esp.colorTeamVisible, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
+
+						ImGui::Text("Team Hidden(soon)"); 
+						ImGui::SameLine(color_label_width);
+						ImGui::ColorEdit4("##TeamHidColor", (float*)&config.esp.colorTeamHidden, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 					}
 				}
-				ImGui::ListBoxFooter();
 			}
+			ImGui::Separator();
+			if (ImGui::CollapsingHeader("Other Visuals", ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::Checkbox("Radar(risky)", &config.activeCheats.radar);
+				ImGui::Checkbox("Anti-Flash(risky)", &config.activeCheats.antiFlash);
+			}
+			break;
 
-			
-			ImGui::InputText("Name", configNameBuffer, IM_ARRAYSIZE(configNameBuffer));
-
-			
-			if (ImGui::Button("Save Config")) {
-				if (strlen(configNameBuffer) > 0) {
-					configs.push_back(configNameBuffer);
-					memset(configNameBuffer, 0, sizeof(configNameBuffer)); 
+		case 2: // Misc
+			if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen)) {
+				ImGui::Checkbox("FOV Changer", &config.activeCheats.fovChanger);
+				if (config.activeCheats.fovChanger) {
+					ImGui::Indent();
+					ImGui::Text("FOV");
+					ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
+					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
+					ImGui::SliderInt("##FOVValue", &config.fov.desiredFov, 60, 140);
+					ImGui::PopItemWidth();
+					ImGui::Unindent();
 				}
+				ImGui::Checkbox("Bomb Info Panel", &config.activeCheats.bombHack);
+				ImGui::Checkbox("Soon™ Feature", &l_test);
 			}
+			break;
 
-			
-			if (ImGui::Button("Delete Config") && selectedConfig >= 0) {
-				configs.erase(configs.begin() + selectedConfig);
-				selectedConfig = -1;  
+		case 3: // Config
+			if (ImGui::CollapsingHeader("Manage Configurations", ImGuiTreeNodeFlags_DefaultOpen)) {
+				float halfWidth = ImGui::GetContentRegionAvail().x * 0.48f;
+				ImGui::BeginChild("ConfigListPane", ImVec2(halfWidth, 150), true);
+				ImGui::Text("Saved Configs:");
+				if (ImGui::ListBoxHeader("##ConfigList", ImVec2(-1.0f, -1.0f))) {
+					for (size_t i = 0; i < configs.size(); ++i) {
+						const bool is_selected = (static_cast<int>(i) == selectedConfig);
+						if (ImGui::Selectable(configs[i].c_str(), is_selected)) {
+							selectedConfig = static_cast<int>(i);
+							strncpy_s(configNameBuffer, sizeof(configNameBuffer), configs[i].c_str(), _TRUNCATE);
+						}
+						if (is_selected) ImGui::SetItemDefaultFocus();
+					}
+					ImGui::ListBoxFooter();
+				}
+				ImGui::EndChild();
+				ImGui::SameLine();
+				ImGui::BeginChild("ConfigActionsPane", ImVec2(0, 150), true);
+				ImGui::InputText("Name", configNameBuffer, IM_ARRAYSIZE(configNameBuffer));
+				if (ImGui::Button("Save", ImVec2(ImGui::GetContentRegionAvail().x, 0))) { /*Logik*/ }
+				if (ImGui::Button("Load", ImVec2(ImGui::GetContentRegionAvail().x, 0))) {
+					if (selectedConfig != -1) initConfigVariables(); /*Logik*/
+				}
+				if (ImGui::Button("Delete", ImVec2(ImGui::GetContentRegionAvail().x, 0))) { /*Logik*/ }
+				ImGui::EndChild();
 			}
-
-			ImGui::EndTabItem();
+			break;
 		}
-		ImGui::EndTabBar();
 	}
-	ImGui::End();
+	ImGui::EndChild(); 
+	ImGui::End();      
 }
-
 
 void c_overlay::draw_bomb()
 {

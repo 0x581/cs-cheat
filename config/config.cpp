@@ -24,9 +24,24 @@ static constexpr const ConfigData default_config{
         .radar = true,
         .triggerBot = true,
     },
-    .esp {.selectedColor{ "Green" }, .renderFriendlies = false, .boxGlow = false },
-    .aimBot {.pixelRadius = 100.f, .speedFactor = 0.7f},
-    .fov { .desiredFov = 90 },
+    .esp {
+        .renderFriendlies = false,
+        .boxGlow = false,
+        .bone = true,
+        .nameesp = true,
+        .colorEnemyVisible = {1.0f, 0.0f, 0.0f, 1.0f},   
+        .colorEnemyHidden = {1.0f, 0.5f, 0.0f, 1.0f},    
+        .colorTeamVisible = {0.0f, 1.0f, 0.0f, 1.0f},    
+        .colorTeamHidden = {0.0f, 0.5f, 1.0f, 1.0f},     
+        .colorItem = {1.0f, 1.0f, 0.0f, 1.0f}        
+    },
+    .aimBot { 
+        .pixelRadius = 100.f,
+        .speedFactor = 0.7f,
+        .drawFovCircle = true,                           
+        .fovCircleColor = {1.0f, 0.0f, 1.0f, 0.7f}       
+    },
+    .fov {.desiredFov = 90 },
 };
 
 static constexpr const PersistentConfigData default_shared_config{
