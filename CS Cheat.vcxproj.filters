@@ -103,7 +103,7 @@
     <ClCompile Include="config\config.cpp">
       <Filter>config</Filter>
     </ClCompile>
-    <ClCompile Include="memory\driver.cpp">
+    <ClCompile Include="memory\memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -178,7 +178,6 @@
       <Filter>config</Filter>
     </ClInclude>
     <ClInclude Include="shared\boneData.hpp" />
-    <ClInclude Include="memory\driver.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini">

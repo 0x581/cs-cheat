@@ -113,11 +113,13 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\ioctldriver\driver\um_driver\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\ioctldriver\build\api;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>apd_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -129,13 +131,15 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\ioctldriver\driver\um_driver\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\ioctldriver\build\api;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>apd_api.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -162,7 +166,7 @@
     <ClCompile Include="cheats\fovChanger.cpp" />
     <ClCompile Include="cheats\radarHack.cpp" />
     <ClCompile Include="cheats\triggerBot.cpp" />
-    <ClCompile Include="memory\driver.cpp" />
+    <ClCompile Include="memory\memory.cpp" />
     <ClCompile Include="shared\consoleControl.cpp" />
     <ClCompile Include="shared\sharedVariables.cpp" />
     <ClCompile Include="shared\string_utils.cpp" />
@@ -170,7 +174,6 @@
   <ItemGroup>
     <ClInclude Include="cheats\cheats.hpp" />
     <ClInclude Include="config\config.hpp" />
-    <ClInclude Include="memory\driver.h" />
     <ClInclude Include="shared\boneData.hpp" />
     <ClInclude Include="shared\colors.hpp" />
     <ClInclude Include="shared\defines.hpp" />
