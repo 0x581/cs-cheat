@@ -1,9 +1,9 @@
 #pragma once
 #include <atomic>
-
+#define COLOR_NAME_MAX_LENGTH 64
 #include "../lib/imgui/imgui.h"
 
-constexpr auto COLOR_NAME_MAX_LENGTH = 32;
+
 
 
 struct MainWindowSettings {
@@ -34,11 +34,27 @@ struct EspSettings {
     char selectedColor[COLOR_NAME_MAX_LENGTH];
     bool renderFriendlies;
     bool boxGlow;
+    bool bone;
+    bool boxesp;
+    bool nameesp;
+
+    ImVec4 colorEnemyVisible;
+    ImVec4 colorEnemyHidden;    
+    ImVec4 colorTeamVisible;
+    ImVec4 colorTeamHidden;     
+    ImVec4 colorItem;
+
 };
 
 struct AimBotSettings {
     float pixelRadius;
     float speedFactor;
+    bool drawFovCircle;
+    bool ignoreteam;
+    bool visible;
+    ImVec4 fovCircleColor;
+
+    
 };
 
 struct FovSettings {
