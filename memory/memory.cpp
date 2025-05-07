@@ -60,7 +60,9 @@ bool Memory::loadModuleMap() {
 			return 0;
 		}
 
-		this->modules[module] = address;
+		const auto module_name_copy = _wcsdup(module);
+
+		this->modules[module_name_copy] = address;
 	}
 
 	return true;
@@ -99,9 +101,9 @@ Memory::Memory() {
 }
 
 Memory::~Memory() {
-	apd::unattach_from_process(driver_handle);
+	apd::detach_from_process(driver_handle);
 
-	CloseHandle(driver_handle);
+	apd::close_driver(driver_handle);
 
 	clearModuleMap();
 }
@@ -113,7 +115,7 @@ const bool Memory::connectToProcess(const wchar_t* processName, const std::vecto
 
 	clearModuleMap();
 
-	if (apd::attach_to_process(driver_handle, processName))
+	if (apd::attach_to_process(driver_handle, processName, &pid))
 		std::cout << "Attachment successful.\n";
 	else
 		return false;
@@ -134,9 +136,6 @@ const bool Memory::connectToProcess(const wchar_t* processName, const std::vecto
 // Normal functions for access & Co.
 
 const uintptr_t Memory::GetModuleAddress(const wchar_t* moduleName) const {
-	if (!modules.contains(moduleName))
-		std::wcout << "Failed to find module: " << moduleName << std::endl;
-
 	return modules.at(moduleName);
 }
 
