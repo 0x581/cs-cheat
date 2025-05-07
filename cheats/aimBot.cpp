@@ -11,82 +11,83 @@
 #include "../math/math.hpp"
 
 
-static void runAimBot(const Memory& mem, const uintptr_t client)
+static void runAimBot(const Memory& mem, const uintptr_t client) 
 {
-	const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
-	const auto localPlayerTeam = mem.Read<PlayerTeam_t>(localPlayerPawn + offsets::teamNum);
+    const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+    if (!localPlayerPawn) return; 
+    const auto localPlayerTeam = mem.Read<PlayerTeam_t>(localPlayerPawn + offsets::teamNum);
 
-	const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
+    const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
 
-	Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };
+    Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };
 
-	auto lowestDistance = HUGE_VAL;
-	uintptr_t closestPawnPtr = 0;
-	Vector3 closestPoint{ 0 };
+    auto lowestDistance = HUGE_VAL;
+    uintptr_t closestPawnPtr = 0;
+    Vector3 closestPoint{ 0 };
 
+    for (int i = 0; i < 64; i++) {
+        const auto playerPawn = getPlayerPawnPtr(mem, i);
 
-	for (int i = 0; i < 64; i++) {
-		const auto playerPawn = getPlayerPawnPtr(mem, i);
+        if (!playerPawn || playerPawn == localPlayerPawn) 
+            continue;
 
-		if (!playerPawn)
-			continue;
+        const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
 
-		const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
+        if (config.aimBot.ignoreteam && (localPlayerTeam == playerTeam)) {
+            continue; 
+        }
 
-		if (localPlayerTeam == playerTeam)
-			continue;
+        const auto health = mem.Read<int>(playerPawn + offsets::health);
+        if (health <= 0 || health > 100)
+            continue;
 
-		const auto health = mem.Read<int>(playerPawn + offsets::health);
+        const auto movementServices = mem.Read<intptr_t>(playerPawn + offsets::movementServices);
+        if (!movementServices)
+            continue;
 
-		if (health <= 0 || health > 100)
-			continue;
+        const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
+        Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
+        Vector3 headPos = { footPos.x, footPos.y, footPos.z + 65.f - (crouchAmount * 17.f) };
+        auto screenHeadPos = worldToScreen(headPos, view_matrix);
 
-		const auto movementServices = mem.Read<intptr_t>(playerPawn + offsets::movementServices);
+        if (screenHeadPos.z == 0.f) 
+            continue;
 
-		if (!movementServices)
-			continue;
+        double distance(std::pow(screenHeadPos.x - screenCenter.x, 2) + std::pow(screenHeadPos.y - screenCenter.y, 2));
 
-		const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
+        if (distance >= lowestDistance)
+            continue;
 
-		Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
-		Vector3 headPos = { footPos.x, footPos.y, footPos.z + 65.f - (crouchAmount * 17.f) };
+        lowestDistance = distance;
+        closestPawnPtr = playerPawn;
+        closestPoint = screenHeadPos;
+    }
 
-		auto screenHeadPos = worldToScreen(headPos, view_matrix);
+    if (lowestDistance == HUGE_VAL || closestPawnPtr == 0) 
+        return;
 
-		if (screenHeadPos.z == 0.f)
-			continue;
+    const auto radius = config.aimBot.pixelRadius;
+    const auto maxDistance = radius * radius; 
 
-		double distance(std::pow(screenHeadPos.x - screenCenter.x, 2) + std::pow(screenHeadPos.y - screenCenter.y, 2));
+    if (lowestDistance > maxDistance)
+        return;
 
-		if (distance >= lowestDistance)
-			continue;
+    const auto diff_x = closestPoint.x - screenCenter.x;
+    const auto diff_y = closestPoint.y - screenCenter.y;
 
+    const auto speedFactor = config.aimBot.speedFactor;
 
-		lowestDistance = distance;
-		closestPawnPtr = playerPawn;
-		closestPoint = screenHeadPos;
-	}
+    if (speedFactor <= 0.001f) return;
 
-	if (lowestDistance == HUGE_VAL)
-		return;
+    
+    long new_x = static_cast<long>(diff_x * speedFactor);
+    long new_y = static_cast<long>(diff_y * speedFactor);
 
-	const auto radius = config.aimBot.pixelRadius;
-
-	const auto maxDistance = radius * radius;
-
-	if (lowestDistance > maxDistance)
-		return;
-
-	const auto diff_x = closestPoint.x - screenCenter.x;
-	const auto diff_y = closestPoint.y - screenCenter.y;
-
-	const auto speedFactor = config.aimBot.speedFactor;
-
-	auto new_x = (DWORD)(diff_x * speedFactor);
-	auto new_y = (DWORD)(diff_y * speedFactor);
-
-	mouse_event(MOUSEEVENTF_MOVE, new_x, new_y, 0, 0);
+    if (new_x != 0 || new_y != 0) {
+        mouse_event(MOUSEEVENTF_MOVE, static_cast<DWORD>(new_x), static_cast<DWORD>(new_y), 0, 0);
+    }
 }
+
 
 void runAimBotLoop(Memory& mem)
 {
