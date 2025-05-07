@@ -33,6 +33,7 @@ struct WCharEqual {
 class Memory {
 private:
 	HANDLE driver_handle;
+	HANDLE pid;
 
 
 	std::unordered_map<const wchar_t*, uintptr_t, WCharHash, WCharEqual> modules{};
