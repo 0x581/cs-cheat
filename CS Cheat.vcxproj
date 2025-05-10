@@ -113,7 +113,8 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -121,6 +122,9 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\ioctldriver\build\api;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>apd_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Manifest>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -131,7 +135,8 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -142,13 +147,14 @@
       <AdditionalDependencies>apd_api.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
-      <EnableDpiAwareness>true</EnableDpiAwareness>
+      <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="cheats\aimBot.cpp" />
-    <ClCompile Include="config\config.cpp" />
-    <ClCompile Include="lib\dx11\overlay.cpp" />
+    <ClCompile Include="src\cheats\aimBot.cpp" />
+    <ClCompile Include="includes\src\config.cpp" />
+    <ClCompile Include="includes\exit_codes.h" />
+    <ClCompile Include="overlay\overlay.cpp" />
     <ClCompile Include="lib\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui_demo.cpp" />
     <ClCompile Include="lib\imgui\imgui_draw.cpp" />
@@ -158,26 +164,32 @@
     <ClCompile Include="lib\imgui\imgui_widgets.cpp" />
     <ClCompile Include="lib\pch.cpp" />
     <ClCompile Include="lib\timer\timer.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="cheats\antiFlash.cpp" />
-    <ClCompile Include="cheats\bombTimer.cpp" />
-    <ClCompile Include="cheats\bunnyHop.cpp" />
-    <ClCompile Include="cheats\esp.cpp" />
-    <ClCompile Include="cheats\fovChanger.cpp" />
-    <ClCompile Include="cheats\radarHack.cpp" />
-    <ClCompile Include="cheats\triggerBot.cpp" />
-    <ClCompile Include="memory\memory.cpp" />
-    <ClCompile Include="shared\consoleControl.cpp" />
-    <ClCompile Include="shared\sharedVariables.cpp" />
-    <ClCompile Include="shared\string_utils.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\cheats\antiFlash.cpp" />
+    <ClCompile Include="src\cheats\bombTimer.cpp" />
+    <ClCompile Include="src\cheats\bunnyHop.cpp" />
+    <ClCompile Include="src\cheats\esp.cpp" />
+    <ClCompile Include="src\cheats\fovChanger.cpp" />
+    <ClCompile Include="src\cheats\radarHack.cpp" />
+    <ClCompile Include="src\cheats\triggerBot.cpp" />
+    <ClCompile Include="src\memory\memory.cpp" />
+    <ClCompile Include="includes\src\console_control.cpp" />
+    <ClCompile Include="includes\src\shared_variables.cpp" />
+    <ClCompile Include="includes\src\strings.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cheats\cheats.hpp" />
-    <ClInclude Include="config\config.hpp" />
-    <ClInclude Include="shared\boneData.hpp" />
-    <ClInclude Include="shared\colors.hpp" />
-    <ClInclude Include="shared\defines.hpp" />
-    <ClInclude Include="lib\dx11\overlay.h" />
+    <ClInclude Include="includes\console_control.h" />
+    <ClInclude Include="includes\cs_defines.h" />
+    <ClInclude Include="src\cheats\cheats.h" />
+    <ClInclude Include="includes\config.h" />
+    <ClInclude Include="includes\delays.h" />
+    <ClInclude Include="includes\files.h" />
+    <ClInclude Include="includes\keybinds.h" />
+    <ClInclude Include="includes\modules.h" />
+    <ClInclude Include="includes\offsets.h" />
+    <ClInclude Include="includes\boneData.h" />
+    <ClInclude Include="includes\colors.h" />
+    <ClInclude Include="overlay\overlay.h" />
     <ClInclude Include="lib\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
@@ -190,12 +202,11 @@
     <ClInclude Include="lib\imgui\imstb_truetype.h" />
     <ClInclude Include="lib\pch.h" />
     <ClInclude Include="lib\timer\timer.h" />
-    <ClInclude Include="math\math.hpp" />
-    <ClInclude Include="memory\memory.h" />
-    <ClInclude Include="shared\sharedVariables.hpp" />
-    <ClInclude Include="entityListInteraction.hpp" />
-    <ClInclude Include="shared\offsets.hpp" />
-    <ClInclude Include="shared\string_utils.hpp" />
+    <ClInclude Include="includes\vector_math.h" />
+    <ClInclude Include="src\memory\memory.h" />
+    <ClInclude Include="includes\shared_variables.h" />
+    <ClInclude Include="includes\entityListInteraction.h" />
+    <ClInclude Include="includes\strings.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui.ini" />
