@@ -193,7 +193,7 @@
     <None Include="lib\imgui\imgui_impl_osx.mm">
       <Filter>lib\imgui</Filter>
     </None>
-    <None Include="shared\fetchOffsets.py">
+    <None Include="script\fetchOffsets.py">
       <Filter>defines</Filter>
     </None>
   </ItemGroup>
