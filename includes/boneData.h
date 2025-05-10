@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #include "vector_math.h"
 #include "cs_defines.h"
 

@@ -1,7 +1,6 @@
-#ifndef OVERLAY_H_
-#define OVERLAY_H_
+#pragma once
 
-#include "../lib/pch.h"
+#include "../lib/imgui/pch.h"
 
 
 constexpr int menu_anim_time = 350;
@@ -50,6 +49,8 @@ public:
 
 	BOOL msg_loop();
 
+	VOID clear_screen();
+
 	void initConfigVariables();
 
 	VOID init_draw_list();
@@ -69,5 +70,3 @@ public:
 	INT breath;
 	s_font* font;
 };
-
-#endif

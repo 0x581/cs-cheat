@@ -1,4 +1,8 @@
-#include "overlay.h"
+#include "../overlay.h"
+#include "../../lib/uiaccess/uiaccess.h"
+
+#include <windows.h>
+
 
 #include "shared_variables.h"
 #include "colors.h"
@@ -6,13 +10,12 @@
 
 #include "keybinds.h"
 
-#include <map>
-#include <vector>
 #include <string>
+#include <vector>
+#include <map>
 
 using std::string, std::vector, std::map;
 
-#define COLOR_NAME_MAX_LENGTH 64
 static int current_main_nav_item = 0;
 const char* nav_items[] = { "Aim", "Visuals", "Misc", "Config" };
 
@@ -31,28 +34,78 @@ inline VOID c_overlay::safe_release(T*& p) {
 	}
 }
 
-static bool l_test = false;
-
-const map<std::string_view, const ImU32> availableColors
-{
-	{"Green", rgbColors::green},
-	{"Red", rgbColors::red},
-	{"Blue", rgbColors::blue},
-	{"Yellow", rgbColors::yellow},
-	{"Black", rgbColors::black},
-	{"White", rgbColors::white},
-	{"Purple", rgbColors::purple1},
-	{"Dark Purple", rgbColors::purple2},
-};
-
-auto selectedColorIt = availableColors.begin();
-
 
 ImGuiContext* menuContext = ImGui::CreateContext();
 
 
-BOOL c_overlay::init_device() {
+BOOL use_uiaccess(HWND* pHandle) {
 
+	typedef HWND(WINAPI* CreateWindowInBand)(
+		DWORD dwExStyle,
+		LPCWSTR lpClassName,
+		LPCWSTR lpWindowName,
+		DWORD dwStyle,
+		int x,
+		int y,
+		int nWidth,
+		int nHeight,
+		HWND hWndParent,
+		HMENU hMenu,
+		HINSTANCE hInstance,
+		LPVOID lpParam,
+		DWORD dwBand
+		);
+
+
+	DWORD dwErr = PrepareForUIAccess();
+
+	if (dwErr != ERROR_SUCCESS)
+		return dwErr;
+
+	constexpr auto ZBID_UIACCESS = 2; // UIAccess Band ID
+
+	const auto user32_dll = LoadLibrary(L"user32.dll");
+	const auto pCreateWindowInBand = (CreateWindowInBand)GetProcAddress(user32_dll, "CreateWindowInBand");
+
+	//WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, L"ImGui Example", NULL };
+	//auto res = RegisterClassExW(&wc);
+
+	//HWND hwnd = pCreateWindowInBand(WS_EX_TOPMOST | WS_EX_NOACTIVATE, res, NULL, 0x80000000, 0, 0, 0, 0, NULL, NULL, wndParentClass.hInstance, LPVOID(res), ZBID_UIACCESS);
+}
+
+
+BOOL hook_nvidia(HWND* pHandle) {
+	HWND handle = FindWindow(L"CEF-OSC-WIDGET", L"NVIDIA GeForce Overlay");
+
+	if (!handle)
+	{
+		std::cout << "Failed to find NVIDIA Overlay window." << std::endl;
+		return false;
+	}
+
+	auto style = GetWindowLongPtr(handle, GWL_EXSTYLE);
+	style |= WS_EX_TRANSPARENT; // | WS_EX_LAYERED;
+	SetWindowLongPtr(handle, GWL_EXSTYLE, style);
+
+	// avoiding window flags: https://www.unknowncheats.me/forum/general-programming-and-reversing/229070-overlay-window-topmost-top-game-windows-video.html
+	MARGINS margins = {
+		.cxLeftWidth = -1,
+		.cxRightWidth = -1,
+		.cyTopHeight = -1,
+		.cyBottomHeight = -1,
+	};
+
+	DwmExtendFrameIntoClientArea(handle, &margins);
+	SetLayeredWindowAttributes(handle, 0, 0xFF, LWA_ALPHA);
+	SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+
+	*pHandle = handle;
+
+	return true;
+}
+
+
+BOOL c_overlay::init_device() {
 	DXGI_SWAP_CHAIN_DESC vSwapChainDesc = {};
 	ZeroMemory(&vSwapChainDesc, sizeof(vSwapChainDesc));
 	vSwapChainDesc.BufferCount = 2;
@@ -90,9 +143,7 @@ BOOL c_overlay::init_device() {
 	);
 
 	if (FAILED(result))
-	{
 		return FALSE;
-	}
 
 	D3D11_BLEND_DESC blendDesc = {};
 	blendDesc.RenderTarget[0].BlendEnable = TRUE;
@@ -107,9 +158,7 @@ BOOL c_overlay::init_device() {
 	ID3D11BlendState* blendState = nullptr;
 	result = d3d_device->CreateBlendState(&blendDesc, &blendState);
 	if (FAILED(result))
-	{
 		return FALSE;
-	}
 
 	// Set up rasterizer state
 	D3D11_RASTERIZER_DESC rasterDesc = {};
@@ -121,9 +170,7 @@ BOOL c_overlay::init_device() {
 	ID3D11RasterizerState* rasterState = nullptr;
 	result = d3d_device->CreateRasterizerState(&rasterDesc, &rasterState);
 	if (FAILED(result))
-	{
 		return FALSE;
-	}
 
 	device_context->RSSetState(rasterState);
 
@@ -310,25 +357,17 @@ c_overlay::c_overlay() :
 	render_target_view(nullptr),
 	draw_list(nullptr),
 	breath(NULL) {
-	// get a handle to the nvidia window
-	window_handle = FindWindowA("CEF-OSC-WIDGET", "NVIDIA GeForce Overlay"); //Hijack nvidia share, bc for some reason this is fucking possible?
-	auto getInfo = GetWindowLongA(window_handle, -20);
-	auto changeAttributes = SetWindowLongA(window_handle, -20, (LONG_PTR)(getInfo | 0x20));
 
-	// avoiding window flags: https://www.unknowncheats.me/forum/general-programming-and-reversing/229070-overlay-window-topmost-top-game-windows-video.html
-	MARGINS margins = { -1 };
-	margins.cyBottomHeight = margins.cyTopHeight = margins.cxLeftWidth = margins.cxRightWidth = -1;
-	DwmExtendFrameIntoClientArea(window_handle, &margins);
-	SetLayeredWindowAttributes(window_handle, 0x000000, 0xFF, 0x02);
-	SetWindowPos(window_handle, HWND_TOPMOST, 0, 0, 0, 0, 0x0002 | 0x0001);
+	if (!use_uiaccess(&window_handle))
+		throw std::runtime_error(string("Failed to get UI access. Error: ") + std::to_string(GetLastError()));
 
-	if (!window_handle)
-		return; // error grabbing nvidia overlay
+	//if (!hook_nvidia(&window_handle))
+	//	throw std::runtime_error(string("Failed to hook NVIDIA overlay."));
 
 	font = new s_font();
 
 	if (!init_device())
-		return; // error creating device
+		throw std::runtime_error(string("Failed to initialize DX device."));
 
 	init_imgui();
 
@@ -337,56 +376,12 @@ c_overlay::c_overlay() :
 }
 
 c_overlay::~c_overlay() {
-	static const ImVec4 clear_clr = ImVec4{ 0, 0, 0, 0 };
-	device_context->ClearRenderTargetView(render_target_view, (float*)&clear_clr);
+	clear_screen();
 
 	dest_imgui();
 	dest_device();
 
 	delete font;
-}
-
-
-void c_overlay::box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size) {
-	ImDrawList* draw_list = ImGui::GetBackgroundDrawList();
-
-
-	float alpha = (color >> 24 & 0xFF) / 255.0f;
-	ImVec4 color_vec = ImGui::ColorConvertU32ToFloat4(color);
-
-
-	float glow_intensity = 0.3f;
-
-
-	for (int i = 1; i <= glow_size; i++)
-	{
-
-		float glow_alpha = alpha * glow_intensity * (1.0f - (float)i / glow_size);
-		ImU32 glow_color = ImGui::ColorConvertFloat4ToU32(ImVec4(color_vec.x, color_vec.y, color_vec.z, glow_alpha));
-
-
-		draw_list->AddRect(
-			ImVec2(min.x - i, min.y - i),
-			ImVec2(max.x + i, max.y + i),
-			glow_color,
-			0.0f,
-			0,
-			line_width
-		);
-
-
-		draw_list->AddRect(
-			ImVec2(min.x + i, min.y + i),
-			ImVec2(max.x - i, max.y - i),
-			glow_color,
-			0.0f,
-			0,
-			line_width
-		);
-	}
-
-
-	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
 }
 
 
@@ -502,9 +497,6 @@ const void c_overlay::renderCheats() {
 		}
 	}
 }
-
-
-
 
 
 void c_overlay::draw_menu() {
@@ -676,8 +668,7 @@ void c_overlay::draw_menu() {
 					ImGui::PopItemWidth();
 					ImGui::Unindent();
 				}
-				ImGui::Checkbox("Bomb Info Panel", &config.activeCheats.bombHack);
-				ImGui::Checkbox("Soon™ Feature", &l_test);
+				ImGui::Checkbox("Bomb Info Panel™", &config.activeCheats.bombHack);
 			}
 			break;
 
@@ -770,7 +761,8 @@ void c_overlay::draw_bomb() {
 const void c_overlay::render(FLOAT width, FLOAT height) {
 	if (exit)
 	{
-		init_draw_list();
+		//init_draw_list();
+		//clear_screen();
 		ready_to_close = true;
 		return;
 	}
@@ -797,24 +789,11 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	draw_menu();
 }
 
-void c_overlay::initConfigVariables() {
-	for (auto it = availableColors.begin(); it != availableColors.end(); ++it)
-	{
-		const auto& [colorName, color] = *it;
-
-		if (std::string_view(config.esp.selectedColor) == colorName)
-		{
-			selectedColorIt = it;
-			break;
-		}
-	}
-}
 
 BOOL c_overlay::msg_loop() {
 	if (window_handle)
 	{
 		MSG msg{ 0 };
-		ImVec4 clear_clr = { 0,0,0,0 };
 
 		if (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
 		{
@@ -830,13 +809,19 @@ BOOL c_overlay::msg_loop() {
 
 		ImGui::Render();
 		device_context->OMSetRenderTargets(1, &render_target_view, NULL);
-		device_context->ClearRenderTargetView(render_target_view, (float*)&clear_clr); // might break, if so then put cheat color of type ImVec4 { 0,0,0,0 }
+		clear_screen();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		swap_chain->Present(0, 0);
+		swap_chain->Present(1, 0);
 
 		return msg.message != WM_QUIT;
 	}
 	return false;
+}
+
+void c_overlay::clear_screen() {
+	constexpr ImVec4 clear_clr = { 0,0,0,0 };
+
+	device_context->ClearRenderTargetView(render_target_view, (float*)&clear_clr);
 }
 
 void c_overlay::input_handler() {
@@ -869,7 +854,8 @@ void c_overlay::anim_handler() {
 		SetWindowPos(window_handle, HWND_TOPMOST, rect.left, rect.top, rect.right, rect.bottom, SWP_NOREDRAW);
 
 		// panic key
-		exit = GetAsyncKeyState(keybinds::quickExit) & 0x8000;
+		if (GetAsyncKeyState(keybinds::quickExit) & 0x8000)
+			exit = true;
 
 		// timer for our breathing animation
 		int breath_tmr = breath_timer.end();
@@ -898,58 +884,6 @@ void c_overlay::anim_handler() {
 
 VOID c_overlay::init_draw_list() {
 	draw_list = ImGui::GetBackgroundDrawList();
-}
-
-//to make esp box
-VOID c_overlay::box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width) {
-	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
-}
-
-
-//esp tracer
-VOID c_overlay::line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width) {
-	if ((point1.x >= 0.f && point1.y >= 0.f && point1.x < window_width && point1.y < window_height)
-		|| (point2.x >= 0.f && point2.y >= 0.f && point2.x < window_width && point2.y < window_height))
-		draw_list->AddLine(point1, point2, color, line_width);
-}
-//aimbot fov circle
-VOID c_overlay::circle(const ImVec2& point, const FLOAT radius, ImU32 color) {
-	draw_list->AddCircle(point, radius, color, 200, 3.f); // num segments is how circular the circle actually is
-}
-//esp names
-VOID c_overlay::text(const ImVec2& pos, const string& text, ImU32 color, bool outline) {
-	if (outline)
-	{
-		draw_list->AddText(font->im_font, font->im_font->FontSize, { pos.x + 1, pos.y }, IM_COL32_BLACK, text.c_str());
-		draw_list->AddText(font->im_font, font->im_font->FontSize, { pos.x - 1, pos.y }, IM_COL32_BLACK, text.c_str());
-		draw_list->AddText(font->im_font, font->im_font->FontSize, { pos.x, pos.y + 1 }, IM_COL32_BLACK, text.c_str());
-		draw_list->AddText(font->im_font, font->im_font->FontSize, { pos.x, pos.y - 1 }, IM_COL32_BLACK, text.c_str());
-	}
-	draw_list->AddText(font->im_font, font->im_font->FontSize, pos, color, text.c_str());
-}
-// Filled circle. creates a gradient from middle color to outer color
-VOID c_overlay::radial_gradient(const ImVec2& center, float radius, ImU32 col_in, ImU32 col_out) {
-	if (((col_in | col_out) & IM_COL32_A_MASK) == 0 || radius < 0.5f)
-		return;
-
-	draw_list->_PathArcToFastEx(center, radius, 0, IM_DRAWLIST_ARCFAST_SAMPLE_MAX, 0);
-	const int count = draw_list->_Path.Size - 1;
-
-	unsigned int vtx_base = draw_list->_VtxCurrentIdx;
-	draw_list->PrimReserve(count * 3, count + 1);
-
-	const ImVec2 uv = draw_list->_Data->TexUvWhitePixel;
-	draw_list->PrimWriteVtx(center, uv, col_in);
-	for (int n = 0; n < count; n++)
-		draw_list->PrimWriteVtx(draw_list->_Path[n], uv, col_out);
-
-	for (int n = 0; n < count; n++)
-	{
-		draw_list->PrimWriteIdx((ImDrawIdx)(vtx_base));
-		draw_list->PrimWriteIdx((ImDrawIdx)(vtx_base + 1 + n));
-		draw_list->PrimWriteIdx((ImDrawIdx)(vtx_base + 1 + ((n + 1) % count)));
-	}
-	draw_list->_Path.Size = 0;
 }
 
 BOOL c_overlay::in_screen(const ImVec2& pos) {

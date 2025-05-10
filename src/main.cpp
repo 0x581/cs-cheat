@@ -34,7 +34,7 @@ static void connectionHandler(Memory& mem) {
 }
 
 static void cleanUp() {
-	overlay.~c_overlay();
+	//overlay.~c_overlay();
 
 	store_persistent_config_data(persistentConfig, files::persistentConfig);
 	store_cheat_config_data(config, L"default");
@@ -45,7 +45,7 @@ static int exitHandler(DWORD fdwCtrlType) {
 	{
 	case CTRL_CLOSE_EVENT:
 	case CTRL_C_EVENT:
-		cleanUp();
+		overlay.~c_overlay();
 		return TRUE;
 	}
 	return FALSE;
@@ -61,6 +61,7 @@ int main() {
 	Memory mem{};
 
 	std::thread conn{ connectionHandler, std::ref(mem) };
+	conn.detach();
 
 	std::thread triggerBot{ runTriggerBotLoop, std::ref(mem) };
 	std::thread antiFlash{ runAntiFlashLoop, std::ref(mem) };
@@ -70,6 +71,14 @@ int main() {
 	std::thread esp{ runEspLoop, std::ref(mem) };
 	std::thread bombHack{ runBombHackLoop, std::ref(mem) };
 	std::thread aimBot{ runAimBotLoop, std::ref(mem) };
+	triggerBot.detach();
+	antiFlash.detach();
+	bunnyHop.detach();
+	radarHack.detach();
+	fovChanger.detach();
+	esp.detach();
+	bombHack.detach();
+	aimBot.detach();
 
 	overlay.initConfigVariables();
 
