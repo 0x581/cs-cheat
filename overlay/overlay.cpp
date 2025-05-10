@@ -393,6 +393,12 @@ void c_overlay::box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color,
 const void c_overlay::renderCheats() {
 	if (config.activeCheats.esp)
 	{
+		float dynamicGlowSize = 0.0f;
+		if (config.esp.boxGlow)
+		{ // Nur berechnen, wenn Glow überhaupt aktiv sein könnte
+// Die Berechnung selbst kann bleiben, aber sie geschieht jetzt außerhalb der Schleife
+			dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
+		}
 
 		const ImU32 enemyColorU32 = ImGui::ColorConvertFloat4ToU32(config.esp.colorEnemyVisible);
 		const ImU32 teamColorU32 = ImGui::ColorConvertFloat4ToU32(config.esp.colorTeamVisible);
@@ -403,18 +409,33 @@ const void c_overlay::renderCheats() {
 				continue;
 
 			ImU32 currentColorU32;
+			bool shouldRenderThisEntity = false;
+
 			if (!espRenderData.isFriendly)
 			{
 				currentColorU32 = enemyColorU32;
+				shouldRenderThisEntity = true;
 			}
 			else
 			{
-				if (!config.esp.renderFriendlies)
+				if (config.esp.renderFriendlies)
+				{
+					currentColorU32 = teamColorU32;
+					shouldRenderThisEntity = true;
+				}
+				else
 				{
 					continue;
 				}
-				currentColorU32 = teamColorU32;
 			}
+
+			if (!shouldRenderThisEntity) continue;
+
+			const auto min = espRenderData.min;
+			const auto max = espRenderData.max;
+			if (!((min.x >= 0.f && min.y >= 0.f && min.x < window_width && min.y < window_height) ||
+				(max.x >= 0.f && max.y >= 0.f && max.x < window_width && max.y < window_height)))
+				continue;
 
 			// boneesp ESP
 			if (config.esp.bone)
@@ -445,28 +466,17 @@ const void c_overlay::renderCheats() {
 				}
 			}
 
-			const auto min = espRenderData.min;
-			const auto max = espRenderData.max;
-
-			if (!((min.x >= 0.f && min.y >= 0.f && min.x < window_width && min.y < window_height) ||
-				(max.x >= 0.f && max.y >= 0.f && max.x < window_width && max.y < window_height)))
-				continue;
-
 			// Box ESP
 			if (config.esp.boxesp)
 			{
-
-				if (!espRenderData.isFriendly || config.esp.renderFriendlies)
+				if (config.esp.boxGlow)
 				{
-					if (config.esp.boxGlow)
-					{
-						float dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
-						box_with_glow(min, max, currentColorU32, 2.0f, dynamicGlowSize);
-					}
-					else
-					{
-						box(min, max, currentColorU32);
-					}
+					// Verwende die vorab berechnete dynamicGlowSize
+					box_with_glow(min, max, currentColorU32, 2.0f, dynamicGlowSize);
+				}
+				else
+				{
+					box(min, max, currentColorU32);
 				}
 			}
 
