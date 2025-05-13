@@ -1,6 +1,7 @@
 #include "cheats.h"
 
 #include <thread>
+#include <windows.h>
 
 #include "config.h"
 #include "delays.h"
@@ -9,7 +10,11 @@
 #include "shared_variables.h"
 #include "modules.h"
 #include "keybinds.h"
-
+void simulateLeftClick() {
+	mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
+	std::this_thread::sleep_for(delays::triggerBot::keyPressTime);
+	mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+}
 
 static void runTriggerBot(const Memory& mem, const uintptr_t client) {
 
@@ -36,10 +41,10 @@ static void runTriggerBot(const Memory& mem, const uintptr_t client) {
 	{
 		return;
 	}
-
-	mem.Write<int>(client + offsets::attack, 65537); // + attack
-	std::this_thread::sleep_for(delays::triggerBot::keyPressTime);
-	mem.Write<int>(client + offsets::attack, 256);   // - attack
+	simulateLeftClick();
+	//mem.Write<int>(client + offsets::attack, 65537); // + attack
+	//std::this_thread::sleep_for(delays::triggerBot::keyPressTime);
+	//mem.Write<int>(client + offsets::attack, 256);   // - attack
 }
 
 
