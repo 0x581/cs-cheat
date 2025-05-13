@@ -5,7 +5,7 @@ https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/
 """
 
 from dataclasses import dataclass
-
+import os
 import requests
 
 OFFSETS_URL = "https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/"
@@ -341,5 +341,6 @@ def get_all_offsets() -> str:
 
 
 if __name__ == "__main__":
-    with open("includes/offsets.h", "w") as file:
+    output_path = os.path.join(os.path.dirname(os.path.abspath(__file__), os.pardir, "includes", "offsets.h")
+    with open(output_path, "w") as file:
         file.write(get_all_offsets())
