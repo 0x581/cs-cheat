@@ -16,7 +16,16 @@ static void runRadarHack(const Memory& mem, const uintptr_t client) {
 		if (!entityPawnPtr)
 			continue;
 
-		mem.Write<bool>(entityPawnPtr + offsets::entitySpottedState + offsets::spotted, true);
+		auto written = mem.Write<bool>(entityPawnPtr + offsets::entitySpottedState + offsets::spotted, true);
+
+		if (written != sizeof(bool))
+		{
+			if (written == (size_t)-1)
+				std::cout << "Failed to write to entity spotted state." << std::endl;
+			else
+				std::cout << "Failed to write to entity spotted state. Bytes written: " << written << std::endl;
+			continue;
+		}
 	}
 }
 

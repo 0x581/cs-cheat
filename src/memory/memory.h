@@ -63,7 +63,7 @@ public:
 	}
 
 	template <typename T>
-	bool Write(uintptr_t address, T value) const {
+	size_t Write(uintptr_t address, T value) const {
 		return apd::write_memory(driver_handle, address, &value, sizeof(T));
 	}
 
