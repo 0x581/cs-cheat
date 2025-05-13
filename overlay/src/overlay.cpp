@@ -889,3 +889,7 @@ VOID c_overlay::init_draw_list() {
 BOOL c_overlay::in_screen(const ImVec2& pos) {
 	return !(pos.x > window_width || pos.x<0 || pos.y>window_height || pos.y < 0);
 }
+void c_overlay::initConfigVariables()
+{
+	//nothing
+}
