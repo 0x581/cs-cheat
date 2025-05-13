@@ -17,6 +17,8 @@ struct EspRenderData {
 	Vector2 min{ 0, 0 };
 	Vector2 max{ 0, 0 };
 	BoneData bones{};
+	uintptr_t pawnPtr = 0;
+
 };
 
 struct ESPData {

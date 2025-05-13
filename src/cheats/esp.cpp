@@ -30,7 +30,7 @@ static void runEsp(const Memory& mem, const uintptr_t client) {
 
 		const auto controller = getPlayerControllerPtr(mem, i);
 		const auto playerPawn = getPawnPtrFromControllerPtr(mem, controller);
-
+		espData.data[i].pawnPtr = playerPawn;
 		if (!playerPawn || playerPawn == localPlayerPawn)
 			continue;
 

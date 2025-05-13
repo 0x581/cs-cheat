@@ -11,114 +11,105 @@
 #include "keybinds.h"
 #include "vector_math.h"
 #include "offsets.h"
-
+#include "shared_variables.h" 
 
 static void runAimBot(const Memory& mem, const uintptr_t client) {
-	const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
-	if (!localPlayerPawn) return;
-	const auto localPlayerTeam = mem.Read<PlayerTeam_t>(localPlayerPawn + offsets::teamNum);
+    const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+    if (!localPlayerPawn) return;
+    const auto localPlayerTeam = mem.Read<PlayerTeam_t>(localPlayerPawn + offsets::teamNum);
 
-	const auto view_matrix = mem.Read<view_matrix_t>(client + offsets::ViewMatrix);
+    Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };
 
-	Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };
+    auto lowestDistance = HUGE_VAL;
+    ImVec2 closestHeadScreen{ 0, 0 };
 
-	auto lowestDistance = HUGE_VAL;
-	uintptr_t closestPawnPtr = 0;
-	Vector3 closestPoint{ 0 };
+    for (int i = 0; i < 64; i++)
+    {
+        const auto playerPawn = getPlayerPawnPtr(mem, i);
 
-	for (int i = 0; i < 64; i++)
-	{
-		const auto playerPawn = getPlayerPawnPtr(mem, i);
+        if (!playerPawn || playerPawn == localPlayerPawn)
+            continue;
 
-		if (!playerPawn || playerPawn == localPlayerPawn)
-			continue;
+        const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
 
-		const auto playerTeam = mem.Read<PlayerTeam_t>(playerPawn + offsets::teamNum);
+        if (config.aimBot.ignoreteam && (localPlayerTeam == playerTeam))
+            continue;
 
-		if (config.aimBot.ignoreteam && (localPlayerTeam == playerTeam))
-		{
-			continue;
-		}
+        const auto health = mem.Read<int>(playerPawn + offsets::health);
+        if (health <= 0 || health > 100)
+            continue;
 
-		const auto health = mem.Read<int>(playerPawn + offsets::health);
-		if (health <= 0 || health > 100)
-			continue;
+        ImVec2 headScreen = { 0, 0 };
+        for (int j = 0; j < 64; ++j) {
+            if (espData.data[j].isValid && espData.data[j].pawnPtr == playerPawn) {
+                headScreen = espData.data[j].bones.head; 
+                break;
+            }
+        }
 
-		const auto movementServices = mem.Read<intptr_t>(playerPawn + offsets::movementServices);
-		if (!movementServices)
-			continue;
+        if (headScreen.x == 0.f && headScreen.y == 0.f)
+            continue;
 
-		const auto crouchAmount = mem.Read<float>(movementServices + offsets::crouchAmount);
-		Vector3 footPos = mem.Read<Vector3>(playerPawn + offsets::OldOrigin);
-		Vector3 headPos = { footPos.x, footPos.y, footPos.z + 65.f - (crouchAmount * 17.f) };
-		auto screenHeadPos = worldToScreen(headPos, view_matrix);
+        double distance = std::pow(headScreen.x - screenCenter.x, 2) + std::pow(headScreen.y - screenCenter.y, 2);
 
-		if (screenHeadPos.z == 0.f)
-			continue;
+        if (distance >= lowestDistance)
+            continue;
 
-		double distance(std::pow(screenHeadPos.x - screenCenter.x, 2) + std::pow(screenHeadPos.y - screenCenter.y, 2));
+        lowestDistance = distance;
+        closestHeadScreen = headScreen;
+    }
 
-		if (distance >= lowestDistance)
-			continue;
+    if (lowestDistance == HUGE_VAL)
+        return;
 
-		lowestDistance = distance;
-		closestPawnPtr = playerPawn;
-		closestPoint = screenHeadPos;
-	}
+    const auto radius = config.aimBot.pixelRadius;
+    const auto maxDistance = radius * radius;
 
-	if (lowestDistance == HUGE_VAL || closestPawnPtr == 0)
-		return;
+    if (lowestDistance > maxDistance)
+        return;
 
-	const auto radius = config.aimBot.pixelRadius;
-	const auto maxDistance = radius * radius;
+    const auto diff_x = closestHeadScreen.x - screenCenter.x;
+    const auto diff_y = closestHeadScreen.y - screenCenter.y;
 
-	if (lowestDistance > maxDistance)
-		return;
+    const auto speedFactor = config.aimBot.speedFactor;
 
-	const auto diff_x = closestPoint.x - screenCenter.x;
-	const auto diff_y = closestPoint.y - screenCenter.y;
+    if (speedFactor <= 0.001f) return;
 
-	const auto speedFactor = config.aimBot.speedFactor;
+    long new_x = static_cast<long>(diff_x * speedFactor);
+    long new_y = static_cast<long>(diff_y * speedFactor);
 
-	if (speedFactor <= 0.001f) return;
-
-
-	long new_x = static_cast<long>(diff_x * speedFactor);
-	long new_y = static_cast<long>(diff_y * speedFactor);
-
-	if (new_x != 0 || new_y != 0)
-	{
-		mouse_event(MOUSEEVENTF_MOVE, static_cast<DWORD>(new_x), static_cast<DWORD>(new_y), 0, 0);
-	}
+    if (new_x != 0 || new_y != 0)
+    {
+        mouse_event(MOUSEEVENTF_MOVE, static_cast<DWORD>(new_x), static_cast<DWORD>(new_y), 0, 0);
+    }
 }
 
-
 void runAimBotLoop(Memory& mem) {
-	while (true)
-	{
-		if (!config.activeCheats.aimBot)
-		{
-			std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
-			continue;
-		}
+    while (true)
+    {
+        if (!config.activeCheats.aimBot)
+        {
+            std::this_thread::sleep_for(delays::cheatInactiveWaitTime);
+            continue;
+        }
 
-		if (!mem.is_valid)
-		{
-			std::this_thread::sleep_for(delays::memConnectionWaitTime);
-			continue;
-		}
+        if (!mem.is_valid)
+        {
+            std::this_thread::sleep_for(delays::memConnectionWaitTime);
+            continue;
+        }
 
-		std::this_thread::sleep_for(delays::aimbot::sleep);
+        std::this_thread::sleep_for(delays::aimbot::sleep);
 
-		const auto client = mem.GetModuleAddress(modules::client);
+        const auto client = mem.GetModuleAddress(modules::client);
 
-		const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+        const auto localPlayer = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
-		// No local player -> No match currently going on
-		if (!localPlayer)
-			continue;
+        // No local player -> No match currently going on
+        if (!localPlayer)
+            continue;
 
-		if (GetAsyncKeyState(keybinds::aimBot))
-			runAimBot(mem, client);
-	}
+        if (GetAsyncKeyState(keybinds::aimBot))
+            runAimBot(mem, client);
+    }
 }
