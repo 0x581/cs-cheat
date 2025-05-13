@@ -20,9 +20,9 @@ static int current_main_nav_item = 0;
 const char* nav_items[] = { "Aim", "Visuals", "Misc", "Config" };
 
 
-vector<string> configs = { "Default", "Legit", "Rage" };  // Beispiel-Configs
-char configNameBuffer[64] = "";  // Eingabefeld für neue Config-Namen
-int selectedConfig = -1;  // Index der aktuell ausgewählten Config
+vector<string> configs = { "Default", "Legit", "Rage" };
+char configNameBuffer[64] = "";
+int selectedConfig = -1;
 
 // microsoft safe release of pointers
 template <typename T>
@@ -37,6 +37,8 @@ inline VOID c_overlay::safe_release(T*& p) {
 
 ImGuiContext* menuContext = ImGui::CreateContext();
 
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 BOOL use_uiaccess(HWND* pHandle) {
 
@@ -56,21 +58,68 @@ BOOL use_uiaccess(HWND* pHandle) {
 		DWORD dwBand
 		);
 
+	//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
 	DWORD dwErr = PrepareForUIAccess();
 
 	if (dwErr != ERROR_SUCCESS)
 		return dwErr;
 
+	std::cout << "Process has UI Access." << std::endl;
+
 	constexpr auto ZBID_UIACCESS = 2; // UIAccess Band ID
 
 	const auto user32_dll = LoadLibrary(L"user32.dll");
+	if (user32_dll == 0)
+	{
+		std::cout << "Failed to load user32.dll" << std::endl;
+		return FALSE;
+	}
+
 	const auto pCreateWindowInBand = (CreateWindowInBand)GetProcAddress(user32_dll, "CreateWindowInBand");
 
-	//WNDCLASSEXW wc = { sizeof(wc), CS_CLASSDC, WndProc, 0L, 0L, GetModuleHandle(NULL), NULL, NULL, NULL, NULL, L"ImGui Example", NULL };
-	//auto res = RegisterClassExW(&wc);
+	WNDCLASSEXW wc = {
+		sizeof(wc),
+		CS_CLASSDC,
+		ImGui_ImplWin32_WndProcHandler,
+		0L,
+		0L,
+		GetModuleHandle(NULL),
+		NULL,
+		NULL,
+		NULL,
+		NULL,
+		L"ImGui Example",
+		NULL,
+	};
+	auto res = RegisterClassExW(&wc);
 
-	//HWND hwnd = pCreateWindowInBand(WS_EX_TOPMOST | WS_EX_NOACTIVATE, res, NULL, 0x80000000, 0, 0, 0, 0, NULL, NULL, wndParentClass.hInstance, LPVOID(res), ZBID_UIACCESS);
+	HWND hwnd = pCreateWindowInBand(
+		WS_EX_TOPMOST | WS_EX_NOACTIVATE,
+		(LPCWSTR)res,
+		NULL,
+		0x80000000,
+		0,
+		0,
+		0,
+		0,
+		NULL,
+		NULL,
+		GetModuleHandle(NULL),
+		LPVOID(res),
+		ZBID_UIACCESS
+	);
+
+	if (hwnd == 0)
+	{
+		const auto error = GetLastError();
+		std::cout << "Failed to create window in band: " << error << std::endl;
+		return FALSE;
+	}
+
+	*pHandle = hwnd;
+
+	return hwnd != NULL;
 }
 
 
@@ -103,6 +152,52 @@ BOOL hook_nvidia(HWND* pHandle) {
 
 	return true;
 }
+
+
+
+c_overlay::c_overlay() :
+	ready_to_close(false),
+	exit(false),
+	window_handle(nullptr),
+	window_class({}),
+	window_width((FLOAT)GetSystemMetrics(SM_CXSCREEN)),
+	window_height((FLOAT)GetSystemMetrics(SM_CYSCREEN)),
+	font(nullptr),
+	d3d_device(nullptr),
+	device_context(nullptr),
+	swap_chain(nullptr),
+	render_target_view(nullptr),
+	draw_list(nullptr),
+	breath(NULL) {
+
+	// if (!use_uiaccess(&window_handle))
+	//	throw std::runtime_error(string("Failed to get UI access. Error: ") + std::to_string(GetLastError()));
+
+	//std::cout << "Aquired UI Access." << std::endl;
+
+	if (!hook_nvidia(&window_handle))
+		throw std::runtime_error(string("Failed to hook NVIDIA overlay."));
+
+	font = new s_font();
+
+	if (!init_device())
+		throw std::runtime_error(string("Failed to initialize DX device."));
+
+	init_imgui();
+
+	std::thread(&c_overlay::input_handler, this).detach();
+	std::thread(&c_overlay::anim_handler, this).detach();
+}
+
+c_overlay::~c_overlay() {
+	clear_screen();
+
+	dest_imgui();
+	dest_device();
+
+	delete font;
+}
+
 
 
 BOOL c_overlay::init_device() {
@@ -176,8 +271,6 @@ BOOL c_overlay::init_device() {
 
 	float blendFactor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	device_context->OMSetBlendState(blendState, blendFactor, 0xFFFFFFFF);
-
-
 
 
 	blendState->Release();
@@ -341,47 +434,6 @@ VOID c_overlay::dest_render_target() {
 
 	render_target_view->Release();
 	render_target_view = NULL;
-}
-
-c_overlay::c_overlay() :
-	ready_to_close(false),
-	exit(false),
-	window_handle(nullptr),
-	window_class({}),
-	window_width((FLOAT)GetSystemMetrics(SM_CXSCREEN)),
-	window_height((FLOAT)GetSystemMetrics(SM_CYSCREEN)),
-	font(nullptr),
-	d3d_device(nullptr),
-	device_context(nullptr),
-	swap_chain(nullptr),
-	render_target_view(nullptr),
-	draw_list(nullptr),
-	breath(NULL) {
-
-	if (!use_uiaccess(&window_handle))
-		throw std::runtime_error(string("Failed to get UI access. Error: ") + std::to_string(GetLastError()));
-
-	//if (!hook_nvidia(&window_handle))
-	//	throw std::runtime_error(string("Failed to hook NVIDIA overlay."));
-
-	font = new s_font();
-
-	if (!init_device())
-		throw std::runtime_error(string("Failed to initialize DX device."));
-
-	init_imgui();
-
-	std::thread(&c_overlay::input_handler, this).detach();
-	std::thread(&c_overlay::anim_handler, this).detach();
-}
-
-c_overlay::~c_overlay() {
-	clear_screen();
-
-	dest_imgui();
-	dest_device();
-
-	delete font;
 }
 
 
@@ -699,7 +751,7 @@ void c_overlay::draw_menu() {
 				if (ImGui::Button("Save", ImVec2(ImGui::GetContentRegionAvail().x, 0))) { /*Logik*/ }
 				if (ImGui::Button("Load", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
-					if (selectedConfig != -1) initConfigVariables(); /*Logik*/
+					if (selectedConfig != -1);
 				}
 				if (ImGui::Button("Delete", ImVec2(ImGui::GetContentRegionAvail().x, 0))) { /*Logik*/ }
 				ImGui::EndChild();

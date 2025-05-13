@@ -53,6 +53,8 @@ static int exitHandler(DWORD fdwCtrlType) {
 
 
 int main() {
+	std::cout << "Running main..." << std::endl;
+
 	load_persistent_config_data(&persistentConfig, files::persistentConfig);
 	load_cheat_config_data(&config, L"default");
 
@@ -79,8 +81,6 @@ int main() {
 	esp.detach();
 	bombHack.detach();
 	aimBot.detach();
-
-	overlay.initConfigVariables();
 
 	while (overlay.msg_loop() && !overlay.ready_to_close) {}
 

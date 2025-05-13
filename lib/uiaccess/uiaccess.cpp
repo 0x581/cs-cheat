@@ -1,6 +1,7 @@
 #include "uiaccess.h"
 #include <tlhelp32.h>
 #include <tchar.h>
+#include <iostream>
 
 static DWORD DuplicateWinloginToken(DWORD dwSessionId, DWORD dwDesiredAccess, PHANDLE phToken) {
 	DWORD dwErr;
@@ -186,6 +187,8 @@ DWORD PrepareForUIAccess() {
 				GetStartupInfo(&si);
 				if (CreateProcessAsUser(hTokenUIAccess, NULL, GetCommandLine(), NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi))
 				{
+					std::cout << "Restarting with UIAccess" << std::endl;
+
 					CloseHandle(pi.hProcess), CloseHandle(pi.hThread);
 					ExitProcess(0);
 				}
