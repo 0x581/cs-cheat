@@ -77,6 +77,13 @@ OFFSETS: list[Offset] = [
         "m_bSpotted",
         "Member of EntitySpottedState_t, bool",
     ),
+ 
+    Offset(
+        "spottedByMask",
+        "client_dll.hpp",
+        "m_bSpottedByMask",
+        "Member of EntitySpottedState_t, uint32[2]",
+    ),
     Offset(
         "flashDuration",
         "client_dll.hpp",
@@ -111,7 +118,7 @@ OFFSETS: list[Offset] = [
         "maxHealth",
         "client_dll.hpp",
         "m_iMaxHealth",
-        "Member of EntitySpottedState_t, uint32[2]",
+        "Member of C_BaseEntity, int32",
     ),
     Offset(
         "health",
