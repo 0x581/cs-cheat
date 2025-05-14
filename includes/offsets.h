@@ -16,6 +16,7 @@ namespace offsets
     constexpr auto controllerOfPawn = 0x133C;                // Member of C_BasePlayerPawn, Handle
     constexpr auto playerName = 0x660;                       // Member of CBasePlayerController, char[128]
     constexpr auto entitySpottedState = 0x23D0;              // Member of C_CSPlayerPawn
+    constexpr auto maxHealth = 0x340;                        // Member of EntitySpottedState_t, uint32[2]
     constexpr auto health = 0x344;                           // Member of C_BaseEntity, int32
     constexpr auto attack = 0x18448F0;
     constexpr auto IDEntIndex = 0x1458;
@@ -38,5 +39,4 @@ namespace offsets
     constexpr auto hasDefuser = 0x40;                        // Member of CCSPlayer_ItemServices, bool
     constexpr auto gameSceneNode = 0x328;                    // Member of C_BaseEntity, CSkeletonInstance*
     constexpr auto modelState = 0x170;                       // Member of CSkeletonInstance, CModelState
-    constexpr auto SpottedByMask = 0xC;                       // Member of CSkeletonInstance, CModelState
 }

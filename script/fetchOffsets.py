@@ -8,8 +8,8 @@ from dataclasses import dataclass
 import os
 import requests
 
-# OFFSETS_URL = "https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/"
-OFFSETS_URL = "https://cloud.0x581.zip/s/dwiLHbz7SHcwKZ3/download?path=%2F&files="
+OFFSETS_URL = "https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/"
+# OFFSETS_URL = "https://cloud.0x581.zip/s/dwiLHbz7SHcwKZ3/download?path=%2F&files="
 
 FETCHED_FILES: dict[str, str] = {}
 
@@ -106,6 +106,12 @@ OFFSETS: list[Offset] = [
         "client_dll.hpp",
         "C_CSPlayerPawn::m_entitySpottedState",
         "Member of C_CSPlayerPawn",
+    ),
+    Offset(
+        "maxHealth",
+        "client_dll.hpp",
+        "m_iMaxHealth",
+        "Member of EntitySpottedState_t, uint32[2]",
     ),
     Offset(
         "health",
