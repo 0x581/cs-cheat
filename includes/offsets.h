@@ -38,4 +38,5 @@ namespace offsets
     constexpr auto hasDefuser = 0x40;                        // Member of CCSPlayer_ItemServices, bool
     constexpr auto gameSceneNode = 0x328;                    // Member of C_BaseEntity, CSkeletonInstance*
     constexpr auto modelState = 0x170;                       // Member of CSkeletonInstance, CModelState
+    constexpr auto SpottedByMask = 0xC;                       // Member of CSkeletonInstance, CModelState
 }

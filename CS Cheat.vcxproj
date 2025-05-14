@@ -168,6 +168,7 @@
     <ClCompile Include="lib\imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="lib\imgui\pch.cpp" />
     <ClCompile Include="lib\imgui\timer\timer.cpp" />
+    <ClCompile Include="src\cheats\rageBot.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\cheats\antiFlash.cpp" />
     <ClCompile Include="src\cheats\bombTimer.cpp" />

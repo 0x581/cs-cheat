@@ -4,6 +4,8 @@
 
 void runAimBotLoop(Memory& mem);
 
+void runRageAimbotLoop(Memory& mem);
+
 void runAntiFlashLoop(Memory& mem);
 
 void runBombHackLoop(Memory& mem);

@@ -21,7 +21,7 @@ static void runAimBot(const Memory& mem, const uintptr_t client) {
     Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };
 
     auto lowestDistance = HUGE_VAL;
-    ImVec2 closestHeadScreen{ 0, 0 };
+    ImVec2 closestTargetScreen{ 0, 0 };
 
     for (int i = 0; i < 64; i++)
     {
@@ -39,25 +39,54 @@ static void runAimBot(const Memory& mem, const uintptr_t client) {
         if (health <= 0 || health > 100)
             continue;
 
-        ImVec2 headScreen = { 0, 0 };
+        // --- Hitbox-Auswahl und Sichtbarkeitsprüfung ---
+        ImVec2 targetScreen = { 0, 0 };
+        bool isVisible = false;
         for (int j = 0; j < 64; ++j) {
             if (espData.data[j].isValid && espData.data[j].pawnPtr == playerPawn) {
-                headScreen = espData.data[j].bones.head; 
+                switch (config.aimBot.hitbox) {
+                case 0: targetScreen = espData.data[j].bones.head; break;
+                case 1: targetScreen = espData.data[j].bones.neck; break;
+                case 2: targetScreen = espData.data[j].bones.spine1; break;
+                default: targetScreen = espData.data[j].bones.head; break;
+                }
+                isVisible = espData.data[j].isVisible;
                 break;
             }
         }
+        if (targetScreen.x == 0.f && targetScreen.y == 0.f)
+            continue;
+        uint32_t spottedByMask0 = mem.Read<uint32_t>(
+            playerPawn + offsets::entitySpottedState + offsets::SpottedByMask
+        );
+        uint32_t spottedByMask1 = mem.Read<uint32_t>(
+            playerPawn + offsets::entitySpottedState + offsets::SpottedByMask + 4
+        );
 
-        if (headScreen.x == 0.f && headScreen.y == 0.f)
+        const auto localPlayerController = mem.Read<uintptr_t>(client + offsets::localPlayerController);
+        const int localPawnIndex = mem.Read<int>(localPlayerController + offsets::IDEntIndex);
+
+        if (localPawnIndex < 32)
+            isVisible = (spottedByMask0 & (1U << localPawnIndex)) != 0;
+        else
+            isVisible = (spottedByMask1 & (1U << (localPawnIndex - 32))) != 0;
+
+        if (config.aimBot.visible && !isVisible)
             continue;
 
-        double distance = std::pow(headScreen.x - screenCenter.x, 2) + std::pow(headScreen.y - screenCenter.y, 2);
+
+        // --- Ende Hitbox/Sichtbarkeit ---
+
+        double distance = std::pow(targetScreen.x - screenCenter.x, 2) + std::pow(targetScreen.y - screenCenter.y, 2);
 
         if (distance >= lowestDistance)
             continue;
 
         lowestDistance = distance;
-        closestHeadScreen = headScreen;
+        closestTargetScreen = targetScreen;
     }
+
+
 
     if (lowestDistance == HUGE_VAL)
         return;
@@ -68,8 +97,8 @@ static void runAimBot(const Memory& mem, const uintptr_t client) {
     if (lowestDistance > maxDistance)
         return;
 
-    const auto diff_x = closestHeadScreen.x - screenCenter.x;
-    const auto diff_y = closestHeadScreen.y - screenCenter.y;
+    const auto diff_x = closestTargetScreen.x - screenCenter.x;
+    const auto diff_y = closestTargetScreen.y - screenCenter.y;
 
     const auto speedFactor = config.aimBot.speedFactor;
 

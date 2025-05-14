@@ -37,4 +37,5 @@ namespace keybinds {
 	constexpr auto bunnyHop = VK_SPACE;
 	constexpr auto triggerbot = keys::X;
 	constexpr auto aimBot = VK_RBUTTON;
+	constexpr auto rageBot = VK_RBUTTON;
 }

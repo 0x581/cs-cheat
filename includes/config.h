@@ -34,6 +34,7 @@ struct ConfigData {
 		bool fovChanger;
 		bool radar;
 		bool triggerBot;
+		bool rageBot;
 	} activeCheats;
 
 	struct EspSettings {
@@ -59,11 +60,22 @@ struct ConfigData {
 		bool ignoreteam;
 		bool visible;
 		ImVec4 fovCircleColor;
+		int hitbox;
+		int shotDelay = 30;
 	} aimBot;
 
 	struct FovSettings {
 		int desiredFov;
 	} fov;
+
+	struct RageBotSettings {
+		float pixelRadius = 120.f;
+		float speedFactor = 1.0f;
+		bool visible = false;
+		int hitbox = 0;
+		int shotDelay = 30; // ms
+	} rageBot;
+
 };
 
 

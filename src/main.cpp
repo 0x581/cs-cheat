@@ -73,7 +73,9 @@ int main() {
 	std::thread esp{ runEspLoop, std::ref(mem) };
 	std::thread bombHack{ runBombHackLoop, std::ref(mem) };
 	std::thread aimBot{ runAimBotLoop, std::ref(mem) };
+	std::thread rageaimBot{ runRageAimbotLoop, std::ref(mem) }; 
 	triggerBot.detach();
+	rageaimBot.detach();
 	antiFlash.detach();
 	bunnyHop.detach();
 	radarHack.detach();

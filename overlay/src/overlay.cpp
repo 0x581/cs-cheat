@@ -450,6 +450,7 @@ const void c_overlay::renderCheats() {
 		const ImU32 enemyColorU32 = ImGui::ColorConvertFloat4ToU32(config.esp.colorEnemyVisible);
 		const ImU32 teamColorU32 = ImGui::ColorConvertFloat4ToU32(config.esp.colorTeamVisible);
 
+
 		for (const auto& espRenderData : espData.data)
 		{
 			if (!espRenderData.isValid)
@@ -623,6 +624,21 @@ void c_overlay::draw_menu() {
 				ImGui::Checkbox("Enable Aimbot", &config.activeCheats.aimBot);
 				if (config.activeCheats.aimBot)
 				{
+					if (ImGui::CollapsingHeader("Ragebot Options", ImGuiTreeNodeFlags_DefaultOpen))
+					{
+						ImGui::Checkbox("Enable Ragebot", &config.activeCheats.rageBot);
+						if (config.activeCheats.rageBot)
+						{
+						
+							ImGui::Text("Ragebot use the aimbot funktions.");
+							ImGui::Text("Shot Delay ");
+							ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
+							ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
+							ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms");
+							ImGui::PopItemWidth();
+							
+						}
+					}
 					ImGui::Indent();
 
 					ImGui::Checkbox("Draw FOV Circle", &config.aimBot.drawFovCircle);
@@ -644,9 +660,14 @@ void c_overlay::draw_menu() {
 					ImGui::Checkbox("Ignore Team", &config.aimBot.ignoreteam);
 					ImGui::Checkbox("visible(soon)", &config.aimBot.visible);
 
+					// --- Hitbox Auswahl ---
+					static const char* hitboxItems[] = { "Head", "Neck", "Spine" };
+					ImGui::Combo("Hitbox", &config.aimBot.hitbox, hitboxItems, IM_ARRAYSIZE(hitboxItems));
 
 					ImGui::Unindent();
 				}
+				
+
 			}
 			break;
 

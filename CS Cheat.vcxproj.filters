@@ -115,6 +115,9 @@
     <ClCompile Include="overlay\src\drawing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cheats\rageBot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\memory\memory.h">
