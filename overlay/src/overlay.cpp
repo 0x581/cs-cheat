@@ -442,8 +442,7 @@ const void c_overlay::renderCheats() {
 	{
 		float dynamicGlowSize = 0.0f;
 		if (config.esp.boxGlow)
-		{ // Nur berechnen, wenn Glow überhaupt aktiv sein könnte
-// Die Berechnung selbst kann bleiben, aber sie geschieht jetzt außerhalb der Schleife
+		{
 			dynamicGlowSize = 5.0f + sin((float)ImGui::GetTime() * 2.0f) * 3.0f;
 		}
 
@@ -456,28 +455,12 @@ const void c_overlay::renderCheats() {
 			if (!espRenderData.isValid)
 				continue;
 
-			ImU32 currentColorU32;
-			bool shouldRenderThisEntity = false;
+			const auto friendly = espRenderData.isFriendly;
 
-			if (!espRenderData.isFriendly)
-			{
-				currentColorU32 = enemyColorU32;
-				shouldRenderThisEntity = true;
-			}
-			else
-			{
-				if (config.esp.renderFriendlies)
-				{
-					currentColorU32 = teamColorU32;
-					shouldRenderThisEntity = true;
-				}
-				else
-				{
-					continue;
-				}
-			}
+			if (!config.esp.renderFriendlies && friendly)
+				continue;
 
-			if (!shouldRenderThisEntity) continue;
+			ImU32 currentColorU32 = friendly ? teamColorU32 : enemyColorU32;
 
 			const auto min = espRenderData.min;
 			const auto max = espRenderData.max;
@@ -485,58 +468,72 @@ const void c_overlay::renderCheats() {
 				(max.x >= 0.f && max.y >= 0.f && max.x < window_width && max.y < window_height)))
 				continue;
 
-			// boneesp ESP
 			if (config.esp.bone)
 			{
 				const BoneData& bones = espRenderData.bones;
-				if (!espRenderData.isFriendly || config.esp.renderFriendlies)
-				{
-					line(bones.head, bones.neck, currentColorU32);
-					line(bones.neck, bones.spine4, currentColorU32);
-					line(bones.spine4, bones.spine3, currentColorU32);
-					line(bones.spine3, bones.spine2, currentColorU32);
-					line(bones.spine2, bones.spine1, currentColorU32);
-					line(bones.spine1, bones.hip, currentColorU32);
-					line(bones.spine4, bones.l_shoulder, currentColorU32);
-					line(bones.l_shoulder, bones.l_arm, currentColorU32);
-					line(bones.l_arm, bones.l_wrist, currentColorU32);
-					line(bones.l_wrist, bones.l_hand, currentColorU32);
-					line(bones.spine4, bones.r_shoulder, currentColorU32);
-					line(bones.r_shoulder, bones.r_arm, currentColorU32);
-					line(bones.r_arm, bones.r_wrist, currentColorU32);
-					line(bones.r_wrist, bones.r_hand, currentColorU32);
-					line(bones.hip, bones.l_hip, currentColorU32);
-					line(bones.l_hip, bones.l_knee, currentColorU32);
-					line(bones.l_knee, bones.l_foot, currentColorU32);
-					line(bones.hip, bones.r_hip, currentColorU32);
-					line(bones.r_hip, bones.r_knee, currentColorU32);
-					line(bones.r_knee, bones.r_foot, currentColorU32);
-				}
+
+
+				line(bones.head, bones.neck, currentColorU32);
+				line(bones.neck, bones.spine4, currentColorU32);
+				line(bones.spine4, bones.spine3, currentColorU32);
+				line(bones.spine3, bones.spine2, currentColorU32);
+				line(bones.spine2, bones.spine1, currentColorU32);
+				line(bones.spine1, bones.hip, currentColorU32);
+				line(bones.spine4, bones.l_shoulder, currentColorU32);
+				line(bones.l_shoulder, bones.l_arm, currentColorU32);
+				line(bones.l_arm, bones.l_wrist, currentColorU32);
+				line(bones.l_wrist, bones.l_hand, currentColorU32);
+				line(bones.spine4, bones.r_shoulder, currentColorU32);
+				line(bones.r_shoulder, bones.r_arm, currentColorU32);
+				line(bones.r_arm, bones.r_wrist, currentColorU32);
+				line(bones.r_wrist, bones.r_hand, currentColorU32);
+				line(bones.hip, bones.l_hip, currentColorU32);
+				line(bones.l_hip, bones.l_knee, currentColorU32);
+				line(bones.l_knee, bones.l_foot, currentColorU32);
+				line(bones.hip, bones.r_hip, currentColorU32);
+				line(bones.r_hip, bones.r_knee, currentColorU32);
+				line(bones.r_knee, bones.r_foot, currentColorU32);
 			}
 
-			// Box ESP
-			if (config.esp.boxesp)
+			if (config.esp.box)
 			{
 				if (config.esp.boxGlow)
-				{
-					// Verwende die vorab berechnete dynamicGlowSize
 					box_with_glow(min, max, currentColorU32, 2.0f, dynamicGlowSize);
-				}
 				else
-				{
-					box(min, max, currentColorU32);
-				}
+					rect(min, max, currentColorU32);
 			}
 
-			if (config.esp.nameesp == true)
+			if (config.esp.name)
 			{
-				if (!espRenderData.isFriendly || config.esp.renderFriendlies)
-				{
-					const auto name_text = espRenderData.playerName;
-					// const auto text_size = ImGui::CalcTextSize(name_text); 
-					const auto text_pos = ImVec2{ (max.x + min.x) / 2.f - (ImGui::CalcTextSize(name_text).x / 2.f), max.y };
-					text(text_pos, name_text, currentColorU32);
-				}
+				const auto name_text = espRenderData.playerName;
+				// const auto text_size = ImGui::CalcTextSize(name_text); 
+				const auto text_pos = ImVec2{ (max.x + min.x) / 2.f - (ImGui::CalcTextSize(name_text).x / 2.f), max.y };
+				text(text_pos, name_text, currentColorU32);
+			}
+
+			if (config.esp.health)
+			{
+				const auto health_max = espRenderData.maxHealth;
+				const auto health = espRenderData.health;
+				const auto health_ratio = static_cast<float>(health) / static_cast<float>(health_max);
+
+				const auto health_color = ImGui::ColorConvertFloat4ToU32(friendly ? config.esp.colorTeamVisible : config.esp.colorEnemyVisible);
+
+				const auto height = max.y - min.y;
+				const auto width = (max.x - min.x) * 0.2f;
+				const auto border_width = width * 0.1f;
+
+				const auto left = min.x - width - 5.f;
+				const auto top = min.y;
+
+				const auto right = left + width;
+				const auto bottom = top + height;
+
+				const auto health_height = height * health_ratio;
+				const auto top_health = bottom - health_height;
+
+				rect_filled(ImVec2(left, top_health), ImVec2(right, bottom), health_color);
+				rect(ImVec2(left, top), ImVec2(right, bottom), rgbColors::black, border_width);
 			}
 		}
 	}
@@ -629,14 +626,14 @@ void c_overlay::draw_menu() {
 						ImGui::Checkbox("Enable Ragebot", &config.activeCheats.rageBot);
 						if (config.activeCheats.rageBot)
 						{
-						
+
 							ImGui::Text("Ragebot use the aimbot funktions.");
 							ImGui::Text("Shot Delay ");
 							ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
 							ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
 							ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms");
 							ImGui::PopItemWidth();
-							
+
 						}
 					}
 					ImGui::Indent();
@@ -666,7 +663,7 @@ void c_overlay::draw_menu() {
 
 					ImGui::Unindent();
 				}
-				
+
 
 			}
 			break;
@@ -680,9 +677,9 @@ void c_overlay::draw_menu() {
 					ImGui::Indent();
 					ImGui::Checkbox("Show Teammates", &config.esp.renderFriendlies);
 					ImGui::Checkbox("Bone ESP", &config.esp.bone);
-					ImGui::Checkbox("Name ESP", &config.esp.nameesp);
-					ImGui::Checkbox("Box ESP", &config.esp.boxesp);
-					if (config.esp.boxesp)
+					ImGui::Checkbox("Name ESP", &config.esp.name);
+					ImGui::Checkbox("Box ESP", &config.esp.box);
+					if (config.esp.box)
 					{
 						ImGui::Indent();
 						ImGui::Checkbox("Box Glow", &config.esp.boxGlow);

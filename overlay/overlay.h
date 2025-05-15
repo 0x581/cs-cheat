@@ -52,7 +52,8 @@ public:
 	VOID clear_screen();
 
 	VOID init_draw_list();
-	VOID box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width = 2.f);
+	VOID rect(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width = 2.f);
+	VOID rect_filled(const ImVec2& min, const ImVec2& max, ImU32 color);
 	VOID line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width = 2.f);
 	VOID circle(const ImVec2& point, const FLOAT radius, ImU32 color);
 	VOID text(const ImVec2& pos, const std::string& text, ImU32 color, bool outline = true);

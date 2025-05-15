@@ -204,9 +204,6 @@
     <ClInclude Include="src\cheats\cheat_data.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\imgui\imgui\imgui.ini">
-      <Filter>lib\imgui</Filter>
-    </None>
     <None Include="lib\imgui\imgui\imgui_impl_metal.mm">
       <Filter>lib\imgui</Filter>
     </None>

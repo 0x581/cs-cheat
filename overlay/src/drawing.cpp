@@ -4,8 +4,12 @@
 
 using std::string;
 
-VOID c_overlay::box(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width) {
+VOID c_overlay::rect(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width) {
 	draw_list->AddRect(min, max, color, 0.0f, 0, line_width);
+}
+
+VOID c_overlay::rect_filled(const ImVec2& min, const ImVec2& max, ImU32 color) {
+	draw_list->AddRectFilled(min, max, color);
 }
 
 void c_overlay::box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size) {

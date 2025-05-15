@@ -34,6 +34,7 @@ static void runEsp(const CheatData& cheatData) {
 
 		const auto health = playerEntity.health;
 
+		espData.data[i].maxHealth = playerEntity.maxHealth;
 		espData.data[i].health = health;
 
 		if (health <= 0 || health > 100)

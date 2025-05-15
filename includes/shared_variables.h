@@ -11,6 +11,7 @@ struct EspRenderData {
 	bool isValid{ false };
 	bool isVisible{ false };
 	bool isFriendly{ false };
+	int maxHealth{ 0 };
 	int health{ 0 };
 	float distance{ 0.f };
 	char playerName[PLAYER_NAME_LENGTH]{ 0 };

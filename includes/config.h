@@ -1,6 +1,5 @@
 #pragma once
 
-#include <iostream>
 #include <filesystem>
 
 #include "../lib/imgui/pch.h"
@@ -42,15 +41,15 @@ struct ConfigData {
 		bool renderFriendlies;
 		bool boxGlow;
 		bool bone;
-		bool boxesp;
-		bool nameesp;
+		bool box;
+		bool name;
+		bool health;
 
 		ImVec4 colorEnemyVisible;
 		ImVec4 colorEnemyHidden;
 		ImVec4 colorTeamVisible;
 		ImVec4 colorTeamHidden;
 		ImVec4 colorItem;
-
 	}esp;
 
 	struct AimBotSettings {
@@ -75,7 +74,6 @@ struct ConfigData {
 		int hitbox = 0;
 		int shotDelay = 30; // ms
 	} rageBot;
-
 };
 
 

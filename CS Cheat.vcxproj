@@ -219,7 +219,6 @@
     <ClInclude Include="includes\strings.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\imgui\imgui\imgui.ini" />
     <None Include="lib\imgui\imgui\imgui_impl_metal.mm" />
     <None Include="lib\imgui\imgui\imgui_impl_osx.mm" />
     <None Include="script\fetchOffsets.py" />
