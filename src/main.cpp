@@ -7,7 +7,6 @@
 #include "memory/memory.h"
 #include "cheats/cheats.h"
 
-#include "exit_codes.h"
 #include "delays.h"
 #include "files.h"
 #include "modules.h"
@@ -74,6 +73,4 @@ int main() {
 	while (overlay.msg_loop() && !overlay.ready_to_close) {}
 
 	cleanUp();
-
-	return exit_codes::SUCCESS;
 }

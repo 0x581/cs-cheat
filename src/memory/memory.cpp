@@ -8,15 +8,12 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
-
 #include <unordered_map>
 
-#include <mutex>
 #include <cassert>
 
 #include "asspiledriver.h"
 
-#include "exit_codes.h"
 #include "modules.h"
 #include "delays.h"
 
@@ -24,14 +21,6 @@ constexpr auto BYTES_PER_ROW = 32;
 
 
 bool Memory::loadModuleMap() {
-
-	if (!apd::is_process_alive(driver_handle))
-	{
-		std::cout << "Tried to read modules of invalid process." << std::endl;
-		exit(exit_codes::MEMORY_READ_MODULES_ERROR);
-	}
-
-
 	const auto requiredModules = std::vector<const wchar_t*>({ modules::client });
 
 	size_t tries = 0;
@@ -85,7 +74,7 @@ const bool Memory::isProcessAlive() {
 	return this->is_valid;
 }
 
-Memory::Memory() {
+Memory::Memory() : pid{ 0 } {
 
 	driver_handle = apd::open_driver();
 
