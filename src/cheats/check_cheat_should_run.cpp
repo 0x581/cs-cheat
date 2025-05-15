@@ -2,9 +2,10 @@
 
 #include <config.h>
 #include <keybinds.h>
+#include <delays.h>
 
 static bool shouldAimBotRun(size_t iteration) {
-	if (iteration % 15 != 0)
+	if (iteration % delays::aimbot::ms_interval != delays::aimbot::ms_offset)
 		return false;
 
 	if (!config.activeCheats.aimBot)
@@ -14,7 +15,7 @@ static bool shouldAimBotRun(size_t iteration) {
 }
 
 static bool shouldTriggerBotRun(size_t iteration) {
-	if (iteration % 15 != 5)
+	if (iteration % delays::triggerBot::ms_interval != delays::triggerBot::ms_offset)
 		return false;
 
 	if (!config.activeCheats.triggerBot)
@@ -24,14 +25,14 @@ static bool shouldTriggerBotRun(size_t iteration) {
 }
 
 static bool shouldEspRun(size_t iteration) {
-	if (iteration % 5 != 0)
+	if (iteration % delays::esp::ms_interval != delays::esp::ms_offset)
 		return false;
 
 	return config.activeCheats.esp;
 }
 
 static bool shouldBunnyHopRun(size_t iteration) {
-	if (iteration % 15 != 0)
+	if (iteration % delays::bunnyHop::ms_interval != delays::bunnyHop::ms_offset)
 		return false;
 
 	if (!config.activeCheats.bunnyHop)
@@ -40,29 +41,29 @@ static bool shouldBunnyHopRun(size_t iteration) {
 	return GetAsyncKeyState(keybinds::bunnyHop);
 }
 
-static bool shouldBombHackRun(size_t iteration) {
-	if (iteration % 50 != 0)
+static bool shouldBombTimerRun(size_t iteration) {
+	if (iteration % delays::bombTimer::ms_interval != delays::bombTimer::ms_offset)
 		return false;
 
-	return config.activeCheats.bombHack;
+	return config.activeCheats.bombTimer;
 }
 
 static bool shouldAntiFlashRun(size_t iteration) {
-	if (iteration % 10 != 0)
+	if (iteration % delays::antiFlash::ms_interval != delays::antiFlash::ms_offset)
 		return false;
 
 	return config.activeCheats.antiFlash;
 }
 
 static bool shouldFovChangerRun(size_t iteration) {
-	if (iteration % 5 != 0)
+	if (iteration % delays::fovChanger::ms_interval != delays::fovChanger::ms_offset)
 		return false;
 
 	return config.activeCheats.fovChanger;
 }
 
 static bool shouldRadarHackRun(size_t iteration) {
-	if (iteration % 1000 != 0)
+	if (iteration % delays::radarHack::ms_interval != delays::radarHack::ms_offset)
 		return false;
 
 	return config.activeCheats.radar;

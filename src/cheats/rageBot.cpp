@@ -12,6 +12,7 @@
 #include "vector_math.h"
 #include "offsets.h"
 #include "shared_variables.h" 
+#include "modules.h"
 
 static void releaseRageShot() {
 	std::this_thread::sleep_for(std::chrono::milliseconds(config.aimBot.shotDelay)); // shotDelay in ms in deiner Config!
@@ -143,7 +144,7 @@ void runRageAimbotLoop(Memory& mem) {
 			continue;
 		}
 
-		std::this_thread::sleep_for(delays::aimbot::sleep);
+		std::this_thread::sleep_for(std::chrono::milliseconds(delays::aimbot::ms_interval));
 
 		const auto client = mem.GetModuleAddress(modules::client);
 

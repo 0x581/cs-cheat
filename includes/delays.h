@@ -11,41 +11,43 @@ namespace delays {
 	}
 
 	namespace antiFlash {
-		constexpr auto sleep = std::chrono::milliseconds(10);
+		constexpr auto ms_interval = 10;
+		constexpr auto ms_offset = 0;
 	}
 
 	namespace bunnyHop {
-		constexpr auto sleep = std::chrono::milliseconds(10);
-		constexpr auto keyPressTime = std::chrono::milliseconds(10);
+		constexpr auto ms_interval = 10;
+		constexpr auto ms_offset = 0;
 	}
 
 	namespace fovChanger {
-		constexpr auto sleep = std::chrono::milliseconds(5);
+		constexpr auto ms_interval = 5;
+		constexpr auto ms_offset = 0;
 	}
 
 	namespace radarHack {
-		constexpr auto sleep = std::chrono::seconds(1);
+		constexpr auto ms_interval = 1000;
+		constexpr auto ms_offset = 0;
 	}
 
-	namespace triggerBot {
-		constexpr auto sleep = std::chrono::milliseconds(10);
-		constexpr auto keyPressDelay = std::chrono::milliseconds(10);
-		constexpr auto keyPressTime = std::chrono::milliseconds(10);
-	}
-
-	namespace bombHack {
-		constexpr auto sleep = std::chrono::milliseconds(50);
+	namespace bombTimer {
+		constexpr auto ms_interval = 50;
+		constexpr auto ms_offset = 0;
 	}
 
 	namespace esp {
-		constexpr auto sleep = std::chrono::milliseconds(5);
+		constexpr auto ms_interval = 5;
+		constexpr auto ms_offset = 0;
 	}
 
 	namespace aimbot {
-		constexpr auto sleep = std::chrono::milliseconds(15);
+		constexpr auto ms_interval = 15;
+		constexpr auto ms_offset = 0;
 	}
-	namespace aimbot2 {
-		constexpr auto sleep = std::chrono::milliseconds(1);
+
+	namespace triggerBot {
+		constexpr auto ms_interval = 15;
+		constexpr auto ms_offset = 5;
 	}
 }
 
