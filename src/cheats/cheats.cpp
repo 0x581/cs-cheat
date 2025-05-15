@@ -9,6 +9,8 @@
 #include "check_cheat_should_run.cpp"
 #include "src/cheat_entries.h"
 
+#include "../memory/memory.h"
+
 
 static void run_all_cheats(const Memory& mem, const CheatData& cheat_data, const size_t iteration) {
 	if (shouldAimBotRun(iteration))
@@ -58,7 +60,8 @@ static bool check_connection(Memory& mem) {
 	return alive;
 }
 
-void run_cheat_loop(Memory& mem) {
+void run_cheat_loop(bool& terminate) {
+	Memory mem;
 	EntityList entity_list{ };
 	CheatData cheat_data{ };
 
@@ -66,6 +69,9 @@ void run_cheat_loop(Memory& mem) {
 
 	for (size_t iteration = 0;; ++iteration)
 	{
+		if (terminate)
+			break;
+
 		if (!check_connection(mem))
 		{
 			std::this_thread::sleep_for(delays::memConnectionWaitTime);

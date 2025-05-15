@@ -2,32 +2,48 @@
 #include <thread>
 #include <iostream>
 
+#include <mutex>
+
+#include <files.h>
+#include <config.h>
+
 #include "../overlay/overlay.h"
 
-#include "memory/memory.h"
 #include "cheats/cheats.h"
 
-#include "delays.h"
-#include "files.h"
-#include "modules.h"
-#include "config.h"
 
 
-static c_overlay overlay{};
+
+static c_overlay* overlay;
+
+std::mutex mtx;
+std::condition_variable cv;
+bool done_flag = false;
 
 static void cleanUp() {
-	//overlay.~c_overlay();
+	delete overlay;
 
-	store_persistent_config_data(persistentConfig, files::persistentConfig);
-	store_cheat_config_data(config, L"default");
+	store_persistent_config_data(persistentConfig, files::folder, files::persistentConfig);
+	store_cheat_config_data(config, files::folder, L"default");
 }
 
-static int exitHandler(DWORD fdwCtrlType) {
+static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType) {
 	switch (fdwCtrlType)
 	{
-	case CTRL_CLOSE_EVENT:
+	case CTRL_BREAK_EVENT:
 	case CTRL_C_EVENT:
-		overlay.~c_overlay();
+	case CTRL_CLOSE_EVENT:
+		overlay->exit = true;
+
+		{
+			std::unique_lock<std::mutex> lock(mtx);
+
+			if (done_flag)
+				return TRUE;
+
+			cv.wait(lock, [] { return done_flag; });
+		}
+
 		return TRUE;
 	}
 	return FALSE;
@@ -35,20 +51,30 @@ static int exitHandler(DWORD fdwCtrlType) {
 
 
 int main() {
-	std::cout << "Running main..." << std::endl;
+	load_persistent_config_data(&persistentConfig, files::folder, files::persistentConfig);
+	load_cheat_config_data(&config, files::folder, L"default");
 
-	load_persistent_config_data(&persistentConfig, files::persistentConfig);
-	load_cheat_config_data(&config, L"default");
+	if (!SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE))
+	{
+		std::cerr << "Error: Failed to set console control handler." << std::endl;
+		return 1;
+	}
 
-	SetConsoleCtrlHandler(exitHandler, TRUE);
+	bool terminate = false;
+	std::thread cheats_thread{ run_cheat_loop, std::ref(terminate) };
 
-	Memory mem{};
+	overlay = new c_overlay();
+	while (overlay->msg_loop() && !overlay->ready_to_close) {}
 
-	std::thread cheats_thread{ run_cheat_loop, std::ref(mem) };
-	cheats_thread.detach();
+	terminate = true;
 
-
-	while (overlay.msg_loop() && !overlay.ready_to_close) {}
+	cheats_thread.join();
 
 	cleanUp();
+
+	{
+		std::lock_guard<std::mutex> lock(mtx);
+		done_flag = true;
+	}
+	cv.notify_all();
 }

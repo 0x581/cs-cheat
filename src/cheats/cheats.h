@@ -1,5 +1,3 @@
 #pragma once
 
-#include "../memory/memory.h"
-
-void run_cheat_loop(Memory& mem);
+void run_cheat_loop(bool& terminate);

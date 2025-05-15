@@ -1,18 +1,15 @@
 #pragma once
 
-#include <filesystem>
-
 #include "../lib/imgui/pch.h"
 
-using std::filesystem::path;
-
-constexpr char MAGIC_BYTES[64]{ "Merkur CS2 Config" };
-constexpr auto configFolder = "Merkur/CS2/"; // In Local Appdata
+#define MAGIC_BYTES "Merkur CS2 Config"
 
 constexpr auto COLOR_NAME_MAX_LENGTH = 64;
 
 
 struct PersistentConfigData {
+	const char _magicBytes[sizeof(MAGIC_BYTES)] = MAGIC_BYTES;
+
 	struct MainWindowSettings {
 		ImVec2 windowPosition;
 	} mainWindow;
@@ -23,6 +20,7 @@ struct PersistentConfigData {
 };
 
 struct ConfigData {
+	const char _magicBytes[sizeof(MAGIC_BYTES)] = MAGIC_BYTES;
 
 	struct ActiveCheats {
 		bool aimBot;
@@ -78,12 +76,10 @@ struct ConfigData {
 
 
 extern ConfigData config;
-
 extern PersistentConfigData persistentConfig;
 
+bool load_cheat_config_data(ConfigData* data, const wchar_t* folder, const wchar_t* file);
+bool load_persistent_config_data(PersistentConfigData* data, const wchar_t* folder, const wchar_t* file);
 
-bool load_cheat_config_data(ConfigData* data, const wchar_t* configName);
-bool load_persistent_config_data(PersistentConfigData* data, const wchar_t* configName);
-
-bool store_cheat_config_data(const ConfigData data, const wchar_t* configName);
-bool store_persistent_config_data(const PersistentConfigData data, const wchar_t* configName);
+bool store_cheat_config_data(const ConfigData data, const wchar_t* folder, const wchar_t* file);
+bool store_persistent_config_data(const PersistentConfigData data, const wchar_t* folder, const wchar_t* file);
