@@ -152,23 +152,17 @@ void Memory::Inspect(uintptr_t address, size_t nBytes) const {
 
 	byteString << std::hex;
 
-	for (size_t i = 0; i < nBytesRead; i += BYTES_PER_ROW)
+	for (size_t i = 0; i < nBytesRead && i < nBytes; i++)
 	{
-		for (size_t j = 0; (i + j < nBytesRead) && j < BYTES_PER_ROW; j++)
-		{
-			if (i + j >= nBytes)
-			{
-				std::cout << "Read over the limit." << std::endl;
-				exit(exit_codes::MEMORY_INSPECT_ERROR);
-			}
+		if (i % 8 == 0 && i % BYTES_PER_ROW != 0)
+			byteString << " ";
 
-			if (j % 4 == 0 && j != 0)
-				byteString << " ";
+		if (i % BYTES_PER_ROW == 0 && i != 0)
+			byteString << std::endl << std::hex;
 
-			byteString << std::setw(2) << std::setfill('0') << (unsigned int)buffer[i + j] << " ";
-		}
-		byteString << std::endl;
+		byteString << std::setw(2) << std::setfill('0') << buffer[i];
 	}
+
 	byteString << std::dec;
 
 	if (nBytesRead != nBytes)

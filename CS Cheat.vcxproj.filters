@@ -73,7 +73,7 @@
     <ClCompile Include="src\cheats\src\bunnyHop.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\src\bombHack.cpp">
+    <ClCompile Include="src\cheats\src\bombTimer.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
     <ClCompile Include="src\cheats\src\fovChanger.cpp">
@@ -106,9 +106,6 @@
     <ClCompile Include="src\memory\memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="includes\exit_codes.h">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lib\uiaccess\uiaccess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -127,6 +124,7 @@
     <ClCompile Include="src\cheats\check_cheat_should_run.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="includes\src\entityListInteraction.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\memory\memory.h">

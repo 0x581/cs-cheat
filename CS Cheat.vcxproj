@@ -157,7 +157,6 @@
     <ClCompile Include="overlay\src\drawing.cpp" />
     <ClCompile Include="src\cheats\src\aimBot.cpp" />
     <ClCompile Include="includes\src\config.cpp" />
-    <ClCompile Include="includes\exit_codes.h" />
     <ClCompile Include="overlay\src\overlay.cpp" />
     <ClCompile Include="lib\imgui\imgui\imgui.cpp" />
     <ClCompile Include="lib\imgui\imgui\imgui_demo.cpp" />
@@ -174,7 +173,7 @@
     <ClCompile Include="src\cheats\rageBot.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\cheats\src\antiFlash.cpp" />
-    <ClCompile Include="src\cheats\src\bombHack.cpp" />
+    <ClCompile Include="src\cheats\src\bombTimer.cpp" />
     <ClCompile Include="src\cheats\src\bunnyHop.cpp" />
     <ClCompile Include="src\cheats\src\esp.cpp" />
     <ClCompile Include="src\cheats\src\fovChanger.cpp" />
@@ -188,6 +187,7 @@
   <ItemGroup>
     <ClInclude Include="includes\console_control.h" />
     <ClInclude Include="includes\cs_defines.h" />
+    <ClCompile Include="includes\src\entityListInteraction.cpp" />
     <ClInclude Include="lib\uiaccess\uiaccess.h" />
     <ClInclude Include="src\cheats\cheats.h" />
     <ClInclude Include="includes\config.h" />

@@ -27,7 +27,7 @@ struct ConfigData {
 	struct ActiveCheats {
 		bool aimBot;
 		bool antiFlash;
-		bool bombHack;
+		bool bombTimer;
 		bool bunnyHop;
 		bool esp;
 		bool fovChanger;
