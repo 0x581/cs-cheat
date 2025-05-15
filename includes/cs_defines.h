@@ -4,18 +4,60 @@
 
 #include "vector_math.h"
 
+typedef int CHealth;
+
 typedef unsigned int CEntityIndex;
-typedef float GameTime_t;
 typedef uint8_t PlayerTeam_t;
+typedef unsigned long long EntitySpottedState_t;
+typedef float GameTime_t;
 
 struct Quaternion { float x, y, z, w; };
 struct CBoneData {
-	Vector3 location;
-	float scale;
-	Quaternion rotation;
+	Vector3 location{ 0 };
+	float scale{ 0 };
+	Quaternion rotation{ 0 };
 };
 
-typedef std::array<CBoneData, 30> CBoneArray;
+struct CBoneArray {
+	CBoneData hip;			// 0
+	CBoneData spine1;		// 1
+	CBoneData spine2;		// 2
+	CBoneData spine3;		// 3
+	CBoneData spine4;		// 4
+	CBoneData neck;			// 5
+	CBoneData head;			// 6
+
+	CBoneData unknown1;		// 7
+
+	CBoneData l_shoulder;	// 8
+	CBoneData l_arm;		// 9
+	CBoneData l_wrist;		// 10
+	CBoneData l_hand;		// 11
+
+	CBoneData unknown2;		// 12
+
+	CBoneData r_shoulder;	// 13
+	CBoneData r_arm;		// 14
+	CBoneData r_wrist;		// 15
+	CBoneData r_hand;		// 16
+
+	CBoneData unknown3;		// 17
+	CBoneData unknown4;		// 18
+	CBoneData unknown5;		// 19
+	CBoneData unknown6;		// 20
+	CBoneData unknown7;		// 21
+
+	CBoneData l_hip;		// 22
+	CBoneData l_knee;		// 23
+	CBoneData l_foot;		// 24
+
+	CBoneData r_hip;		// 25
+	CBoneData r_knee;		// 26
+	CBoneData r_foot;		// 27
+
+	CBoneData unknown8;		// 28
+	CBoneData unknown9;		// 29
+};
 
 class CGlobalVarsBase {
 public:

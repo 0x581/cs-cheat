@@ -155,7 +155,7 @@
   <ItemGroup>
     <ClCompile Include="lib\uiaccess\uiaccess.cpp" />
     <ClCompile Include="overlay\src\drawing.cpp" />
-    <ClCompile Include="src\cheats\aimBot.cpp" />
+    <ClCompile Include="src\cheats\src\aimBot.cpp" />
     <ClCompile Include="includes\src\config.cpp" />
     <ClCompile Include="includes\exit_codes.h" />
     <ClCompile Include="overlay\src\overlay.cpp" />
@@ -168,15 +168,18 @@
     <ClCompile Include="lib\imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="lib\imgui\pch.cpp" />
     <ClCompile Include="lib\imgui\timer\timer.cpp" />
+    <ClCompile Include="src\cheats\cheats.cpp" />
+    <ClCompile Include="src\cheats\cheat_data.cpp" />
+    <ClCompile Include="src\cheats\check_cheat_should_run.cpp" />
     <ClCompile Include="src\cheats\rageBot.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\cheats\antiFlash.cpp" />
-    <ClCompile Include="src\cheats\bombTimer.cpp" />
-    <ClCompile Include="src\cheats\bunnyHop.cpp" />
-    <ClCompile Include="src\cheats\esp.cpp" />
-    <ClCompile Include="src\cheats\fovChanger.cpp" />
-    <ClCompile Include="src\cheats\radarHack.cpp" />
-    <ClCompile Include="src\cheats\triggerBot.cpp" />
+    <ClCompile Include="src\cheats\src\antiFlash.cpp" />
+    <ClCompile Include="src\cheats\src\bombHack.cpp" />
+    <ClCompile Include="src\cheats\src\bunnyHop.cpp" />
+    <ClCompile Include="src\cheats\src\esp.cpp" />
+    <ClCompile Include="src\cheats\src\fovChanger.cpp" />
+    <ClCompile Include="src\cheats\src\radarHack.cpp" />
+    <ClCompile Include="src\cheats\src\triggerBot.cpp" />
     <ClCompile Include="src\memory\memory.cpp" />
     <ClCompile Include="includes\src\console_control.cpp" />
     <ClCompile Include="includes\src\shared_variables.cpp" />
@@ -209,6 +212,7 @@
     <ClInclude Include="lib\imgui\pch.h" />
     <ClInclude Include="lib\imgui\timer\timer.h" />
     <ClInclude Include="includes\vector_math.h" />
+    <ClInclude Include="src\cheats\cheat_data.h" />
     <ClInclude Include="src\memory\memory.h" />
     <ClInclude Include="includes\shared_variables.h" />
     <ClInclude Include="includes\entityListInteraction.h" />

@@ -8,7 +8,7 @@
 #define ROW_MAJOR
 
 struct Matrix4x4 {
-	const float matrix[4][4];
+	float matrix[4][4];
 
 	const float* operator[](int index) const {
 		return matrix[index];
@@ -61,6 +61,10 @@ struct Vector3 {
 		return values[index];
 	}
 
+	const bool operator== (const Vector3& other) const {
+		return x == other.x && y == other.y && z == other.z;
+	}
+
 	Vector3 operator+ (const Vector3& other) const {
 		return { x + other.x, y + other.y, z + other.z };
 	}
@@ -71,6 +75,23 @@ struct Vector3 {
 
 	float length() const {
 		return pow(x * x + y * y + z * z, 0.5f);
+	}
+
+	Vector3 normalize() const {
+		float len = length();
+
+		if (len == 0)
+			return { 0, 0, 0 };
+
+		return { x / len, y / len, z / len };
+	}
+
+	float dot(const Vector3& other) const {
+		return x * other.x + y * other.y + z * other.z;
+	}
+
+	Vector3 negate(const Vector3& other) const {
+		return { -other.x, -other.y, -other.z };
 	}
 
 	Vector2 xy() const {
@@ -126,9 +147,9 @@ static Vector4 operator*(const Matrix4x4& m, const Vector4& v) {
 #endif
 }
 
-typedef Matrix4x4 view_matrix_t;
+typedef Matrix4x4 ViewMatrix_t;
 
-static Vector3 worldToScreen(const Vector3& world_pos, const view_matrix_t& view_matrix) {
+static Vector3 worldToScreen(const Vector3& world_pos, const ViewMatrix_t& view_matrix) {
 	static int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	static int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 

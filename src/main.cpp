@@ -65,24 +65,11 @@ int main() {
 	std::thread conn{ connectionHandler, std::ref(mem) };
 	conn.detach();
 
-	std::thread triggerBot{ runTriggerBotLoop, std::ref(mem) };
-	std::thread antiFlash{ runAntiFlashLoop, std::ref(mem) };
-	std::thread bunnyHop{ runBunnyHopLoop, std::ref(mem) };
-	std::thread radarHack{ runRadarLoop, std::ref(mem) };
-	std::thread fovChanger{ runFovChangerLoop, std::ref(mem) };
-	std::thread esp{ runEspLoop, std::ref(mem) };
-	std::thread bombHack{ runBombHackLoop, std::ref(mem) };
-	std::thread aimBot{ runAimBotLoop, std::ref(mem) };
-	std::thread rageaimBot{ runRageAimbotLoop, std::ref(mem) }; 
-	triggerBot.detach();
+	std::thread cheats_thread{ run_all_cheats_loop, std::ref(mem) };
+	cheats_thread.detach();
+
+	std::thread rageaimBot{ runRageAimbotLoop, std::ref(mem) };
 	rageaimBot.detach();
-	antiFlash.detach();
-	bunnyHop.detach();
-	radarHack.detach();
-	fovChanger.detach();
-	esp.detach();
-	bombHack.detach();
-	aimBot.detach();
 
 	while (overlay.msg_loop() && !overlay.ready_to_close) {}
 

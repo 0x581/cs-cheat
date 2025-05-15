@@ -57,8 +57,8 @@ struct ConfigData {
 		float pixelRadius;
 		float speedFactor;
 		bool drawFovCircle;
-		bool ignoreteam;
-		bool visible;
+		bool ignoreTeam;
+		bool checkVisible;
 		ImVec4 fovCircleColor;
 		int hitbox;
 		int shotDelay = 30;

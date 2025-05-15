@@ -657,8 +657,8 @@ void c_overlay::draw_menu() {
 					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
 					ImGui::SliderFloat("##Smooth", &config.aimBot.speedFactor, 0.0f, 2.0f, "%.2f");
 					ImGui::PopItemWidth();
-					ImGui::Checkbox("Ignore Team", &config.aimBot.ignoreteam);
-					ImGui::Checkbox("visible(soon)", &config.aimBot.visible);
+					ImGui::Checkbox("Ignore Team", &config.aimBot.ignoreTeam);
+					ImGui::Checkbox("visible(soon)", &config.aimBot.checkVisible);
 
 					// --- Hitbox Auswahl ---
 					static const char* hitboxItems[] = { "Head", "Neck", "Spine" };

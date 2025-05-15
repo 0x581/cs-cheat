@@ -67,25 +67,25 @@
     <ClCompile Include="lib\imgui\pch.cpp">
       <Filter>lib</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\antiFlash.cpp">
+    <ClCompile Include="src\cheats\src\antiFlash.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\bunnyHop.cpp">
+    <ClCompile Include="src\cheats\src\bunnyHop.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\bombTimer.cpp">
+    <ClCompile Include="src\cheats\src\bombHack.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\fovChanger.cpp">
+    <ClCompile Include="src\cheats\src\fovChanger.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\radarHack.cpp">
+    <ClCompile Include="src\cheats\src\radarHack.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\triggerBot.cpp">
+    <ClCompile Include="src\cheats\src\triggerBot.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\esp.cpp">
+    <ClCompile Include="src\cheats\src\esp.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
     <ClCompile Include="includes\src\strings.cpp">
@@ -97,7 +97,7 @@
     <ClCompile Include="includes\src\shared_variables.cpp">
       <Filter>defines</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\aimBot.cpp">
+    <ClCompile Include="src\cheats\src\aimBot.cpp">
       <Filter>cheats</Filter>
     </ClCompile>
     <ClCompile Include="includes\src\config.cpp">
@@ -116,6 +116,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\cheats\rageBot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cheats\cheats.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cheats\cheat_data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cheats\check_cheat_should_run.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -192,6 +201,7 @@
     <ClInclude Include="includes\console_control.h" />
     <ClInclude Include="includes\cs_defines.h" />
     <ClInclude Include="lib\uiaccess\uiaccess.h" />
+    <ClInclude Include="src\cheats\cheat_data.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui\imgui.ini">

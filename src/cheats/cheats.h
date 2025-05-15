@@ -2,20 +2,9 @@
 
 #include "../memory/memory.h"
 
-void runAimBotLoop(Memory& mem);
+#include "cheat_data.h"
 
 void runRageAimbotLoop(Memory& mem);
 
-void runAntiFlashLoop(Memory& mem);
 
-void runBombHackLoop(Memory& mem);
-
-void runBunnyHopLoop(Memory& mem);
-
-void runEspLoop(Memory& mem);
-
-void runFovChangerLoop(Memory& mem);
-
-void runRadarLoop(Memory& mem);
-
-void runTriggerBotLoop(Memory& mem);
+void run_all_cheats_loop(Memory& mem);

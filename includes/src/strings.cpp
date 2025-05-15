@@ -9,5 +9,8 @@ void parseString(char* input, char* buffer, size_t bufferSize) {
 			buffer[buffer_idx++] = sym;
 	}
 
+	while (buffer_idx < bufferSize)
+		buffer[buffer_idx++] = 0;
+
 	buffer[buffer_idx] = '\0';
 }
