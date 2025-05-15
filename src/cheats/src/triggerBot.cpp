@@ -1,10 +1,10 @@
-#include "../cheats.h"
+#include "cheat_entries.h"
 
 #include <windows.h>
 
 #include <config.h>
 
-static void runTriggerBot(const CheatData& cheatData) {
+void runTriggerBot(const CheatData& cheatData) {
 
 	const auto lookAtEntityIdx = cheatData.lookAtEntityIndex;
 

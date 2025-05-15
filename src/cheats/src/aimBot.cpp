@@ -1,4 +1,4 @@
-#include "../cheats.h"
+#include "cheat_entries.h"
 
 #include <cmath>
 
@@ -6,7 +6,8 @@
 #include <vector_math.h>
 #include <config.h>
 
-static void runAimBot(const CheatData& cheat_data) {
+
+void runAimBot(const CheatData& cheat_data) {
 	Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };
 
 	const auto localPlayerPawn = cheat_data.localPlayer.pawnPtr;

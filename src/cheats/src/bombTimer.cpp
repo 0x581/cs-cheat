@@ -1,9 +1,9 @@
-#include "../cheats.h"
+#include "cheat_entries.h"
 
 #include <shared_variables.h>
 
 
-static void runbombTimer(const CheatData& cheatData) {
+void runbombTimer(const CheatData& cheatData) {
 	if (!cheatData.bombData.planted)
 	{
 		bombData.planted = false;

@@ -1,10 +1,10 @@
-#include "../cheats.h"
+#include "cheat_entries.h"
 
 #include <offsets.h>
 #include <cs_defines.h>
 
 
-static void runRadarHack(const Memory& mem, const CheatData& cheatData) {
+void runRadarHack(const Memory& mem, const CheatData& cheatData) {
 	for (CEntityIndex i = 0; i < 64; i++)
 	{
 		const auto playerEntity = cheatData.playerEntities[i];

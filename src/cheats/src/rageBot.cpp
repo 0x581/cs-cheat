@@ -1,4 +1,4 @@
-#include "../cheats.h"
+#include "cheat_entries.h"
 
 #include <thread>
 #include <cmath>
@@ -13,7 +13,7 @@ static void releaseRageShot() {
 	mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 }
 
-static void runRageAimbot(const CheatData& cheatData) {
+void runRageAimbot(const CheatData& cheatData) {
 	const auto localPlayerTeam = cheatData.localPlayer.team;
 
 	Vector2 screenCenter{ (float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f };

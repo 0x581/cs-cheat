@@ -15,23 +15,6 @@
 
 static c_overlay overlay{};
 
-static void connectionHandler(Memory& mem) {
-	const std::vector<const wchar_t*> requiredModules{ modules::client };
-
-	while (true)
-	{
-		if (!mem.is_valid)
-		{
-			if (mem.connectToProcess(L"cs2.exe", requiredModules))
-				std::cout << "Connection to CS2 established." << std::endl;
-		}
-		else if (!mem.isProcessAlive())
-			std::cout << "Connection to CS2 lost." << std::endl;
-
-		std::this_thread::sleep_for(delays::memConnectionWaitTime);
-	}
-}
-
 static void cleanUp() {
 	//overlay.~c_overlay();
 
@@ -61,10 +44,7 @@ int main() {
 
 	Memory mem{};
 
-	std::thread conn{ connectionHandler, std::ref(mem) };
-	conn.detach();
-
-	std::thread cheats_thread{ run_all_cheats_loop, std::ref(mem) };
+	std::thread cheats_thread{ run_cheat_loop, std::ref(mem) };
 	cheats_thread.detach();
 
 

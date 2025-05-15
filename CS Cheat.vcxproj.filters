@@ -202,6 +202,7 @@
     <ClInclude Include="includes\cs_defines.h" />
     <ClInclude Include="lib\uiaccess\uiaccess.h" />
     <ClInclude Include="src\cheats\cheat_data.h" />
+    <ClInclude Include="src\cheats\src\cheat_entries.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="lib\imgui\imgui\imgui_impl_metal.mm">

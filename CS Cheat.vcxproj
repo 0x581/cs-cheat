@@ -122,6 +122,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\ioctldriver\build\api;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>apd_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <Profile>false</Profile>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -147,6 +148,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\ioctldriver\build\api;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>apd_api.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <Profile>false</Profile>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -214,6 +216,7 @@
     <ClInclude Include="lib\imgui\timer\timer.h" />
     <ClInclude Include="includes\vector_math.h" />
     <ClInclude Include="src\cheats\cheat_data.h" />
+    <ClInclude Include="src\cheats\src\cheat_entries.h" />
     <ClInclude Include="src\memory\memory.h" />
     <ClInclude Include="includes\shared_variables.h" />
     <ClInclude Include="includes\strings.h" />

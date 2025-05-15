@@ -1,6 +1,7 @@
-#include "../cheats.h"
+#include "cheat_entries.h"
 
-static void runBunnyHop() {
+
+void runBunnyHop() {
 	// const auto onGroundLastTick = mem.Read<bool>(localPlayer + offsets::onGroundLastTick);
 
 	keybd_event(VK_SPACE, 0, 0, 0);

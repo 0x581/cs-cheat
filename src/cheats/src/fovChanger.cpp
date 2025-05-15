@@ -1,10 +1,10 @@
-#include "../cheats.h"
+#include "cheat_entries.h"
 
 #include <config.h>
 #include <offsets.h>
 
 
-static void runFovChanger(Memory& mem, const CheatData& cheatData) {
+void runFovChanger(const Memory& mem, const CheatData& cheatData) {
 	const auto isScoped = cheatData.localPlayer.isScoped;
 
 	if (isScoped)
