@@ -1,43 +1,19 @@
 #pragma once
 
-#include <array>
-
 #include "vector_math.h"
 
-typedef int CHealth;
+constexpr auto PLAYER_NAME_LENGTH = 128;
 
-typedef unsigned long long CEntityIndex;
+typedef unsigned long CEntityIndex;
+typedef int CHealth;
 typedef uint8_t PlayerTeam_t;
 typedef unsigned long long EntitySpottedState_t;
 typedef float GameTime_t;
 
-class CHandle {
-public:
-	[[nodiscard]] std::uint32_t get_entry_index() const noexcept {
-		return index_ & 0x7FFF;
-	}
-
-	[[nodiscard]] bool is_valid() const noexcept {
-		return index_ > 0 && index_ != 0xFFFFFFFF;
-	}
-
-	[[nodiscard]] bool operator==(const CHandle& other) const noexcept {
-		return index_ == other.index_;
-	}
-
-	[[nodiscard]] bool operator!=(const CHandle& other) const noexcept {
-		return index_ != other.index_;
-	}
-
-private:
-	uint32_t index_;
-};
-
-struct Quaternion { float x, y, z, w; };
 struct CBoneData {
 	Vector3 location{ 0 };
 	float scale{ 0 };
-	Quaternion rotation{ 0 };
+	struct Quaternion { float x, y, z, w; } rotation{ 0 };
 };
 
 struct CBoneArray {
@@ -107,4 +83,35 @@ public:
 };
 // Don't trust this struct. I had to manually fix some parts of it already. It should be fine until currentTime2 tho...
 
-constexpr auto PLAYER_NAME_LENGTH = 128;
+
+class CHandle {
+public:
+	static constexpr uint32_t INVALID_EHANDLE_INDEX = 0xFFFFFFFF;
+
+	FORCEINLINE int32_t get_entry_index() const noexcept {
+		return is_valid() ? static_cast<int32_t>(parts.entity_index) : -1;
+	}
+
+	FORCEINLINE bool is_valid() const noexcept {
+		return index != INVALID_EHANDLE_INDEX;
+	}
+
+	FORCEINLINE bool operator==(const CHandle& other) const noexcept {
+		return index == other.index;
+	}
+
+	FORCEINLINE bool operator!=(const CHandle& other) const noexcept {
+		return index != other.index;
+	}
+
+protected:
+	union {
+		uint32_t index;
+
+		struct {
+			uint32_t entity_index : 15;
+			uint32_t serial : 17;
+		} parts;
+	};
+};
+

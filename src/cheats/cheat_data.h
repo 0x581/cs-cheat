@@ -1,7 +1,8 @@
 #pragma once
 #include "../memory/memory.h"
 
-#include "cs_defines.h"
+#include "entity_system.h"
+#include <cs_defines.h>
 
 
 struct C4Data {
@@ -43,4 +44,4 @@ struct CheatData {
 	ViewMatrix_t viewMatrix{ 0 };
 };
 
-bool read_cheat_data(Memory& mem, CheatData& cheatData);
+bool read_cheat_data(const Memory& mem, const EntityList& entityList, CheatData& cheatData);

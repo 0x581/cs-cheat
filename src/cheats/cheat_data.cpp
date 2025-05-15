@@ -2,11 +2,11 @@
 
 #include <modules.h>
 #include <offsets.h>
-#include <entityListInteraction.h>
+#include <entity_system.h>
 #include <strings.h>
 #include <vector_math.h>
 
-void read_c4_data(Memory& mem, C4Data& c4Data) {
+void read_c4_data(const Memory& mem, const EntityList& entityList, C4Data& c4Data) {
 	const auto client = mem.GetModuleAddress(modules::client);
 
 	if (!client)
@@ -27,19 +27,16 @@ void read_c4_data(Memory& mem, C4Data& c4Data) {
 
 	const auto defuserHandle = mem.Read<CHandle>(plantedC4Ptr + offsets::c4Defuser);
 
-	const auto defuserPawn = getObjectPtrFromHandle(mem, defuserHandle, true);
-
-	std::cout << "Defuser Handle: " << std::hex << defuserHandle.get_entry_index() << std::endl;
-
+	const auto defuserPawn = entityList.getAddressFromHandle(mem, defuserHandle);
 }
 
-bool read_player_data(Memory& mem, uintptr_t playerPawnPtr, PlayerData& playerData) {
+bool read_player_data(const Memory& mem, const EntityList& entityList, const uintptr_t playerPawnPtr, PlayerData& playerData) {
 	if (!playerPawnPtr)
 		return false;
 
 	playerData.pawnPtr = playerPawnPtr;
 
-	const auto controllerPtr = getControllerPtrFromPawnPtr(mem, playerPawnPtr);
+	const auto controllerPtr = entityList.getControllerPtrFromPawnPtr(mem, playerPawnPtr);
 	if (!controllerPtr)
 		return false;
 
@@ -52,7 +49,7 @@ bool read_player_data(Memory& mem, uintptr_t playerPawnPtr, PlayerData& playerDa
 	memset(playerData.name, 0, PLAYER_NAME_LENGTH);
 	mem.ReadBytes(controllerPtr + offsets::playerName, (byte*)playerData.name, PLAYER_NAME_LENGTH);
 
-	parseString(playerData.name, playerData.name, PLAYER_NAME_LENGTH);
+	cleanString(playerData.name, playerData.name, PLAYER_NAME_LENGTH);
 
 	playerData.oldOrigin = mem.Read<Vector3>(playerPawnPtr + offsets::OldOrigin);
 
@@ -75,7 +72,7 @@ bool read_player_data(Memory& mem, uintptr_t playerPawnPtr, PlayerData& playerDa
 	return true;
 }
 
-bool read_cheat_data(Memory& mem, CheatData& cheatData) {
+bool read_cheat_data(const Memory& mem, const EntityList& entityList, CheatData& cheatData) {
 	memset(&cheatData, 0, sizeof(CheatData));
 
 	const auto client = mem.GetModuleAddress(modules::client);
@@ -83,33 +80,34 @@ bool read_cheat_data(Memory& mem, CheatData& cheatData) {
 	if (!client)
 		return false;
 
-	const auto localPlayerPawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
+	const auto local_player_pawn = mem.Read<uintptr_t>(client + offsets::localPlayerPawn);
 
-	if (!localPlayerPawn)
+	if (!local_player_pawn)
 		return false;
 
-	if (!read_player_data(mem, localPlayerPawn, cheatData.localPlayer))
+	if (!read_player_data(mem, entityList, local_player_pawn, cheatData.localPlayer))
 		return false;
 
 	cheatData.lookAtEntityIndex = -1;
-	const auto lookAtPawn = getCurrentLookatPlayerPawn(mem);
+	const auto lookat_pawn = entityList.getCurrentLookatPlayerPawn(mem, local_player_pawn);
 
 	for (CEntityIndex i = 0; i < 64; i++)
 	{
-		const auto entityPlayerPawn = getPlayerPawnPtr(mem, i);
+		const auto entity_player_controller = entityList.getPlayerControllerPtr(mem, i);
+		const auto entity_player_pawn = entityList.getPawnPtrFromControllerPtr(mem, entity_player_controller);
 
-		const auto success = read_player_data(mem, entityPlayerPawn, cheatData.playerEntities[i]);
+		const auto success = read_player_data(mem, entityList, entity_player_pawn, cheatData.playerEntities[i]);
 
 		cheatData.playerEntities[i].isValid = success;
 	}
 
 	for (CEntityIndex i = 0; i < 64; ++i)
 	{
-		if (cheatData.playerEntities[i].pawnPtr == lookAtPawn)
+		if (cheatData.playerEntities[i].pawnPtr == lookat_pawn)
 			cheatData.lookAtEntityIndex = i;
 	}
 
-	read_c4_data(mem, cheatData.bombData);
+	read_c4_data(mem, entityList, cheatData.bombData);
 
 	const auto globalVarsPtr = mem.Read<uintptr_t>(client + offsets::globalVars);
 	cheatData.globalVars = mem.Read<CGlobalVarsBase>(globalVarsPtr);

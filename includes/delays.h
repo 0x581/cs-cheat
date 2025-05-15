@@ -49,5 +49,7 @@ namespace delays {
 		constexpr auto ms_interval = 15;
 		constexpr auto ms_offset = 5;
 	}
+
+	namespace rageBot = aimbot;
 }
 

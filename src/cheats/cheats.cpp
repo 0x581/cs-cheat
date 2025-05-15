@@ -1,3 +1,4 @@
+#include "cheats.h"
 
 #include <config.h>
 #include <thread>
@@ -14,6 +15,7 @@
 #include "src/bombTimer.cpp"
 #include "src/antiFlash.cpp"
 #include "src/fovChanger.cpp"
+#include "src/rageBot.cpp"
 
 
 void run_all_cheats(Memory& mem, CheatData& cheat_data, size_t iteration) {
@@ -40,10 +42,14 @@ void run_all_cheats(Memory& mem, CheatData& cheat_data, size_t iteration) {
 
 	if (shouldRadarHackRun(iteration))
 		runRadarHack(mem, cheat_data);
+
+	if (shouldRageBotRun(iteration))
+		runRageAimbot(cheat_data);
 }
 
 void run_all_cheats_loop(Memory& mem) {
-	CheatData cheat_data{ 0 };
+	EntityList entity_list{ };
+	CheatData cheat_data{ };
 
 	std::chrono::time_point<std::chrono::high_resolution_clock> lastTime = std::chrono::high_resolution_clock::now();
 
@@ -59,7 +65,10 @@ void run_all_cheats_loop(Memory& mem) {
 			continue;
 		}
 
-		if (!read_cheat_data(mem, cheat_data))
+		if (!read_entity_system(mem, entity_list))
+			continue;
+
+		if (!read_cheat_data(mem, entity_list, cheat_data))
 			continue;
 
 		run_all_cheats(mem, cheat_data, iteration);
