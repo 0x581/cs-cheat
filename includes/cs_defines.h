@@ -6,10 +6,32 @@
 
 typedef int CHealth;
 
-typedef unsigned int CEntityIndex;
+typedef unsigned long long CEntityIndex;
 typedef uint8_t PlayerTeam_t;
 typedef unsigned long long EntitySpottedState_t;
 typedef float GameTime_t;
+
+class CHandle {
+public:
+	[[nodiscard]] std::uint32_t get_entry_index() const noexcept {
+		return index_ & 0x7FFF;
+	}
+
+	[[nodiscard]] bool is_valid() const noexcept {
+		return index_ > 0 && index_ != 0xFFFFFFFF;
+	}
+
+	[[nodiscard]] bool operator==(const CHandle& other) const noexcept {
+		return index_ == other.index_;
+	}
+
+	[[nodiscard]] bool operator!=(const CHandle& other) const noexcept {
+		return index_ != other.index_;
+	}
+
+private:
+	uint32_t index_;
+};
 
 struct Quaternion { float x, y, z, w; };
 struct CBoneData {
