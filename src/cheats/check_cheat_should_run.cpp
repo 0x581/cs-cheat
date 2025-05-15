@@ -68,3 +68,13 @@ static bool shouldRadarHackRun(size_t iteration) {
 
 	return config.activeCheats.radar;
 }
+
+static bool shouldRageBotRun(size_t iteration) {
+	if (iteration % delays::rageBot::ms_interval != delays::rageBot::ms_offset)
+		return false;
+
+	if (!config.activeCheats.rageBot)
+		return false;
+
+	return GetAsyncKeyState(keybinds::rageBot);
+}

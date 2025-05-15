@@ -112,7 +112,7 @@
     <ClCompile Include="overlay\src\drawing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cheats\rageBot.cpp">
+    <ClCompile Include="src\cheats\src\rageBot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\cheats\cheats.cpp">
@@ -124,7 +124,12 @@
     <ClCompile Include="src\cheats\check_cheat_should_run.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="includes\src\entityListInteraction.cpp" />
+    <ClCompile Include="includes\entity_system.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="includes\src\entity_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\memory\memory.h">
@@ -174,9 +179,6 @@
     </ClInclude>
     <ClInclude Include="src\cheats\cheats.h">
       <Filter>cheats</Filter>
-    </ClInclude>
-    <ClInclude Include="includes\entityListInteraction.h">
-      <Filter>utils</Filter>
     </ClInclude>
     <ClInclude Include="includes\shared_variables.h">
       <Filter>defines</Filter>

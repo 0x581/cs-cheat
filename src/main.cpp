@@ -67,8 +67,6 @@ int main() {
 	std::thread cheats_thread{ run_all_cheats_loop, std::ref(mem) };
 	cheats_thread.detach();
 
-	std::thread rageaimBot{ runRageAimbotLoop, std::ref(mem) };
-	rageaimBot.detach();
 
 	while (overlay.msg_loop() && !overlay.ready_to_close) {}
 
