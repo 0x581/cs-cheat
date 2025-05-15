@@ -6,38 +6,41 @@
 
 struct C4Data {
 	bool planted;
-	uintptr_t plantedC4Ptr;
+	uint32_t site;
 	GameTime_t explosionTime;
+	bool beingDefused;
+	bool defused;
+	CEntityIndex defuser;
 };
 
 struct PlayerData {
-	bool isValid;
-	uintptr_t pawnPtr;
-	uintptr_t controllerPtr;
-	uintptr_t cameraServicesPtr;
-	PlayerTeam_t team;
-	CHealth maxHealth;
-	CHealth health;
-	CEntityIndex lookAtEntityIndex;
-	Vector3 oldOrigin;
-	CBoneArray bones;
-	char name[PLAYER_NAME_LENGTH];
-	float crouchAmount;
-	EntitySpottedState_t spottedByMask;
-	bool hasDefuser;
-	bool isScoped;
+	bool isValid{ 0 };
+	uintptr_t pawnPtr{ 0 };
+	uintptr_t controllerPtr{ 0 };
+	uintptr_t cameraServicesPtr{ 0 };
+	PlayerTeam_t team{ 0 };
+	CHealth maxHealth{ 0 };
+	CHealth health{ 0 };
+	CEntityIndex lookAtEntityIndex{ 0 };
+	Vector3 oldOrigin{ 0 };
+	CBoneArray bones{ 0 };
+	char name[PLAYER_NAME_LENGTH]{ 0 };
+	float crouchAmount{ 0 };
+	EntitySpottedState_t spottedByMask{ 0 };
+	bool hasDefuser{ 0 };
+	bool isScoped{ 0 };
 };
 
 struct CheatData {
-	PlayerData playerEntities[64]{ 0 };
+	PlayerData playerEntities[64];
 
-	PlayerData localPlayer{ 0 };
-	CEntityIndex lookAtEntityIndex;
+	PlayerData localPlayer;
+	CEntityIndex lookAtEntityIndex{ 0 };
 
-	C4Data bombData{ 0 };
+	C4Data bombData;
 
 	CGlobalVarsBase globalVars;
-	ViewMatrix_t viewMatrix;
+	ViewMatrix_t viewMatrix{ 0 };
 };
 
 bool read_cheat_data(Memory& mem, CheatData& cheatData);

@@ -18,9 +18,19 @@ void read_c4_data(Memory& mem, C4Data& c4Data) {
 		return;
 
 	const auto plantedC4Address = mem.Read<uintptr_t>(client + offsets::plantedC4);
-	c4Data.plantedC4Ptr = mem.Read<uintptr_t>(plantedC4Address);
+	const auto plantedC4Ptr = mem.Read<uintptr_t>(plantedC4Address);
 
-	c4Data.explosionTime = mem.Read<GameTime_t>(c4Data.plantedC4Ptr + offsets::c4ExplosionTime);
+	c4Data.site = mem.Read<uint32_t>(plantedC4Ptr + offsets::c4BombSite);
+	c4Data.explosionTime = mem.Read<GameTime_t>(plantedC4Ptr + offsets::c4ExplosionTime);
+	c4Data.beingDefused = mem.Read<bool>(plantedC4Ptr + offsets::c4BeingDefused);
+	c4Data.defused = mem.Read<bool>(plantedC4Ptr + offsets::c4Defused);
+
+	const auto defuserHandle = mem.Read<CHandle>(plantedC4Ptr + offsets::c4Defuser);
+
+	const auto defuserPawn = getObjectPtrFromHandle(mem, defuserHandle, true);
+
+	std::cout << "Defuser Handle: " << std::hex << defuserHandle.get_entry_index() << std::endl;
+
 }
 
 bool read_player_data(Memory& mem, uintptr_t playerPawnPtr, PlayerData& playerData) {
@@ -81,6 +91,9 @@ bool read_cheat_data(Memory& mem, CheatData& cheatData) {
 	if (!read_player_data(mem, localPlayerPawn, cheatData.localPlayer))
 		return false;
 
+	cheatData.lookAtEntityIndex = -1;
+	const auto lookAtPawn = getCurrentLookatPlayerPawn(mem);
+
 	for (CEntityIndex i = 0; i < 64; i++)
 	{
 		const auto entityPlayerPawn = getPlayerPawnPtr(mem, i);
@@ -89,9 +102,6 @@ bool read_cheat_data(Memory& mem, CheatData& cheatData) {
 
 		cheatData.playerEntities[i].isValid = success;
 	}
-
-	cheatData.lookAtEntityIndex = -1;
-	const auto lookAtPawn = getCurrentLookatPlayerPawn(mem);
 
 	for (CEntityIndex i = 0; i < 64; ++i)
 	{

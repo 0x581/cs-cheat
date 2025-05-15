@@ -738,7 +738,7 @@ void c_overlay::draw_menu() {
 					ImGui::PopItemWidth();
 					ImGui::Unindent();
 				}
-				ImGui::Checkbox("Bomb Info Panel™", &config.activeCheats.bombHack);
+				ImGui::Checkbox("Bomb Info Panel™", &config.activeCheats.bombTimer);
 			}
 			break;
 
@@ -850,7 +850,7 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 
 	renderCheats();
 
-	if (config.activeCheats.bombHack)
+	if (config.activeCheats.bombTimer)
 		draw_bomb();
 
 	if (!show_menu)

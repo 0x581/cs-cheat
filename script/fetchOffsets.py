@@ -177,36 +177,6 @@ OFFSETS: list[Offset] = [
         "C_CSGameRules",
     ),
     Offset(
-        "BombPlanted",
-        "client_dll.hpp",
-        "C_CSGameRules::m_bBombPlanted",
-        "Member of C_CSGameRules, bool",
-    ),
-    Offset(
-        "plantedC4",
-        "offsets.hpp",
-        "dwPlantedC4",
-        "C_PlantedC4 * (Need to dereference twice)",
-    ),
-    Offset(
-        "BombTicking",
-        "client_dll.hpp",
-        "m_bBombTicking",
-        "Member of C_PlantedC4, bool",
-    ),
-    Offset(
-        "m_bC4Activated",
-        "client_dll.hpp",
-        "m_bC4Activated",
-        "Member of C_PlantedC4, bool",
-    ),
-    Offset(
-        "BombSite",
-        "client_dll.hpp",
-        "m_nBombSite",
-        "Member of C_PlantedC4, int32",
-    ),
-    Offset(
         "crouchAmount",
         "client_dll.hpp",
         "m_flDuckAmount",
@@ -217,12 +187,6 @@ OFFSETS: list[Offset] = [
         "offsets.hpp",
         "dwGlobalVars",
         "Pointer to the global vars struct",
-    ),
-    Offset(
-        "c4ExplosionTime",
-        "client_dll.hpp",
-        "m_flC4Blow",
-        "Member of C_PlantedC4, float",
     ),
     Offset(
         "itemServices",
@@ -247,6 +211,44 @@ OFFSETS: list[Offset] = [
         "client_dll.hpp",
         "m_modelState",
         "Member of CSkeletonInstance, CModelState",
+    ),
+    #
+    # Bomb  offsets
+    Offset(
+        "plantedC4",
+        "offsets.hpp",
+        "dwPlantedC4",
+        "C_PlantedC4 * (Need to dereference twice)",
+    ),
+    Offset(
+        "c4BombSite",
+        "client_dll.hpp",
+        "m_nBombSite",
+        "Member of C_PlantedC4, int32",
+    ),
+    Offset(
+        "c4ExplosionTime",
+        "client_dll.hpp",
+        "m_flC4Blow",
+        "Member of C_PlantedC4, GameTime_t",
+    ),
+    Offset(
+        "c4BeingDefused",
+        "client_dll.hpp",
+        "m_bBeingDefused",
+        "Member of C_PlantedC4, bool",
+    ),
+    Offset(
+        "c4Defused",
+        "client_dll.hpp",
+        "m_bBombDefused",
+        "Member of C_PlantedC4, bool",
+    ),
+    Offset(
+        "c4Defuser",
+        "client_dll.hpp",
+        "m_hBombDefuser",
+        "Member of C_PlantedC4, CHandle<C_CSPlayerPawn>",
     ),
 ]
 

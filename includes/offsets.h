@@ -28,16 +28,16 @@ namespace offsets
     constexpr auto ViewMatrix = 0x1A60EF0;
     constexpr auto OldOrigin = 0x1324;                       // Member of C_BasePlayerPawn, Vector
     constexpr auto GameRules = 0x1A5C7F8;                    // C_CSGameRules
-    constexpr auto BombPlanted = 0x9A5;                      // Member of C_CSGameRules, bool
-    constexpr auto plantedC4 = 0x1A670D8;                    // C_PlantedC4 * (Need to dereference twice)
-    constexpr auto BombTicking = 0xF90;                      // Member of C_PlantedC4, bool
-    constexpr auto m_bC4Activated = 0xFD8;                   // Member of C_PlantedC4, bool
-    constexpr auto BombSite = 0xF94;                         // Member of C_PlantedC4, int32
     constexpr auto crouchAmount = 0x228;                     // Member of CPlayer_MovementServices, float
     constexpr auto globalVars = 0x1840148;                   // Pointer to the global vars struct
-    constexpr auto c4ExplosionTime = 0xFC0;                  // Member of C_PlantedC4, float
     constexpr auto itemServices = 0x11B0;                    // Member of C_BasePlayerPawn, CPlayer_ItemServices *
     constexpr auto hasDefuser = 0x40;                        // Member of CCSPlayer_ItemServices, bool
     constexpr auto gameSceneNode = 0x328;                    // Member of C_BaseEntity, CSkeletonInstance*
     constexpr auto modelState = 0x170;                       // Member of CSkeletonInstance, CModelState
+    constexpr auto plantedC4 = 0x1A670D8;                    // C_PlantedC4 * (Need to dereference twice)
+    constexpr auto c4BombSite = 0xF94;                       // Member of C_PlantedC4, int32
+    constexpr auto c4ExplosionTime = 0xFC0;                  // Member of C_PlantedC4, GameTime_t
+    constexpr auto c4BeingDefused = 0xFCC;                   // Member of C_PlantedC4, bool
+    constexpr auto c4Defused = 0xFE4;                        // Member of C_PlantedC4, bool
+    constexpr auto c4Defuser = 0xFE8;                        // Member of C_PlantedC4, CHandle<C_CSPlayerPawn>
 }

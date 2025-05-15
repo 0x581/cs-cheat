@@ -6,7 +6,6 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
-#include <cstdlib>
 
 using std::filesystem::path;
 using std::ifstream;
@@ -17,7 +16,7 @@ static constexpr const ConfigData default_config{
 	.activeCheats {
 		.aimBot = true,
 		.antiFlash = true,
-		.bombHack = true,
+		.bombTimer = true,
 		.bunnyHop = false,
 		.esp = true,
 		.fovChanger = false,

@@ -11,7 +11,7 @@
 #include "src/bunnyHop.cpp"
 #include "src/radarHack.cpp"
 #include "src/triggerBot.cpp"
-#include "src/bombHack.cpp"
+#include "src/bombTimer.cpp"
 #include "src/antiFlash.cpp"
 #include "src/fovChanger.cpp"
 
@@ -29,8 +29,8 @@ void run_all_cheats(Memory& mem, CheatData& cheat_data, size_t iteration) {
 	if (shouldBunnyHopRun(iteration))
 		runBunnyHop();
 
-	if (shouldBombHackRun(iteration))
-		runBombHack(cheat_data);
+	if (shouldBombTimerRun(iteration))
+		runbombTimer(cheat_data);
 
 	if (shouldAntiFlashRun(iteration))
 		runAntiFlash(mem, cheat_data);

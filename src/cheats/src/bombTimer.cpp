@@ -3,7 +3,7 @@
 #include <shared_variables.h>
 
 
-static void runBombHack(const CheatData& cheatData) {
+static void runbombTimer(const CheatData& cheatData) {
 	if (!cheatData.bombData.planted)
 	{
 		bombData.planted = false;

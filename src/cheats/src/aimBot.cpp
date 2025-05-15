@@ -16,9 +16,9 @@ static void runAimBot(const CheatData& cheat_data) {
 	auto lowestDistance = HUGE_VAL;
 	ImVec2 closestTargetScreen{ 0, 0 };
 
-	const int localPawnIndex = cheat_data.localPlayer.lookAtEntityIndex;
+	const auto localPawnIndex = cheat_data.localPlayer.lookAtEntityIndex;
 
-	for (int i = 0; i < 64; i++)
+	for (CEntityIndex i = 0; i < 64; i++)
 	{
 		const auto& playerEntity = cheat_data.playerEntities[i];
 
