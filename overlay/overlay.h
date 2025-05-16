@@ -62,6 +62,8 @@ public:
 
 	BOOL in_screen(const ImVec2& pos);
 public:
+	ImGuiContext* menuContext;
+
 	FLOAT window_width, window_height;
 	bool exit = true;
 	bool ready_to_close = true;

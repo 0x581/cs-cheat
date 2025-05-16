@@ -121,7 +121,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\ioctldriver\build\api;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>apd_api.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <Profile>false</Profile>
     </Link>
     <Manifest>
@@ -147,7 +147,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)..\ioctldriver\build\api;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>apd_api.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
-      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
+      <UACExecutionLevel>AsInvoker</UACExecutionLevel>
       <Profile>false</Profile>
     </Link>
     <Manifest>
@@ -159,6 +159,8 @@
     <ClCompile Include="includes\src\entity_system.cpp" />
     <ClCompile Include="lib\uiaccess\uiaccess.cpp" />
     <ClCompile Include="overlay\src\drawing.cpp" />
+    <ClCompile Include="overlay\src\windows\bomb.cpp" />
+    <ClCompile Include="overlay\src\windows\menu.cpp" />
     <ClCompile Include="overlay\src\window_handle.cpp" />
     <ClCompile Include="src\cheats\src\aimBot.cpp" />
     <ClCompile Include="includes\src\config.cpp" />

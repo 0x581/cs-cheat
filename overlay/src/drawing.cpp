@@ -101,3 +101,7 @@ VOID c_overlay::radial_gradient(const ImVec2& center, float radius, ImU32 col_in
 	}
 	draw_list->_Path.Size = 0;
 }
+
+BOOL c_overlay::in_screen(const ImVec2& pos) {
+	return !(pos.x > window_width || pos.x<0 || pos.y>window_height || pos.y < 0);
+}
