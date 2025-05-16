@@ -1,18 +1,19 @@
 #include "../overlay.h"
-#include "../../lib/uiaccess/uiaccess.h"
-
-#include <windows.h>
-
-
-#include "shared_variables.h"
-#include "colors.h"
-#include "config.h"
-
-#include "keybinds.h"
 
 #include <string>
 #include <vector>
 #include <map>
+
+#include <Windows.h>
+
+
+#include <colors.h>
+#include <config.h>
+#include <keybinds.h>
+#include <shared_variables.h>
+
+#include "../window_handle.h"
+
 
 using std::string, std::vector, std::map;
 
@@ -38,123 +39,6 @@ inline VOID c_overlay::safe_release(T*& p) {
 ImGuiContext* menuContext = ImGui::CreateContext();
 
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-BOOL use_uiaccess(HWND* pHandle) {
-
-	typedef HWND(WINAPI* CreateWindowInBand)(
-		DWORD dwExStyle,
-		LPCWSTR lpClassName,
-		LPCWSTR lpWindowName,
-		DWORD dwStyle,
-		int x,
-		int y,
-		int nWidth,
-		int nHeight,
-		HWND hWndParent,
-		HMENU hMenu,
-		HINSTANCE hInstance,
-		LPVOID lpParam,
-		DWORD dwBand
-		);
-
-	//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-
-	DWORD dwErr = PrepareForUIAccess();
-
-	if (dwErr != ERROR_SUCCESS)
-		return dwErr;
-
-	std::cout << "Process has UI Access." << std::endl;
-
-	constexpr auto ZBID_UIACCESS = 2; // UIAccess Band ID
-
-	const auto user32_dll = LoadLibrary(L"user32.dll");
-	if (user32_dll == 0)
-	{
-		std::cout << "Failed to load user32.dll" << std::endl;
-		return FALSE;
-	}
-
-	const auto pCreateWindowInBand = (CreateWindowInBand)GetProcAddress(user32_dll, "CreateWindowInBand");
-
-	WNDCLASSEXW wc = {
-		sizeof(wc),
-		CS_CLASSDC,
-		ImGui_ImplWin32_WndProcHandler,
-		0L,
-		0L,
-		GetModuleHandle(NULL),
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		L"ImGui Example",
-		NULL,
-	};
-	auto res = RegisterClassExW(&wc);
-
-	HWND hwnd = pCreateWindowInBand(
-		WS_EX_TOPMOST | WS_EX_NOACTIVATE,
-		(LPCWSTR)res,
-		NULL,
-		0x80000000,
-		0,
-		0,
-		0,
-		0,
-		NULL,
-		NULL,
-		GetModuleHandle(NULL),
-		LPVOID(res),
-		ZBID_UIACCESS
-	);
-
-	if (hwnd == 0)
-	{
-		const auto error = GetLastError();
-		std::cout << "Failed to create window in band: " << error << std::endl;
-		return FALSE;
-	}
-
-	*pHandle = hwnd;
-
-	return hwnd != NULL;
-}
-
-
-BOOL hook_nvidia(HWND* pHandle) {
-	HWND handle = FindWindow(L"CEF-OSC-WIDGET", L"NVIDIA GeForce Overlay");
-
-	if (!handle)
-	{
-		std::cout << "Failed to find NVIDIA Overlay window." << std::endl;
-		return false;
-	}
-
-	auto style = GetWindowLongPtr(handle, GWL_EXSTYLE);
-	style |= WS_EX_TRANSPARENT; // | WS_EX_LAYERED;
-	SetWindowLongPtr(handle, GWL_EXSTYLE, style);
-
-	// avoiding window flags: https://www.unknowncheats.me/forum/general-programming-and-reversing/229070-overlay-window-topmost-top-game-windows-video.html
-	MARGINS margins = {
-		.cxLeftWidth = -1,
-		.cxRightWidth = -1,
-		.cyTopHeight = -1,
-		.cyBottomHeight = -1,
-	};
-
-	DwmExtendFrameIntoClientArea(handle, &margins);
-	SetLayeredWindowAttributes(handle, 0, 0xFF, LWA_ALPHA);
-	SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-
-	*pHandle = handle;
-
-	return true;
-}
-
-
-
 c_overlay::c_overlay() :
 	ready_to_close(false),
 	exit(false),
@@ -170,13 +54,8 @@ c_overlay::c_overlay() :
 	draw_list(nullptr),
 	breath(NULL) {
 
-	// if (!use_uiaccess(&window_handle))
-	//	throw std::runtime_error(string("Failed to get UI access. Error: ") + std::to_string(GetLastError()));
-
-	//std::cout << "Aquired UI Access." << std::endl;
-
-	if (!hook_nvidia(&window_handle))
-		throw std::runtime_error(string("Failed to hook NVIDIA overlay."));
+	if (!getWindowHandle(&window_handle))
+		throw std::runtime_error(string("Failed to acquire window handle."));
 
 	font = new s_font();
 
