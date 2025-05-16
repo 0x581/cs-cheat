@@ -31,14 +31,8 @@ void c_overlay::draw_menu() {
 
 	ImGuiStyle& style = ImGui::GetStyle();
 
-	static bool isFirstIteration = true;
-	if (isFirstIteration)
-	{
-		ImGui::SetNextWindowPos(persistentConfig.mainWindow.windowPosition);
-		isFirstIteration = false;
-	}
-
-	ImGui::SetNextWindowSize(ImVec2(650, 500), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(persistentConfig.mainWindow.windowPosition, ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(menu_width, menu_height), ImGuiCond_FirstUseEver);
 
 	ImGui::Begin("Main GUI",
 		nullptr,

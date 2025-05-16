@@ -453,13 +453,43 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 
 
 void c_overlay::HandleInput() {
-	ImGuiIO& io = ImGui::GetIO();
-
-	bool mouse_over_imgui = io.WantCaptureMouse || io.WantCaptureKeyboard;
-
 	LONG style = GetWindowLong(window_handle, GWL_EXSTYLE);
 
-	if (mouse_over_imgui)
+
+
+	if (!show_menu)
+	{
+		if (!(style & WS_EX_TRANSPARENT))
+		{
+			SetWindowLong(window_handle, GWL_EXSTYLE, style | WS_EX_TRANSPARENT);
+			return;
+		}
+	}
+
+	ImVec2 menu_tl = persistentConfig.mainWindow.windowPosition;
+	ImVec2 menu_br = ImVec2(menu_tl.x + menu_width, menu_tl.y + menu_height);
+
+	ImVec2 bomb_tl = persistentConfig.bombWindow.windowPosition;
+	ImVec2 bomb_br = ImVec2(bomb_tl.x + bomb_width, bomb_tl.y + bomb_height);
+
+	POINT p{};
+	GetCursorPos(&p);
+
+	bool mouse_over_imgui = (
+		p.x >= menu_tl.x
+		&& p.y >= menu_tl.y
+		&& p.x < menu_br.x
+		&& p.y < menu_br.y
+		);
+
+	bool mouse_over_bomb = (
+		p.x >= bomb_tl.x
+		&& p.y >= bomb_tl.y
+		&& p.x < bomb_br.x
+		&& p.y < bomb_br.y
+		);
+
+	if (mouse_over_imgui || mouse_over_bomb)
 	{
 		if (style & WS_EX_TRANSPARENT)
 		{

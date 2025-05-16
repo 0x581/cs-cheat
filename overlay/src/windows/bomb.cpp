@@ -15,7 +15,7 @@ void c_overlay::draw_bomb() {
 	}
 
 	ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-	ImGui::SetNextWindowSize(ImVec2(300, 100));
+	ImGui::SetNextWindowSize(ImVec2(bomb_width, bomb_height));
 	ImGui::Begin(
 		"Bomb GUI",
 		0,
