@@ -54,7 +54,6 @@ c_overlay::c_overlay() :
 
 	init_imgui();
 
-	std::thread(&c_overlay::input_handler, this).detach();
 	std::thread(&c_overlay::anim_handler, this).detach();
 }
 
@@ -281,6 +280,8 @@ VOID c_overlay::init_imgui() {
 
 	ImGui_ImplWin32_Init(window_handle);
 	ImGui_ImplDX11_Init(d3d_device, device_context);
+
+	SetWindowLongPtr(window_handle, GWLP_WNDPROC, (LONG_PTR)WndProc_custom);
 }
 
 
@@ -511,21 +512,6 @@ void c_overlay::clear_screen() {
 	device_context->ClearRenderTargetView(render_target_view, (float*)&clear_clr);
 }
 
-void c_overlay::input_handler() {
-	// added a sleep per user @colbyfortnite's suggestion
-	for (; !exit; Sleep(1))
-	{
-		// for our imgui menu interaction
-		ImGuiIO& io = ImGui::GetIO();
-
-		POINT p{};
-		GetCursorPos(&p);
-		io.MousePos = ImVec2((float)p.x, (float)p.y);
-
-		io.MouseDown[0] = GetAsyncKeyState(VK_LBUTTON) & 0x8000;
-		io.MouseDown[1] = GetAsyncKeyState(VK_RBUTTON) & 0x8000;
-	}
-}
 
 void c_overlay::anim_handler() {
 	// timers for our animations

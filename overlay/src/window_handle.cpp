@@ -5,6 +5,17 @@
 #include "../../lib/imgui/pch.h"
 #include "../../lib/uiaccess/uiaccess.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+LRESULT WINAPI WndProc_custom(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	// Forward to ImGui first
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
+
+	// Handle your other window messages or forward to original
+	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
 
 BOOL use_uiaccess(HWND* pHandle) {
 

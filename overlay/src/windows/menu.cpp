@@ -8,7 +8,7 @@ static int current_main_nav_item = 0;
 const char* nav_items[] = { "Aim", "Visuals", "Misc", "Config" };
 
 
-char configNameBuffer[CONFIG_NAME_MAX_LENGTH] = "";
+static char configNameBuffer[CONFIG_NAME_MAX_LENGTH] = "";
 
 enum MenuOrder {
 	AIM,
@@ -19,6 +19,16 @@ enum MenuOrder {
 
 void c_overlay::draw_menu() {
 	ImGui::SetCurrentContext(menuContext);
+
+
+	ImGuiIO& io = ImGui::GetIO();
+	if (ImGui::IsItemActive())
+	{
+		ImGui::Text("Widget is active: %s", io.WantTextInput ? "Capturing text" : "NOT capturing text");
+		ImGui::Text("WantCaptureKeyboard: %s", io.WantCaptureKeyboard ? "Yes" : "No");
+	}
+
+
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	static bool isFirstIteration = true;
@@ -236,6 +246,11 @@ void c_overlay::draw_menu() {
 				ImGui::BeginChild("ConfigActionsPane", ImVec2(0, 150), true);
 
 				ImGui::InputText("Name", configNameBuffer, IM_ARRAYSIZE(configNameBuffer));
+				ImGui::Text("Hovered: %s", ImGui::IsItemHovered() ? "Yes" : "No");
+				ImGui::Text("Clicked: %s", ImGui::IsItemClicked() ? "Yes" : "No");
+				ImGui::Text("Focused: %s", ImGui::IsWindowFocused() ? "Yes" : "No");
+				ImGui::Text("WantCapture: Keyboard=%d\n Mouse=%d",
+					ImGui::GetIO().WantCaptureKeyboard, ImGui::GetIO().WantCaptureMouse);
 
 				if (ImGui::Button("Save", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
