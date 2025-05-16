@@ -240,11 +240,6 @@ void c_overlay::draw_menu() {
 				ImGui::BeginChild("ConfigActionsPane", ImVec2(0, 150), true);
 
 				ImGui::InputText("Name", configNameBuffer, IM_ARRAYSIZE(configNameBuffer));
-				ImGui::Text("Hovered: %s", ImGui::IsItemHovered() ? "Yes" : "No");
-				ImGui::Text("Clicked: %s", ImGui::IsItemClicked() ? "Yes" : "No");
-				ImGui::Text("Focused: %s", ImGui::IsWindowFocused() ? "Yes" : "No");
-				ImGui::Text("WantCapture: Keyboard=%d\n Mouse=%d",
-					ImGui::GetIO().WantCaptureKeyboard, ImGui::GetIO().WantCaptureMouse);
 
 				if (ImGui::Button("Save", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
