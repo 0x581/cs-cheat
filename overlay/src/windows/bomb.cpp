@@ -23,7 +23,6 @@ void c_overlay::draw_bomb() {
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoSavedSettings
 		| ImGuiWindowFlags_NoBackground
-		| ImGuiWindowFlags_NoInputs
 	);
 
 	persistentConfig.bombWindow.windowPosition = ImGui::GetWindowPos();

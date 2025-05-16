@@ -35,7 +35,6 @@ void c_overlay::draw_menu() {
 		ImGuiWindowFlags_NoTitleBar
 		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoSavedSettings
-		| ImGuiWindowFlags_NoInputs
 	);
 
 	persistentConfig.mainWindow.windowPosition = ImGui::GetWindowPos();
