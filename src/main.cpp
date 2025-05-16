@@ -23,7 +23,7 @@ bool done_flag = false;
 static void cleanUp() {
 	delete overlay;
 
-	store_all_config_data(files::folder);
+	store_persistent_config(files::folder);
 }
 
 static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType) {

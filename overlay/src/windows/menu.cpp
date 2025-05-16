@@ -226,11 +226,12 @@ void c_overlay::draw_menu() {
 				{
 					for (size_t i = 0; i < configs.size(); ++i)
 					{
-						const bool is_selected = true;
+						const bool is_selected = i == 0;
 						if (ImGui::Selectable(configs[i].c_str(), is_selected))
 							strncpy_s(configNameBuffer, sizeof(configNameBuffer), configs[i].c_str(), _TRUNCATE);
-						if (is_selected)
-							ImGui::SetItemDefaultFocus();
+
+						//if (is_selected)
+							//ImGui::SetItemDefaultFocus();
 					}
 					ImGui::ListBoxFooter();
 				}
