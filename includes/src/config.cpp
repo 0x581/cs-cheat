@@ -289,3 +289,10 @@ void store_all_config_data(const string_view folder) {
 
 	update_available_configs(folder);
 }
+
+void store_persistent_config(const string_view folder) {
+	if (store_config_data(persistentConfig, folder, files::persistentConfig))
+		std::cout << "Stored persistent config." << std::endl;
+	else
+		std::cout << "Failed to store persistent config." << std::endl;
+}

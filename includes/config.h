@@ -89,3 +89,5 @@ bool load_cheat_config_data(const std::string_view folder, const std::string_vie
 
 void store_all_config_data(const std::string_view folder);
 void load_all_config_data(const std::string_view folder);
+
+void store_persistent_config(const std::string_view folder);
