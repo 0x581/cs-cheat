@@ -166,13 +166,11 @@
     <ClCompile Include="includes\src\config.cpp" />
     <ClCompile Include="overlay\src\overlay.cpp" />
     <ClCompile Include="lib\imgui\imgui\imgui.cpp" />
-    <ClCompile Include="lib\imgui\imgui\imgui_demo.cpp" />
     <ClCompile Include="lib\imgui\imgui\imgui_draw.cpp" />
     <ClCompile Include="lib\imgui\imgui\imgui_impl_dx11.cpp" />
     <ClCompile Include="lib\imgui\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="lib\imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="lib\imgui\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="lib\imgui\pch.cpp" />
     <ClCompile Include="lib\imgui\timer\timer.cpp" />
     <ClCompile Include="src\cheats\cheats.cpp" />
     <ClCompile Include="src\cheats\cheat_data.cpp" />

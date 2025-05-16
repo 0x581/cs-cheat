@@ -160,7 +160,6 @@ BOOL new_window(HWND* pHandle) {
 	// 2. Create the window
 	HWND handle = CreateWindowEx(
 		WS_EX_TOPMOST
-		| WS_EX_TRANSPARENT
 		| WS_EX_LAYERED,
 		MAKEINTATOM(atom),
 		L"test",

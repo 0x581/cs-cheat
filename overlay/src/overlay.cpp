@@ -452,18 +452,30 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 }
 
 
-void c_overlay::HandleInput() {
-	LONG style = GetWindowLong(window_handle, GWL_EXSTYLE);
 
+void c_overlay::HandleInput() {
+	static bool was_focussed = !(GetWindowLong(window_handle, GWL_EXSTYLE) & WS_EX_TRANSPARENT);
+
+	constexpr auto set_focus = [](HWND window_handle, bool focus) {
+		if (focus == was_focussed)
+			return;
+
+		LONG style = GetWindowLong(window_handle, GWL_EXSTYLE);
+
+		if (focus)
+			SetWindowLong(window_handle, GWL_EXSTYLE, style & ~WS_EX_TRANSPARENT);
+		else
+			SetWindowLong(window_handle, GWL_EXSTYLE, style | WS_EX_TRANSPARENT);
+
+
+		was_focussed = focus;
+		};
 
 
 	if (!show_menu)
 	{
-		if (!(style & WS_EX_TRANSPARENT))
-		{
-			SetWindowLong(window_handle, GWL_EXSTYLE, style | WS_EX_TRANSPARENT);
-			return;
-		}
+		set_focus(window_handle, false);
+		return;
 	}
 
 	ImVec2 menu_tl = persistentConfig.mainWindow.windowPosition;
@@ -489,20 +501,7 @@ void c_overlay::HandleInput() {
 		&& p.y < bomb_br.y
 		);
 
-	if (mouse_over_imgui || mouse_over_bomb)
-	{
-		if (style & WS_EX_TRANSPARENT)
-		{
-			SetWindowLong(window_handle, GWL_EXSTYLE, style & ~WS_EX_TRANSPARENT);
-		}
-	}
-	else
-	{
-		if (!(style & WS_EX_TRANSPARENT))
-		{
-			SetWindowLong(window_handle, GWL_EXSTYLE, style | WS_EX_TRANSPARENT);
-		}
-	}
+	set_focus(window_handle, mouse_over_imgui || mouse_over_bomb);
 }
 
 
