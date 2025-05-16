@@ -207,8 +207,6 @@
     <ClInclude Include="lib\imgui\imgui\imconfig.h" />
     <ClInclude Include="lib\imgui\imgui\imgui.h" />
     <ClInclude Include="lib\imgui\imgui\imgui_impl_dx11.h" />
-    <ClInclude Include="lib\imgui\imgui\imgui_impl_metal.h" />
-    <ClInclude Include="lib\imgui\imgui\imgui_impl_osx.h" />
     <ClInclude Include="lib\imgui\imgui\imgui_impl_win32.h" />
     <ClInclude Include="lib\imgui\imgui\imgui_internal.h" />
     <ClInclude Include="lib\imgui\imgui\imstb_rectpack.h" />
@@ -224,8 +222,6 @@
     <ClInclude Include="includes\strings.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\imgui\imgui\imgui_impl_metal.mm" />
-    <None Include="lib\imgui\imgui\imgui_impl_osx.mm" />
     <None Include="script\fetchOffsets.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
