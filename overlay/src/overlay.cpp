@@ -451,9 +451,35 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 }
 
 
+void c_overlay::HandleInput() {
+	ImGuiIO& io = ImGui::GetIO();
+
+	bool mouse_over_imgui = io.WantCaptureMouse || io.WantCaptureKeyboard;
+
+	LONG style = GetWindowLong(window_handle, GWL_EXSTYLE);
+
+	if (mouse_over_imgui)
+	{
+		if (style & WS_EX_TRANSPARENT)
+		{
+			SetWindowLong(window_handle, GWL_EXSTYLE, style & ~WS_EX_TRANSPARENT);
+		}
+	}
+	else
+	{
+		if (!(style & WS_EX_TRANSPARENT))
+		{
+			SetWindowLong(window_handle, GWL_EXSTYLE, style | WS_EX_TRANSPARENT);
+		}
+	}
+}
+
+
 BOOL c_overlay::msg_loop() {
 	if (window_handle)
 	{
+		HandleInput();
+
 		MSG msg{ 0 };
 
 		if (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))

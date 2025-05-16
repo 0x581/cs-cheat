@@ -42,6 +42,7 @@ private:
 	VOID draw_menu();
 	VOID draw_bomb();
 
+	VOID HandleInput();
 
 public:
 	c_overlay();
