@@ -1,11 +1,14 @@
 #pragma once
+#include <string>
 
 
-#define PERSISTENT_CONFIG_EXT L".cfg"
+#define CONFIG_EXT ".cfg"
 
 namespace files {
-	constexpr auto folder = L"%localappdata%/Merkur/CS2";
+	constexpr const std::string_view folder = "%localappdata%/Merkur/CS2";
 
-	constexpr auto imguiIni = L"imgui.ini";
-	constexpr auto persistentConfig = L"persistent" PERSISTENT_CONFIG_EXT;
+	constexpr const std::string_view configExtension{ CONFIG_EXT };
+	constexpr const std::string_view imguiIni{ "imgui.ini" };
+	constexpr const std::string_view persistentConfig{ "persistent" };
+	constexpr const std::string_view defaultConfig{ "default" };
 }

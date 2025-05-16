@@ -6,6 +6,7 @@
 
 constexpr auto COLOR_NAME_MAX_LENGTH = 64;
 
+constexpr auto CONFIG_NAME_MAX_LENGTH = 64;
 
 struct PersistentConfigData {
 	const char _magicBytes[sizeof(MAGIC_BYTES)] = MAGIC_BYTES;
@@ -17,6 +18,8 @@ struct PersistentConfigData {
 	struct BombSettings {
 		ImVec2 windowPosition;
 	} bombWindow;
+
+	char selectedConfig[CONFIG_NAME_MAX_LENGTH + 1];
 };
 
 struct ConfigData {
@@ -75,11 +78,14 @@ struct ConfigData {
 };
 
 
-extern ConfigData config;
 extern PersistentConfigData persistentConfig;
+extern ConfigData config;
 
-bool load_cheat_config_data(ConfigData* data, const wchar_t* folder, const wchar_t* file);
-bool load_persistent_config_data(PersistentConfigData* data, const wchar_t* folder, const wchar_t* file);
+extern std::vector<std::string> configs;
 
-bool store_cheat_config_data(const ConfigData data, const wchar_t* folder, const wchar_t* file);
-bool store_persistent_config_data(const PersistentConfigData data, const wchar_t* folder, const wchar_t* file);
+void set_selected_config(const std::string_view config_name);
+
+bool load_cheat_config_data(const std::string_view folder, const std::string_view config);
+
+void store_all_config_data(const std::string_view folder);
+void load_all_config_data(const std::string_view folder);

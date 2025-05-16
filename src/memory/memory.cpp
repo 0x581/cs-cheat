@@ -83,7 +83,6 @@ Memory::Memory() : pid{ 0 } {
 		const auto error = GetLastError();
 
 		std::cout << "Failed to create our driver handle: " << error << std::endl;
-		std::cin.get();
 
 		throw std::runtime_error("Failed to create driver handle");
 	}
