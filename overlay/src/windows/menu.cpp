@@ -152,6 +152,7 @@ void c_overlay::draw_menu() {
 					ImGui::Checkbox("Show Teammates", &config.esp.renderFriendlies);
 					ImGui::Checkbox("Bone ESP", &config.esp.bone);
 					ImGui::Checkbox("Name ESP", &config.esp.name);
+					ImGui::Checkbox("Health Bar", &config.esp.health);
 					ImGui::Checkbox("Box ESP", &config.esp.box);
 					if (config.esp.box)
 					{
