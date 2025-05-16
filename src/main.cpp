@@ -23,8 +23,7 @@ bool done_flag = false;
 static void cleanUp() {
 	delete overlay;
 
-	store_persistent_config_data(persistentConfig, files::folder, files::persistentConfig);
-	store_cheat_config_data(config, files::folder, L"default");
+	store_all_config_data(files::folder);
 }
 
 static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType) {
@@ -51,8 +50,7 @@ static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType) {
 
 
 int main() {
-	load_persistent_config_data(&persistentConfig, files::folder, files::persistentConfig);
-	load_cheat_config_data(&config, files::folder, L"default");
+	load_all_config_data(files::folder);
 
 	if (!SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE))
 	{
@@ -64,17 +62,16 @@ int main() {
 	std::thread cheats_thread{ run_cheat_loop, std::ref(terminate) };
 
 	overlay = new c_overlay();
-	while (overlay->msg_loop() && !overlay->ready_to_close) {}
 
+	while (overlay->msg_loop() && !overlay->ready_to_close);
 	terminate = true;
 
 	cheats_thread.join();
 
 	cleanUp();
 
-	{
-		std::lock_guard<std::mutex> lock(mtx);
-		done_flag = true;
-	}
+	std::lock_guard<std::mutex> lock(mtx);
+	done_flag = true;
+
 	cv.notify_all();
 }

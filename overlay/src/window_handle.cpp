@@ -5,6 +5,17 @@
 #include "../../lib/imgui/pch.h"
 #include "../../lib/uiaccess/uiaccess.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+LRESULT WINAPI WndProc_custom(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	// Forward to ImGui first
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+		return true;
+
+	// Handle your other window messages or forward to original
+	return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
 
 BOOL use_uiaccess(HWND* pHandle) {
 
@@ -148,7 +159,9 @@ BOOL new_window(HWND* pHandle) {
 
 	// 2. Create the window
 	HWND handle = CreateWindowEx(
-		WS_EX_TOPMOST | WS_EX_TRANSPARENT | WS_EX_LAYERED,
+		WS_EX_TOPMOST
+		| WS_EX_TRANSPARENT
+		| WS_EX_LAYERED,
 		MAKEINTATOM(atom),
 		L"test",
 		WS_POPUP,

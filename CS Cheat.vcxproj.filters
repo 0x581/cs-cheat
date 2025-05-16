@@ -130,6 +130,15 @@
     <ClCompile Include="includes\src\entity_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="overlay\src\window_handle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\src\windows\menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="overlay\src\windows\bomb.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\memory\memory.h">
@@ -142,12 +151,6 @@
       <Filter>lib\imgui</Filter>
     </ClInclude>
     <ClInclude Include="lib\imgui\imgui\imgui_impl_dx11.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imgui_impl_metal.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imgui_impl_osx.h">
       <Filter>lib\imgui</Filter>
     </ClInclude>
     <ClInclude Include="lib\imgui\imgui\imgui_impl_win32.h">
@@ -203,14 +206,9 @@
     <ClInclude Include="lib\uiaccess\uiaccess.h" />
     <ClInclude Include="src\cheats\cheat_data.h" />
     <ClInclude Include="src\cheats\src\cheat_entries.h" />
+    <ClInclude Include="overlay\window_handle.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\imgui\imgui\imgui_impl_metal.mm">
-      <Filter>lib\imgui</Filter>
-    </None>
-    <None Include="lib\imgui\imgui\imgui_impl_osx.mm">
-      <Filter>lib\imgui</Filter>
-    </None>
     <None Include="script\fetchOffsets.py">
       <Filter>defines</Filter>
     </None>

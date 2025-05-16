@@ -6,6 +6,12 @@
 constexpr int menu_anim_time = 350;
 constexpr int breath_anim_time = 1000;
 
+constexpr int menu_width = 650;
+constexpr int menu_height = 500;
+
+constexpr int bomb_width = 300;
+constexpr int bomb_height = 100;
+
 class c_overlay {
 private:
 	HWND window_handle;
@@ -42,6 +48,7 @@ private:
 	VOID draw_menu();
 	VOID draw_bomb();
 
+	VOID HandleInput();
 
 public:
 	c_overlay();
@@ -62,6 +69,8 @@ public:
 
 	BOOL in_screen(const ImVec2& pos);
 public:
+	ImGuiContext* menuContext;
+
 	FLOAT window_width, window_height;
 	bool exit = true;
 	bool ready_to_close = true;
