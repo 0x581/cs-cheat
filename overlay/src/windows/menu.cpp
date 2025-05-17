@@ -39,15 +39,6 @@ static int current_main_nav_item = 0;
 void c_overlay::draw_menu() {
 	ImGui::SetCurrentContext(menuContext);
 
-
-	ImGuiIO& io = ImGui::GetIO();
-	if (ImGui::IsItemActive())
-	{
-		ImGui::Text("Widget is active: %s", io.WantTextInput ? "Capturing text" : "NOT capturing text");
-		ImGui::Text("WantCaptureKeyboard: %s", io.WantCaptureKeyboard ? "Yes" : "No");
-	}
-
-
 	ImGuiStyle& style = ImGui::GetStyle();
 
 	ImGui::SetNextWindowPos(persistentConfig.mainWindow.windowPosition, ImGuiCond_FirstUseEver);
