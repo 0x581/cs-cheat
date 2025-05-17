@@ -3,19 +3,38 @@
 #include <config.h>
 #include <files.h>
 
+char configNameBuffer[CONFIG_NAME_MAX_LENGTH + 1] = "";
 
-static int current_main_nav_item = 0;
-const char* nav_items[] = { "Aim", "Visuals", "Misc", "Config" };
+static int filter_chars(ImGuiInputTextCallbackData* data) {
+	ImWchar c = data->EventChar;
 
+	const bool valid_char = (
+		(c >= 'a' && c <= 'z')
+		|| (c >= 'A' && c <= 'Z')
+		|| (c >= '0' && c <= '9')
+		|| (c == '_')
+		|| (c == '-')
+		|| (c == ' ')
+		);
 
-static char configNameBuffer[CONFIG_NAME_MAX_LENGTH] = "";
+	return valid_char ? 0 : 1;
+}
 
 enum MenuOrder {
 	AIM,
 	VISUALS,
 	MISC,
-	CONFIG
+	CONFIG,
 };
+
+constexpr const auto nav_items = std::to_array({
+	"Aim",
+	"Visuals",
+	"Misc",
+	"Config",
+	});
+
+static int current_main_nav_item = 0;
 
 void c_overlay::draw_menu() {
 	ImGui::SetCurrentContext(menuContext);
@@ -51,7 +70,7 @@ void c_overlay::draw_menu() {
 		ImGui::PopFont();
 		ImGui::Separator();
 		ImGui::Spacing();
-		for (int i = 0; i < IM_ARRAYSIZE(nav_items); ++i)
+		for (int i = 0; i < nav_items.size(); ++i)
 		{
 			bool is_selected = (current_main_nav_item == i);
 			if (is_selected)
@@ -66,7 +85,7 @@ void c_overlay::draw_menu() {
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, style.Colors[ImGuiCol_TabHovered]);
 				ImGui::PushStyleColor(ImGuiCol_ButtonActive, style.Colors[ImGuiCol_TabActive]);
 			}
-			if (ImGui::Button(nav_items[i], ImVec2(nav_bar_width - style.WindowPadding.x * 2, 30)))
+			if (ImGui::Button(nav_items.at(i), ImVec2(nav_bar_width - style.WindowPadding.x * 2, 30)))
 			{
 				current_main_nav_item = i;
 			}
@@ -80,7 +99,7 @@ void c_overlay::draw_menu() {
 
 	ImGui::BeginChild("ContentArea", ImVec2(0, 0), true);
 	{
-		ImGui::Text("%s Settings", nav_items[current_main_nav_item]);
+		ImGui::Text("%s Settings", nav_items.at(current_main_nav_item));
 		ImGui::Separator();
 		ImGui::Spacing();
 
@@ -241,20 +260,20 @@ void c_overlay::draw_menu() {
 				ImGui::SameLine();
 				ImGui::BeginChild("ConfigActionsPane", ImVec2(0, 150), true);
 
-				ImGui::InputText("Name", configNameBuffer, IM_ARRAYSIZE(configNameBuffer));
+				ImGui::InputText("Name", configNameBuffer, IM_ARRAYSIZE(configNameBuffer), ImGuiInputTextFlags_CallbackCharFilter, filter_chars);
 
 				if (ImGui::Button("Save", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
 					if (configNameBuffer[0] != '\0')
 					{
-					set_selected_config(configNameBuffer);
-					store_all_config_data(files::folder);
-				}
+						set_selected_config(configNameBuffer);
+						store_all_config_data(files::folder);
+					}
 				}
 				if (ImGui::Button("Load", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
 					if (configNameBuffer[0] != '\0')
-					load_cheat_config_data(files::folder, std::string_view(configNameBuffer));
+						load_cheat_config_data(files::folder, std::string_view(configNameBuffer));
 				}
 				if (ImGui::Button("Delete", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
