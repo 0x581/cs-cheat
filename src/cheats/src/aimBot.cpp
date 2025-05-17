@@ -42,6 +42,7 @@ void runAimBot(const CheatData& cheat_data) {
 		if (health <= 0 || health > 100)
 			continue;
 
+
 		// --- Hitbox-Auswahl und Sichtbarkeitsprüfung ---
 		CBoneData targetBone = { 0 };
 		bool isVisible = false;
