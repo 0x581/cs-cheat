@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;$(ProjectDir)lib\imgui\imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -137,7 +137,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;$(ProjectDir)lib\imgui\imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -169,8 +169,11 @@
     <ClCompile Include="lib\imgui\imgui\misc\freetype\imgui_freetype.cpp" />
     <ClCompile Include="lib\uiaccess\uiaccess.cpp" />
     <ClCompile Include="overlay\src\drawing.cpp" />
-    <ClCompile Include="overlay\src\windows\bomb.cpp" />
-    <ClCompile Include="overlay\src\windows\menu.cpp" />
+    <ClCompile Include="overlay\src\drawing\bomb.cpp">
+      <DeploymentContent>false</DeploymentContent>
+    </ClCompile>
+    <ClCompile Include="overlay\src\drawing\cheat_ui.cpp" />
+    <ClCompile Include="overlay\src\drawing\menu.cpp" />
     <ClCompile Include="overlay\src\window_handle.cpp" />
     <ClCompile Include="src\cheats\src\aimBot.cpp" />
     <ClCompile Include="includes\src\config.cpp" />
