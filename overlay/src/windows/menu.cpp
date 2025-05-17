@@ -234,7 +234,7 @@ void c_overlay::draw_menu() {
 				float halfWidth = ImGui::GetContentRegionAvail().x * 0.48f;
 				ImGui::BeginChild("ConfigListPane", ImVec2(halfWidth, 150), true);
 				ImGui::Text("Saved Configs:");
-				if (ImGui::ListBoxHeader("##ConfigList", ImVec2(-1.0f, -1.0f)))
+				if (ImGui::BeginListBox("##ConfigList", ImVec2(-1.0f, -1.0f)))
 				{
 					for (size_t i = 0; i < configs.size(); ++i)
 					{
@@ -245,7 +245,7 @@ void c_overlay::draw_menu() {
 						//if (is_selected)
 							//ImGui::SetItemDefaultFocus();
 					}
-					ImGui::ListBoxFooter();
+					ImGui::EndListBox();
 				}
 
 				ImGui::EndChild();

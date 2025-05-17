@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;$(ProjectDir)lib\imgui\imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -137,7 +137,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\ioctldriver\apd_api\;$(ProjectDir)includes\;$(ProjectDir)lib\imgui\imgui\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -157,29 +157,16 @@
   <ItemGroup>
     <ClCompile Include="includes\entity_system.h" />
     <ClCompile Include="includes\src\entity_system.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx10.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx11.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx12.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx9.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_glfw.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_glut.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl2.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdl2.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdl3.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlgpu3.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlrenderer2.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlrenderer3.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_vulkan.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_win32.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui_demo.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui_draw.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui_tables.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui_widgets.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\misc\cpp\imgui_stdlib.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\misc\fonts\binary_to_compressed_c.cpp" />
-    <ClCompile Include="lib\imgui\imgui-1.91.9b\misc\freetype\imgui_freetype.cpp" />
+    <ClCompile Include="lib\imgui\imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="lib\imgui\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="lib\imgui\imgui\imgui.cpp" />
+    <ClCompile Include="lib\imgui\imgui\imgui_demo.cpp" />
+    <ClCompile Include="lib\imgui\imgui\imgui_draw.cpp" />
+    <ClCompile Include="lib\imgui\imgui\imgui_tables.cpp" />
+    <ClCompile Include="lib\imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="lib\imgui\imgui\misc\cpp\imgui_stdlib.cpp" />
+    <ClCompile Include="lib\imgui\imgui\misc\fonts\binary_to_compressed_c.cpp" />
+    <ClCompile Include="lib\imgui\imgui\misc\freetype\imgui_freetype.cpp" />
     <ClCompile Include="lib\uiaccess\uiaccess.cpp" />
     <ClCompile Include="overlay\src\drawing.cpp" />
     <ClCompile Include="overlay\src\windows\bomb.cpp" />
@@ -210,32 +197,15 @@
   <ItemGroup>
     <ClInclude Include="includes\console_control.h" />
     <ClInclude Include="includes\cs_defines.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx10.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx11.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx12.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx9.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_glfw.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_glut.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl2.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl3.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdl2.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdl3.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlgpu3.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlgpu3_shaders.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlrenderer2.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlrenderer3.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_vulkan.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_win32.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\imconfig.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\imgui.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\imgui_internal.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\imstb_rectpack.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\imstb_textedit.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\imstb_truetype.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\misc\cpp\imgui_stdlib.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\misc\freetype\imgui_freetype.h" />
-    <ClInclude Include="lib\imgui\imgui-1.91.9b\misc\single_file\imgui_single_file.h" />
+    <ClInclude Include="lib\imgui\imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="lib\imgui\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="lib\imgui\imgui\imconfig.h" />
+    <ClInclude Include="lib\imgui\imgui\imgui.h" />
+    <ClInclude Include="lib\imgui\imgui\imgui_internal.h" />
+    <ClInclude Include="lib\imgui\imgui\imstb_rectpack.h" />
+    <ClInclude Include="lib\imgui\imgui\imstb_textedit.h" />
+    <ClInclude Include="lib\imgui\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="lib\imgui\imgui\misc\freetype\imgui_freetype.h" />
     <ClInclude Include="lib\uiaccess\uiaccess.h" />
     <ClInclude Include="overlay\window_handle.h" />
     <ClInclude Include="src\cheats\cheats.h" />
@@ -259,27 +229,25 @@
     <ClInclude Include="includes\strings.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="lib\imgui\imgui-1.91.9b\misc\debuggers\imgui.gdb" />
-    <None Include="lib\imgui\imgui-1.91.9b\misc\debuggers\imgui.natstepfilter" />
-    <None Include="lib\imgui\imgui-1.91.9b\misc\freetype\README.md" />
+    <None Include="lib\imgui\imgui\imgui.natstepfilter" />
+    <None Include="lib\imgui\imgui\misc\freetype\README.md" />
     <None Include="script\fetchOffsets.py" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="lib\imgui\imgui-1.91.9b\LICENSE.txt" />
-    <Text Include="lib\imgui\imgui-1.91.9b\misc\cpp\README.txt" />
-    <Text Include="lib\imgui\imgui-1.91.9b\misc\debuggers\README.txt" />
-    <Text Include="lib\imgui\imgui-1.91.9b\misc\README.txt" />
+    <Text Include="lib\imgui\imgui\LICENSE.txt" />
+    <Text Include="lib\imgui\imgui\misc\cpp\README.txt" />
+    <Text Include="lib\imgui\imgui\misc\README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\Cousine-Regular.ttf" />
-    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\DroidSans.ttf" />
-    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\Karla-Regular.ttf" />
-    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\ProggyClean.ttf" />
-    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\ProggyTiny.ttf" />
-    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\Roboto-Medium.ttf" />
+    <Font Include="lib\imgui\imgui\misc\fonts\Cousine-Regular.ttf" />
+    <Font Include="lib\imgui\imgui\misc\fonts\DroidSans.ttf" />
+    <Font Include="lib\imgui\imgui\misc\fonts\Karla-Regular.ttf" />
+    <Font Include="lib\imgui\imgui\misc\fonts\ProggyClean.ttf" />
+    <Font Include="lib\imgui\imgui\misc\fonts\ProggyTiny.ttf" />
+    <Font Include="lib\imgui\imgui\misc\fonts\Roboto-Medium.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="lib\imgui\imgui-1.91.9b\misc\debuggers\imgui.natvis" />
+    <Natvis Include="lib\imgui\imgui\imgui.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
