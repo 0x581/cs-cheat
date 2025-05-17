@@ -245,14 +245,22 @@ void c_overlay::draw_menu() {
 
 				if (ImGui::Button("Save", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
+					if (configNameBuffer[0] != '\0')
+					{
 					set_selected_config(configNameBuffer);
 					store_all_config_data(files::folder);
 				}
+				}
 				if (ImGui::Button("Load", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
+					if (configNameBuffer[0] != '\0')
 					load_cheat_config_data(files::folder, std::string_view(configNameBuffer));
 				}
-				if (ImGui::Button("Delete", ImVec2(ImGui::GetContentRegionAvail().x, 0))) { /*Logik*/ }
+				if (ImGui::Button("Delete", ImVec2(ImGui::GetContentRegionAvail().x, 0)))
+				{
+					if (configNameBuffer[0] != '\0')
+						delete_config(files::folder, std::string_view(configNameBuffer));
+				}
 				ImGui::EndChild();
 			}
 			break;
