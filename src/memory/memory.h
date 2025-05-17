@@ -1,33 +1,11 @@
 #pragma once
 
-
 #include <Windows.h>
 
-#include <thread>
 #include <unordered_map>
 
 #include "asspiledriver.h"
-
-struct WCharHash {
-	size_t operator()(const wchar_t* const str) const noexcept {
-		size_t hash = 0;
-
-		auto len = std::wcslen(str);
-
-		for (size_t i = 0; i < len; ++i)
-		{
-			hash += hash * 65599 + str[i];
-		}
-
-		return hash ^ (hash >> 16);
-	}
-};
-
-struct WCharEqual {
-	bool operator()(const wchar_t* const lhs, const wchar_t* const rhs) const noexcept {
-		return std::wcscmp(lhs, rhs) == 0;
-	}
-};
+#include <modules.h>
 
 
 class Memory {
@@ -36,7 +14,7 @@ private:
 	HANDLE pid;
 
 
-	std::unordered_map<const wchar_t*, uintptr_t, WCharHash, WCharEqual> modules{};
+	std::unordered_map<ModuleID, uintptr_t> modules{};
 
 	bool loadModuleMap();
 	void clearModuleMap();
@@ -47,8 +25,8 @@ public:
 	Memory();
 	~Memory();
 
-	const bool connectToProcess(const wchar_t* processName, const std::vector<const wchar_t*>& requiredModules);
-	const uintptr_t GetModuleAddress(const wchar_t* moduleName) const;
+	const bool connectToProcess(const wchar_t* processName);
+	const uintptr_t GetModuleAddress(const ModuleID moduleName) const;
 
 	const bool isProcessAlive();
 

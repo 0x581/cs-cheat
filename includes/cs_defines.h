@@ -2,7 +2,7 @@
 
 #include "vector_math.h"
 
-constexpr auto PLAYER_NAME_LENGTH = 128;
+static constexpr const auto PLAYER_NAME_LENGTH = 128;
 
 typedef unsigned long CEntityIndex;
 typedef int CHealth;

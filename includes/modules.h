@@ -1,7 +1,14 @@
 #pragma once
+#include <array>
+
+typedef int ModuleID;
 
 namespace modules {
-	constexpr auto client = L"client.dll";
+	static constexpr const ModuleID client = 0;
 }
 
-const std::vector<const wchar_t*> requiredModules{ modules::client };
+static constexpr const auto requiredModules = std::to_array(
+	{
+		std::make_pair(modules::client, L"client.dll")
+	}
+);

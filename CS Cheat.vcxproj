@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>.\output\</OutDir>
-    <IntDir>.\output\intermediates\</IntDir>
+    <OutDir>$(ProjectDir)output\</OutDir>
+    <IntDir>$(ProjectDir)output\intermediates\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>.\output\</OutDir>
-    <IntDir>.\output\intermediates\</IntDir>
+    <OutDir>$(ProjectDir)output\</OutDir>
+    <IntDir>$(ProjectDir)output\intermediates\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -184,6 +184,7 @@
     <ClCompile Include="src\cheats\src\fovChanger.cpp" />
     <ClCompile Include="src\cheats\src\radarHack.cpp" />
     <ClCompile Include="src\cheats\src\triggerBot.cpp" />
+    <ClCompile Include="src\memory\map_driver.cpp" />
     <ClCompile Include="src\memory\memory.cpp" />
     <ClCompile Include="includes\src\console_control.cpp" />
     <ClCompile Include="includes\src\shared_variables.cpp" />
@@ -217,6 +218,7 @@
     <ClInclude Include="includes\vector_math.h" />
     <ClInclude Include="src\cheats\cheat_data.h" />
     <ClInclude Include="src\cheats\src\cheat_entries.h" />
+    <ClInclude Include="src\memory\map_driver.h" />
     <ClInclude Include="src\memory\memory.h" />
     <ClInclude Include="includes\shared_variables.h" />
     <ClInclude Include="includes\strings.h" />

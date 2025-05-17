@@ -13,6 +13,7 @@
 #include <cassert>
 
 #include "asspiledriver.h"
+#include "map_driver.h"
 
 #include "modules.h"
 #include "delays.h"
@@ -21,17 +22,15 @@ constexpr auto BYTES_PER_ROW = 32;
 
 
 bool Memory::loadModuleMap() {
-	const auto requiredModules = std::vector<const wchar_t*>({ modules::client });
-
 	size_t tries = 0;
 
-	for (auto& module : requiredModules)
+	for (auto& [module_id, module_name] : requiredModules)
 	{
 		uintptr_t address = 0;
 
 		do
 		{
-			address = apd::get_module_base(driver_handle, module);
+			address = apd::get_module_base(driver_handle, module_name);
 
 			if (address == 0)
 			{
@@ -48,23 +47,16 @@ bool Memory::loadModuleMap() {
 
 			clearModuleMap();
 
-			return 0;
+			return false;
 		}
 
-		const auto module_name_copy = _wcsdup(module);
-
-		this->modules[module_name_copy] = address;
+		this->modules[module_id] = address;
 	}
 
 	return true;
 }
 
 void Memory::clearModuleMap() {
-	for (auto& module : this->modules)
-	{
-		delete[] module.first;
-	}
-
 	this->modules.clear();
 }
 
@@ -77,6 +69,12 @@ const bool Memory::isProcessAlive() {
 Memory::Memory() : pid{ 0 } {
 
 	driver_handle = apd::open_driver();
+
+	if (driver_handle == INVALID_HANDLE_VALUE)
+	{
+		map_driver();
+		driver_handle = apd::open_driver();
+	}
 
 	if (driver_handle == INVALID_HANDLE_VALUE)
 	{
@@ -98,7 +96,7 @@ Memory::~Memory() {
 	clearModuleMap();
 }
 
-const bool Memory::connectToProcess(const wchar_t* processName, const std::vector<const wchar_t*>& requiredModules) {
+const bool Memory::connectToProcess(const wchar_t* processName) {
 
 	// Clean up previous connection if exists
 	assert(!this->is_valid && "Cannot connect to process while already connected.");
@@ -125,7 +123,7 @@ const bool Memory::connectToProcess(const wchar_t* processName, const std::vecto
 
 // Normal functions for access & Co.
 
-const uintptr_t Memory::GetModuleAddress(const wchar_t* moduleName) const {
+const uintptr_t Memory::GetModuleAddress(const ModuleID moduleName) const {
 	return modules.at(moduleName);
 }
 

@@ -4,7 +4,6 @@
 
 #include <delays.h>
 #include <entity_system.h>
-#include <modules.h>
 
 #include "check_cheat_should_run.cpp"
 #include "src/cheat_entries.h"
@@ -41,7 +40,6 @@ static void run_all_cheats(const Memory& mem, const CheatData& cheat_data, const
 		runRageAimbot(cheat_data);
 }
 
-
 static bool check_connection(Memory& mem) {
 	const auto previous = mem.is_valid;
 	auto alive = mem.isProcessAlive();
@@ -51,7 +49,7 @@ static bool check_connection(Memory& mem) {
 
 	if (!alive)
 	{
-		alive = mem.connectToProcess(L"cs2.exe", requiredModules);
+		alive = mem.connectToProcess(L"cs2.exe");
 
 		if (alive)
 			std::cout << "Connection to CS2 established." << std::endl;
