@@ -65,6 +65,29 @@ PersistentConfigData persistentConfig = default_shared_config;
 
 std::vector<std::string> configs{};
 
+static bool get_expanded_path(const string_view folder, path& expandedPath) {
+	const auto wstring_folder = string_to_wstring(folder);
+
+	const auto required_size = ExpandEnvironmentStrings(wstring_folder.c_str(), nullptr, 0);
+
+	if (required_size == 0)
+		return false;
+
+	wchar_t* folder_expanded = new wchar_t[required_size];
+	const auto parsed_length = ExpandEnvironmentStrings(wstring_folder.c_str(), folder_expanded, required_size);
+
+	if (parsed_length != required_size)
+	{
+		delete[] folder_expanded;
+		return false;
+	}
+
+	expandedPath = fs::absolute(folder_expanded);
+	delete[] folder_expanded;
+
+	return true;
+}
+
 template <typename T>
 static bool is_valid_config(const path path, const bool verbose = false) {
 	if (!fs::exists(path))
@@ -114,30 +137,6 @@ static bool is_valid_config(const path path, const bool verbose = false) {
 	i_file.close();
 	return true;
 }
-
-static bool get_expanded_path(const string_view folder, path& expandedPath) {
-	const auto wstring_folder = string_to_wstring(folder);
-
-	const auto required_size = ExpandEnvironmentStrings(wstring_folder.c_str(), nullptr, 0);
-
-	if (required_size == 0)
-		return false;
-
-	wchar_t* folder_expanded = new wchar_t[required_size];
-	const auto parsed_length = ExpandEnvironmentStrings(wstring_folder.c_str(), folder_expanded, required_size);
-
-	if (parsed_length != required_size)
-	{
-		delete[] folder_expanded;
-		return false;
-	}
-
-	expandedPath = fs::absolute(folder_expanded);
-	delete[] folder_expanded;
-
-	return true;
-}
-
 
 template <typename T>
 static bool load_config_data(T& buffer, const string_view folder, const string_view file) {
@@ -240,11 +239,25 @@ void set_selected_config(const string_view config_name) {
 	memcpy(persistentConfig.selectedConfig, config_name.data(), config_name.length());
 }
 
+
+void load_default_config_data(const string_view folder) {
+	memcpy(&config, &default_config, sizeof(ConfigData));
+	set_selected_config(files::defaultConfig);
+
+	std::cout << "Default config loaded from memory." << std::endl;
+}
+
 bool load_cheat_config_data(const string_view folder, const string_view config_name) {
 	if (config_name.length() > CONFIG_NAME_MAX_LENGTH)
 	{
 		std::cout << "Error: Config name too long: " << config_name << std::endl;
 		return false;
+	}
+
+	if (config_name == files::defaultConfig)
+	{
+		load_default_config_data(folder);
+		return true;
 	}
 
 	if (load_config_data(config, folder, config_name))
@@ -256,7 +269,6 @@ bool load_cheat_config_data(const string_view folder, const string_view config_n
 
 	return false;
 }
-
 
 void load_all_config_data(const string_view folder) {
 	update_available_configs(folder);
@@ -277,22 +289,52 @@ void load_all_config_data(const string_view folder) {
 			return;
 	}
 
-	set_selected_config(files::defaultConfig);
-	load_cheat_config_data(folder, files::defaultConfig);
+	load_default_config_data(folder);
 }
 
-void store_all_config_data(const string_view folder) {
-	if (store_config_data(persistentConfig, folder, files::persistentConfig))
-		std::cout << "Stored persistent config." << std::endl;
-	if (store_config_data(config, folder, string_view(persistentConfig.selectedConfig)))
-		std::cout << "Stored cheat config: " << persistentConfig.selectedConfig << std::endl;
-
-	update_available_configs(folder);
-}
 
 void store_persistent_config(const string_view folder) {
 	if (store_config_data(persistentConfig, folder, files::persistentConfig))
 		std::cout << "Stored persistent config." << std::endl;
 	else
 		std::cout << "Failed to store persistent config." << std::endl;
+}
+
+void store_all_config_data(const string_view folder) {
+	store_persistent_config(folder);
+
+	if (store_config_data(config, folder, string_view(persistentConfig.selectedConfig)))
+		std::cout << "Stored cheat config: " << persistentConfig.selectedConfig << std::endl;
+	else
+		std::cout << "Failed to store cheat config: " << persistentConfig.selectedConfig << std::endl;
+
+	update_available_configs(folder);
+}
+
+
+void delete_config(const std::string_view folder, const std::string_view config_name) {
+	if (config_name == persistentConfig.selectedConfig)
+		load_default_config_data(folder);
+
+	path cfg_path;
+	if (!get_expanded_path(folder, cfg_path))
+	{
+		std::cout << "Error: Failed to expand folder path.\n";
+		return;
+	}
+
+	if (!fs::exists(cfg_path))
+		fs::create_directories(cfg_path);
+
+	const auto file_name = std::string(config_name) + std::string(files::configExtension);
+	cfg_path /= file_name;
+
+	if (!is_valid_config<ConfigData>(cfg_path))
+		std::cout << "Not a valid config file: " << cfg_path << std::endl;
+	else if (fs::remove(cfg_path))
+		std::cout << "Deleted config: " << config_name << std::endl;
+	else
+		std::cout << "Failed to delete config: " << config_name << std::endl;
+
+	update_available_configs(folder);
 }

@@ -85,9 +85,11 @@ extern std::vector<std::string> configs;
 
 void set_selected_config(const std::string_view config_name);
 
-bool load_cheat_config_data(const std::string_view folder, const std::string_view config);
+bool load_cheat_config_data(const std::string_view folder, const std::string_view config_name);
 
 void store_all_config_data(const std::string_view folder);
 void load_all_config_data(const std::string_view folder);
 
 void store_persistent_config(const std::string_view folder);
+
+void delete_config(const std::string_view folder, const std::string_view config_name);
