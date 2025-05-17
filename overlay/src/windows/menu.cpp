@@ -36,8 +36,9 @@ constexpr const auto nav_items = std::to_array({
 
 static int current_main_nav_item = 0;
 
+
 void c_overlay::draw_menu() {
-	ImGui::SetCurrentContext(menuContext);
+	ImGui::SetCurrentContext(imguiContext);
 
 	ImGuiStyle& style = ImGui::GetStyle();
 

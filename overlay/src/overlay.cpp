@@ -41,7 +41,7 @@ c_overlay::c_overlay() :
 	swap_chain(nullptr),
 	render_target_view(nullptr),
 	draw_list(nullptr),
-	menuContext(nullptr),
+	imguiContext(nullptr),
 	breath(NULL) {
 
 	if (!getWindowHandle(&window_handle))
@@ -151,6 +151,7 @@ BOOL c_overlay::init_device() {
 	return TRUE;
 }
 
+
 VOID c_overlay::dest_device() {
 	dest_render_target();
 	safe_release(swap_chain);
@@ -160,9 +161,14 @@ VOID c_overlay::dest_device() {
 
 VOID c_overlay::init_imgui() {
 	IMGUI_CHECKVERSION();
-	menuContext = ImGui::CreateContext();
 
-	ImGui::SetCurrentContext(menuContext); // Wichtig: Kontext setzen, bevor Style geändert wird
+	imguiContext = ImGui::CreateContext();
+	ImGui::SetCurrentContext(imguiContext);
+
+	auto imgui_io = ImGui::GetIO();
+
+	imgui_io.IniFilename = nullptr;
+	imgui_io.LogFilename = nullptr;
 
 	ImGuiStyle& style = ImGui::GetStyle();
 	ImVec4* colors = style.Colors;
@@ -265,7 +271,6 @@ VOID c_overlay::init_imgui() {
 	colors[ImGuiCol_NavWindowingDimBg] = ImVec4(0.80f, 0.80f, 0.80f, 0.20f);
 	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.04f, 0.04f, 0.05f, 0.65f);
 
-
 	// --- Font Laden (dein Code) ---
 	ImGuiIO& io = ImGui::GetIO();
 	if (font)
@@ -288,7 +293,8 @@ VOID c_overlay::init_imgui() {
 VOID c_overlay::dest_imgui() {
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
-	ImGui::DestroyContext();
+
+	ImGui::DestroyContext(imguiContext);
 }
 
 VOID c_overlay::init_render_target() {
@@ -454,9 +460,10 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 
 
 void c_overlay::HandleInput() {
-	static bool was_focussed = !(GetWindowLong(window_handle, GWL_EXSTYLE) & WS_EX_TRANSPARENT);
 
 	constexpr auto set_focus = [](HWND window_handle, bool focus) {
+		static bool was_focussed = !(GetWindowLong(window_handle, GWL_EXSTYLE) & WS_EX_TRANSPARENT);
+
 		if (focus == was_focussed)
 			return;
 

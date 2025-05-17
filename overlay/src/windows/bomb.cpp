@@ -5,17 +5,9 @@
 
 
 void c_overlay::draw_bomb() {
-	static bool isFirstIteration = true;
+	ImGui::SetNextWindowPos(persistentConfig.bombWindow.windowPosition, ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(bomb_width, bomb_height), ImGuiCond_FirstUseEver);
 
-	if (isFirstIteration)
-	{
-		// Main window position
-		ImGui::SetNextWindowPos(persistentConfig.bombWindow.windowPosition);
-		isFirstIteration = false;
-	}
-
-	ImVec4 outlineColor = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
-	ImGui::SetNextWindowSize(ImVec2(bomb_width, bomb_height));
 	ImGui::Begin(
 		"Bomb GUI",
 		0,

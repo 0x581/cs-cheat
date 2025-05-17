@@ -27,6 +27,9 @@ private:
 		ImFont* im_font;
 		FLOAT font_size;
 	};
+
+	ImGuiContext* imguiContext;
+
 private:
 	template <typename T>
 	inline VOID safe_release(T*& p);
@@ -42,7 +45,6 @@ private:
 	const VOID renderCheats();
 	const VOID render(FLOAT width, FLOAT height);
 
-	void input_handler();
 	void anim_handler();
 
 	VOID draw_menu();
@@ -50,6 +52,7 @@ private:
 
 	VOID HandleInput();
 
+	VOID init_draw_list();
 public:
 	c_overlay();
 	~c_overlay();
@@ -57,8 +60,9 @@ public:
 	BOOL msg_loop();
 
 	VOID clear_screen();
-
-	VOID init_draw_list();
+	//					 //
+	// Drawing functions //
+	//					 //
 	VOID rect(const ImVec2& min, const ImVec2& max, ImU32 color, const FLOAT line_width = 2.f);
 	VOID rect_filled(const ImVec2& min, const ImVec2& max, ImU32 color);
 	VOID line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width = 2.f);
@@ -69,8 +73,6 @@ public:
 
 	BOOL in_screen(const ImVec2& pos);
 public:
-	ImGuiContext* menuContext;
-
 	FLOAT window_width, window_height;
 	bool exit = true;
 	bool ready_to_close = true;
