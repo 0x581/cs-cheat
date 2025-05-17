@@ -133,6 +133,9 @@
     <ClCompile Include="overlay\src\windows\bomb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\memory\map_driver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\memory\memory.h">
@@ -201,6 +204,7 @@
     <ClInclude Include="src\cheats\cheat_data.h" />
     <ClInclude Include="src\cheats\src\cheat_entries.h" />
     <ClInclude Include="overlay\window_handle.h" />
+    <ClInclude Include="src\memory\map_driver.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="script\fetchOffsets.py">
