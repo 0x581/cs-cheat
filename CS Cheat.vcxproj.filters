@@ -37,24 +37,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui.cpp">
-      <Filter>lib\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_draw.cpp">
-      <Filter>lib\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_impl_dx11.cpp">
-      <Filter>lib\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_impl_win32.cpp">
-      <Filter>lib\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_tables.cpp">
-      <Filter>lib\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_widgets.cpp">
-      <Filter>lib\imgui</Filter>
-    </ClCompile>
     <ClCompile Include="overlay\src\overlay.cpp">
       <Filter>lib\dx11</Filter>
     </ClCompile>
@@ -136,103 +118,79 @@
     <ClCompile Include="src\memory\map_driver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_dx9.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx9.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_dx10.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx10.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_dx11.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_dx12.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_glfw.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_glfw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_glut.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_glut.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_opengl2.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_opengl3.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_sdl2.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdl2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_sdl3.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdl3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_sdlgpu3.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlgpu3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_sdlrenderer2.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlrenderer2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_sdlrenderer3.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlrenderer3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_vulkan.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_vulkan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\backends\imgui_impl_win32.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\misc\cpp\imgui_stdlib.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\misc\cpp\imgui_stdlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\misc\fonts\binary_to_compressed_c.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\misc\fonts\binary_to_compressed_c.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\misc\freetype\imgui_freetype.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\misc\freetype\imgui_freetype.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\imgui.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\imgui_demo.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\imgui_draw.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\imgui_tables.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui_tables.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui-1.91.9b\imgui_widgets.cpp">
+    <ClCompile Include="lib\imgui\imgui-1.91.9b\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\memory\memory.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imconfig.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imgui.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imgui_impl_dx11.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imgui_impl_win32.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imgui_internal.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imstb_rectpack.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imstb_textedit.h">
-      <Filter>lib\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="lib\imgui\imgui\imstb_truetype.h">
-      <Filter>lib\imgui</Filter>
     </ClInclude>
     <ClInclude Include="overlay\overlay.h">
       <Filter>lib\dx11</Filter>
@@ -274,56 +232,56 @@
     <ClInclude Include="src\cheats\src\cheat_entries.h" />
     <ClInclude Include="overlay\window_handle.h" />
     <ClInclude Include="src\memory\map_driver.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_dx9.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_dx10.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_dx11.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_dx12.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_glfw.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_glut.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_opengl2.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_opengl3.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_sdl2.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_sdl3.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_sdlgpu3.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_sdlgpu3_shaders.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_sdlrenderer2.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_sdlrenderer3.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_vulkan.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\backends\imgui_impl_win32.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\misc\cpp\imgui_stdlib.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\misc\freetype\imgui_freetype.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\misc\single_file\imgui_single_file.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\imconfig.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\imgui.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\imgui_internal.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\imstb_rectpack.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\imstb_textedit.h" />
-    <ClInclude Include="lib\imgui-1.91.9b\imstb_truetype.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx9.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx10.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_dx12.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_glfw.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_glut.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl2.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl3.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdl2.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdl3.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlgpu3.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlgpu3_shaders.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlrenderer2.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_sdlrenderer3.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_vulkan.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\backends\imgui_impl_win32.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\misc\freetype\imgui_freetype.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\misc\single_file\imgui_single_file.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\imconfig.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\imgui.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\imgui_internal.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\imstb_rectpack.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\imstb_textedit.h" />
+    <ClInclude Include="lib\imgui\imgui-1.91.9b\imstb_truetype.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="script\fetchOffsets.py">
       <Filter>defines</Filter>
     </None>
-    <None Include="lib\imgui-1.91.9b\misc\debuggers\imgui.natstepfilter" />
-    <None Include="lib\imgui-1.91.9b\misc\debuggers\imgui.gdb" />
-    <None Include="lib\imgui-1.91.9b\misc\freetype\README.md" />
+    <None Include="lib\imgui\imgui-1.91.9b\misc\debuggers\imgui.natstepfilter" />
+    <None Include="lib\imgui\imgui-1.91.9b\misc\debuggers\imgui.gdb" />
+    <None Include="lib\imgui\imgui-1.91.9b\misc\freetype\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="lib\imgui-1.91.9b\LICENSE.txt" />
-    <Text Include="lib\imgui-1.91.9b\misc\debuggers\README.txt" />
-    <Text Include="lib\imgui-1.91.9b\misc\cpp\README.txt" />
-    <Text Include="lib\imgui-1.91.9b\misc\README.txt" />
+    <Text Include="lib\imgui\imgui-1.91.9b\LICENSE.txt" />
+    <Text Include="lib\imgui\imgui-1.91.9b\misc\debuggers\README.txt" />
+    <Text Include="lib\imgui\imgui-1.91.9b\misc\cpp\README.txt" />
+    <Text Include="lib\imgui\imgui-1.91.9b\misc\README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="lib\imgui-1.91.9b\misc\fonts\Roboto-Medium.ttf" />
-    <Font Include="lib\imgui-1.91.9b\misc\fonts\Cousine-Regular.ttf" />
-    <Font Include="lib\imgui-1.91.9b\misc\fonts\DroidSans.ttf" />
-    <Font Include="lib\imgui-1.91.9b\misc\fonts\Karla-Regular.ttf" />
-    <Font Include="lib\imgui-1.91.9b\misc\fonts\ProggyClean.ttf" />
-    <Font Include="lib\imgui-1.91.9b\misc\fonts\ProggyTiny.ttf" />
+    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\Roboto-Medium.ttf" />
+    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\Cousine-Regular.ttf" />
+    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\DroidSans.ttf" />
+    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\Karla-Regular.ttf" />
+    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\ProggyClean.ttf" />
+    <Font Include="lib\imgui\imgui-1.91.9b\misc\fonts\ProggyTiny.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="lib\imgui-1.91.9b\misc\debuggers\imgui.natvis" />
+    <Natvis Include="lib\imgui\imgui-1.91.9b\misc\debuggers\imgui.natvis" />
   </ItemGroup>
 </Project>
