@@ -17,8 +17,6 @@ void runAimBot(const CheatData& cheat_data) {
 	auto lowestDistance = HUGE_VAL;
 	ImVec2 closestTargetScreen{ 0, 0 };
 
-	std::cout << "aimbot ";
-
 	const auto localPawnIndex = cheat_data.localPlayer.lookAtEntityIndex;
 
 	for (CEntityIndex i = 0; i < 64; i++)
