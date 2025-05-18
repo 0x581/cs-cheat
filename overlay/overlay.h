@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../lib/imgui/pch.h"
-
+#include "imgui.h"
 
 constexpr auto scaling_value = 1;
 
@@ -19,19 +18,24 @@ class c_overlay
 {
 private:
 	HWND window_handle;
-	WNDCLASSEX window_class;
+	FLOAT window_width, window_height;
+
 	ID3D11Device* d3d_device;
 	ID3D11DeviceContext* device_context;
 	IDXGISwapChain* swap_chain;
 	ID3D11RenderTargetView* render_target_view;
+
 	ImDrawList* draw_list;
-	c_timer breath_timer, menu_timer;
-
-
 	ImGuiContext* imguiContext;
-	INT breath;
+
 	ImFont* titleFont;
 	ImFont* font;
+
+	bool show_menu = true;
+
+public:
+	bool exit = true;
+	bool ready_to_close = true;
 
 private:
 	template <typename T>
@@ -48,7 +52,9 @@ private:
 	const VOID renderCheats();
 	const VOID render(FLOAT width, FLOAT height);
 
-	void anim_handler();
+	VOID update_on_resolution_change();
+
+	void state_handler();
 
 	VOID draw_menu();
 	VOID draw_bomb();
@@ -75,9 +81,4 @@ public:
 	VOID box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size);
 
 	BOOL in_screen(const ImVec2& pos);
-public:
-	FLOAT window_width, window_height;
-	bool exit = true;
-	bool ready_to_close = true;
-	bool show_menu = true;
 };

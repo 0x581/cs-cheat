@@ -1,10 +1,11 @@
 #include "../overlay.h"
 
-#include <string>
-#include <vector>
-#include <map>
-
 #include <Windows.h>
+
+#include <map>
+#include <string>
+#include <thread>
+#include <vector>
 
 
 #include <colors.h>
@@ -30,22 +31,33 @@ inline VOID c_overlay::safe_release(T*& p)
 
 
 c_overlay::c_overlay() :
-	ready_to_close(false),
-	exit(false),
+	//		  //
+	// Window //
+	//		  //
 	window_handle(nullptr),
-	window_class({}),
 	window_width((FLOAT)GetSystemMetrics(SM_CXSCREEN)),
 	window_height((FLOAT)GetSystemMetrics(SM_CYSCREEN)),
-	font(nullptr),
+	//			  //
+	// DX11 stuff //
+	//			  //
 	d3d_device(nullptr),
 	device_context(nullptr),
 	swap_chain(nullptr),
 	render_target_view(nullptr),
+	//			   //
+	// ImGui stuff //
+	//			   //
 	draw_list(nullptr),
 	imguiContext(nullptr),
-	breath(NULL)
+	font(nullptr),
+	titleFont(nullptr),
+	//				//
+	// Flow control //
+	//				//
+	show_menu(true),
+	exit(false),
+	ready_to_close(false)
 {
-
 	if (!getWindowHandle(&window_handle))
 		throw std::runtime_error(string("Failed to acquire window handle."));
 
@@ -54,7 +66,7 @@ c_overlay::c_overlay() :
 
 	init_imgui();
 
-	std::thread(&c_overlay::anim_handler, this).detach();
+	std::thread(&c_overlay::state_handler, this).detach();
 }
 
 c_overlay::~c_overlay()
@@ -309,6 +321,14 @@ VOID c_overlay::dest_render_target()
 }
 
 
+VOID c_overlay::update_on_resolution_change()
+{
+	//RECT rect{ 0 };
+	//GetClientRect(window_handle, &rect);
+	//SetWindowPos(window_handle, HWND_TOPMOST, rect.left, rect.top, rect.right, rect.bottom, SWP_NOREDRAW);
+}
+
+
 const void c_overlay::render(FLOAT width, FLOAT height)
 {
 	if (exit)
@@ -317,26 +337,20 @@ const void c_overlay::render(FLOAT width, FLOAT height)
 		return;
 	}
 
+	update_on_resolution_change();
+
 	init_draw_list(); // we only do this once a loop
 
-	//#define pos_sin(x) ((sin(x) + 1.) / 2.)
-	//	const auto time = ImGui::GetTime();
-	//	const auto col1 = IM_COL32(255.f * pos_sin(time + 0.f), 255.f * pos_sin(time + 1.f), 255.f * pos_sin(time + 2.f), 64.f);
-	//	const auto col2 = IM_COL32(255.f * pos_sin(time + 1.f), 255.f * pos_sin(time + 2.f), 255.f * pos_sin(time + 3.f), 64.f);
-	//	radial_gradient(ImVec2(window_width / 2.f, window_height / 2.f), 400, col2, col1);
-
 	string name = "Merkur Cheats";
-	text({ window_width - ImGui::CalcTextSize(name.c_str()).x - 5, 0 }, name, rgbColors::off_white, true);
+	text({ window_width - ImGui::CalcTextSize(name.c_str()).x - 5, 5 }, name, rgbColors::off_white, true);
 
 	renderCheats();
 
 	if (config.activeCheats.bombTimer)
 		draw_bomb();
 
-	if (!show_menu)
-		return;
-
-	draw_menu();
+	if (show_menu)
+		draw_menu();
 }
 
 void c_overlay::HandleInput()
@@ -435,46 +449,28 @@ void c_overlay::clear_screen()
 }
 
 
-void c_overlay::anim_handler()
+void c_overlay::state_handler()
 {
-	// timers for our animations
-	breath_timer.start();
-
-	bool menuKeyReleased = true;
+	bool menu_key_held_last_frame = false;
 
 	for (; !exit;)
 	{
-		RECT rect{ 0 };
-		POINT point{ 0 };
-		GetClientRect(window_handle, &rect);
-		SetWindowPos(window_handle, HWND_TOPMOST, rect.left, rect.top, rect.right, rect.bottom, SWP_NOREDRAW);
+		Sleep(1);
 
 		// panic key
 		if (GetAsyncKeyState(keybinds::quickExit) & 0x8000)
 			exit = true;
 
-		// timer for our breathing animation
-		int breath_tmr = breath_timer.end();
-		if (breath_tmr >= breath_anim_time * 2)
-		{
-			breath = breath_anim_time;
-			breath_timer.start();
-		}
-		else if (breath_tmr > breath_anim_time)
-			breath = breath_anim_time - (breath_tmr - breath_anim_time);
-		else if (breath_tmr <= breath_anim_time)
-			breath = breath_tmr;
-
 		// Show/Hide menu
 		if (GetAsyncKeyState(keybinds::showMenu) & 0x8000)
 		{
-			if (menuKeyReleased)
+			if (!menu_key_held_last_frame)
 				show_menu = !show_menu;
 
-			menuKeyReleased = false;
+			menu_key_held_last_frame = true;
 		}
 		else
-			menuKeyReleased = true;
+			menu_key_held_last_frame = false;
 	}
 }
 
