@@ -14,7 +14,8 @@ struct PersistentConfigData
 
 	struct MainWindowSettings
 	{
-		ImVec2 windowPosition;
+		ImVec2 position;
+		float scale;
 	} mainWindow;
 
 	struct BombSettings

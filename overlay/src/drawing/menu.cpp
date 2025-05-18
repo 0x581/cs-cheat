@@ -25,6 +25,7 @@ enum MenuOrder
 	VISUALS,
 	MISC,
 	CONFIG,
+	SETTINGS,
 };
 
 constexpr const auto nav_items = std::to_array({
@@ -32,11 +33,10 @@ constexpr const auto nav_items = std::to_array({
 	"Visuals",
 	"Misc",
 	"Config",
+	"Settings",
 	});
 
-static int current_main_nav_item = CONFIG;
-
-constexpr float label_width = 80.0f;
+static int current_main_nav_item = AIM;
 
 
 static float calc_slider_start(const ImGuiStyle& style)
@@ -58,8 +58,10 @@ static float calc_slider_start(const ImGuiStyle& style)
 }
 
 
-static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font)
+static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font, ImFont* text_font)
 {
+	constexpr auto buttons_at_bottom = 1;
+
 	ImGui::BeginChild("NavBar", ImVec2(0, 0), ImGuiChildFlags_Borders, ImGuiWindowFlags_NoScrollbar);
 	{
 		ImGui::PushFont(title_font);
@@ -69,6 +71,7 @@ static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font)
 		ImGui::Spacing();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(style.FramePadding.x, style.FramePadding.y * 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(style.ItemSpacing.x, style.ItemSpacing.y * 2));
 
 		for (int i = 0; i < nav_items.size(); ++i)
 		{
@@ -81,16 +84,26 @@ static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font)
 			}
 
 
+			if (i == nav_items.size() - buttons_at_bottom)
+			{
+				const auto push_height = (
+					ImGui::GetContentRegionAvail().y
+					- ImGui::GetFrameHeight() * buttons_at_bottom
+					- style.ItemSpacing.y * (buttons_at_bottom - 1)
+					);
+
+				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + push_height);
+			}
+
+
 			if (ImGui::Button(nav_items.at(i), ImVec2(-1, 0)))
 				current_main_nav_item = i;
 
 			if (is_selected)
 				ImGui::PopStyleColor(3);
-
-			ImGui::Spacing();
 		}
 
-		ImGui::PopStyleVar(1);
+		ImGui::PopStyleVar(2);
 	}
 	ImGui::EndChild();
 }
@@ -115,7 +128,7 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 					ImGui::Text("Shot Delay");
 					ImGui::SameLine(slider_indent);
 					ImGui::PushItemWidth(-1);
-					ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms");
+					ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms", ImGuiSliderFlags_ClampOnInput);
 					ImGui::PopItemWidth();
 
 				}
@@ -132,14 +145,14 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 			ImGui::Text("FOV");
 			ImGui::SameLine(slider_indent);
 			ImGui::PushItemWidth(-1);
-			ImGui::SliderFloat("##AimbotRadius", &config.aimBot.pixelRadius, 0.0f, 400.0f, "%.0fpx");
+			ImGui::SliderFloat("##AimbotRadius", &config.aimBot.pixelRadius, 0.0f, 400.0f, "%.0fpx", ImGuiSliderFlags_ClampOnInput);
 			ImGui::PopItemWidth();
 
 			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Smooth");
 			ImGui::SameLine(slider_indent);
 			ImGui::PushItemWidth(-1);
-			ImGui::SliderFloat("##Smooth", &config.aimBot.speedFactor, 0.0f, 2.0f, "%.2f");
+			ImGui::SliderFloat("##Smooth", &config.aimBot.speedFactor, 0.0f, 2.0f, "%.2f", ImGuiSliderFlags_ClampOnInput);
 			ImGui::PopItemWidth();
 
 			ImGui::Checkbox("Ignore Team", &config.aimBot.ignoreTeam);
@@ -254,7 +267,7 @@ static void draw_misc_submenu(const ImGuiStyle& style, const float slider_indent
 			ImGui::Text("FOV");
 			ImGui::SameLine(slider_indent);
 			ImGui::PushItemWidth(-1);
-			ImGui::SliderInt("##FOV", &config.fov.desiredFov, 60, 140);
+			ImGui::SliderInt("##FOV", &config.fov.desiredFov, 60, 140, "%d", ImGuiSliderFlags_ClampOnInput);
 			ImGui::PopItemWidth();
 			ImGui::Unindent();
 		}
@@ -273,7 +286,7 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 		if (ImGui::BeginTable("TopLevelTable", 2, 0))
 		{
 			const auto height = (
-				4 * (font->FontSize + style.FramePadding.y * 2.0f)
+				4 * ImGui::GetFrameHeight()
 				+ (4 - 1) * style.ItemSpacing.y
 				+ style.WindowPadding.y * 2.0f
 				);
@@ -329,6 +342,35 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 	}
 }
 
+static void draw_settings_submenu(const ImGuiStyle& style, const float slider_indent, bool& window_scale_changed)
+{
+	static bool value_changed_while_selected = false;
+
+	if (ImGui::CollapsingHeader("Window", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Scale");
+		ImGui::SameLine(slider_indent);
+		ImGui::PushItemWidth(-1);
+		const bool value_changed = ImGui::SliderFloat(
+			"##MainWindowScale",
+			&persistentConfig.mainWindow.scale,
+			1.0,
+			3.0,
+			"%.3fx",
+			ImGuiSliderFlags_ClampOnInput
+		);
+		ImGui::PopItemWidth();
+
+		value_changed_while_selected |= value_changed;
+
+		if (value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
+		{
+			value_changed_while_selected = false;
+			window_scale_changed = true;
+		}
+	}
+}
 
 void c_overlay::draw_menu()
 {
@@ -336,8 +378,8 @@ void c_overlay::draw_menu()
 
 	const ImGuiStyle& style = ImGui::GetStyle();
 
-	ImGui::SetNextWindowPos(persistentConfig.mainWindow.windowPosition, ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(menu_width, menu_height), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(persistentConfig.mainWindow.position, ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(menuSize);
 
 	ImGui::Begin("Main GUI",
 		nullptr,
@@ -346,7 +388,7 @@ void c_overlay::draw_menu()
 		| ImGuiWindowFlags_NoSavedSettings
 	);
 
-	persistentConfig.mainWindow.windowPosition = ImGui::GetWindowPos();
+	persistentConfig.mainWindow.position = ImGui::GetWindowPos();
 
 	if (ImGui::BeginTable("TopLevelTable", 2, 0))
 	{
@@ -355,7 +397,7 @@ void c_overlay::draw_menu()
 
 		ImGui::TableNextColumn();
 
-		draw_navbar_submenu(style, titleFont);
+		draw_navbar_submenu(style, titleFont, font);
 
 
 		ImGui::TableNextColumn();
@@ -365,7 +407,10 @@ void c_overlay::draw_menu()
 			const auto slider_indent = calc_slider_start(style);
 
 			ImGui::PushFont(titleFont);
-			ImGui::Text("%s Settings", nav_items.at(current_main_nav_item));
+			ImGui::Text(
+				(current_main_nav_item == SETTINGS) ? "Settings" : "%s Settings",
+				nav_items.at(current_main_nav_item)
+			);
 			ImGui::PopFont();
 
 			ImGui::Separator();
@@ -387,6 +432,10 @@ void c_overlay::draw_menu()
 
 			case MenuOrder::CONFIG:
 				draw_config_submenu(style, font);
+				break;
+
+			case MenuOrder::SETTINGS:
+				draw_settings_submenu(style, slider_indent, window_scale_changed);
 				break;
 			}
 		}

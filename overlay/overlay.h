@@ -2,23 +2,20 @@
 
 #include "imgui.h"
 
-constexpr auto scaling_value = 1;
+constexpr float menu_width = 650.f;
+constexpr float menu_height = 500.f;
 
-
-constexpr int menu_anim_time = 350;
-constexpr int breath_anim_time = 1000;
-
-constexpr int menu_width = 650 * scaling_value;
-constexpr int menu_height = 500 * scaling_value;
-
-constexpr int bomb_width = 300;
-constexpr int bomb_height = 100;
+constexpr float bomb_width = 300;
+constexpr float bomb_height = 100;
 
 class c_overlay
 {
 private:
 	HWND window_handle;
 	FLOAT window_width, window_height;
+	bool window_scale_changed;
+	ImVec2 menuSize;
+	ImVec2 bombSize;
 
 	ID3D11Device* d3d_device;
 	ID3D11DeviceContext* device_context;
@@ -31,11 +28,11 @@ private:
 	ImFont* titleFont;
 	ImFont* font;
 
-	bool show_menu = true;
+	bool show_menu;
 
 public:
-	bool exit = true;
-	bool ready_to_close = true;
+	bool exit;
+	bool ready_to_close;
 
 private:
 	template <typename T>
@@ -44,17 +41,20 @@ private:
 	BOOL init_device();
 	VOID dest_device();
 
+
+	VOID update_style();
+
 	VOID init_imgui();
 	VOID dest_imgui();
 
 	VOID init_render_target();
 	VOID dest_render_target();
-	const VOID renderCheats();
-	const VOID render(FLOAT width, FLOAT height);
+	const VOID draw_cheats();
+	const VOID render();
 
 	VOID update_on_resolution_change();
 
-	void state_handler();
+	VOID state_handler();
 
 	VOID draw_menu();
 	VOID draw_bomb();

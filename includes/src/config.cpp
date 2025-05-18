@@ -51,21 +51,27 @@ static constexpr const ConfigData default_config{
 	.fov {.desiredFov = 90 },
 };
 
-static constexpr const PersistentConfigData default_shared_config{
+static constexpr const PersistentConfigData default_persistent_config{
 	._magicBytes {MAGIC_BYTES},
-	.mainWindow {.windowPosition = ImVec2(50, 100)},
-	.bombWindow {.windowPosition = ImVec2(50, 50)},
+	.mainWindow {
+		.position = ImVec2(50, 100),
+		.scale = 1.0,
+	},
+	.bombWindow {
+		.windowPosition = ImVec2(50, 50),
+	},
 	.selectedConfig{0},
 };
 
 
 
 ConfigData config = default_config;
-PersistentConfigData persistentConfig = default_shared_config;
+PersistentConfigData persistentConfig = default_persistent_config;
 
 std::vector<std::string> configs{};
 
-static bool get_expanded_path(const string_view folder, path& expandedPath) {
+static bool get_expanded_path(const string_view folder, path& expandedPath)
+{
 	const auto wstring_folder = string_to_wstring(folder);
 
 	const auto required_size = ExpandEnvironmentStrings(wstring_folder.c_str(), nullptr, 0);
@@ -89,7 +95,8 @@ static bool get_expanded_path(const string_view folder, path& expandedPath) {
 }
 
 template <typename T>
-static bool is_valid_config(const path path, const bool verbose = false) {
+static bool is_valid_config(const path path, const bool verbose = false)
+{
 	if (!fs::exists(path))
 	{
 		if (verbose)
@@ -139,7 +146,8 @@ static bool is_valid_config(const path path, const bool verbose = false) {
 }
 
 template <typename T>
-static bool load_config_data(T& buffer, const string_view folder, const string_view file) {
+static bool load_config_data(T& buffer, const string_view folder, const string_view file)
+{
 	path cfg_path;
 	if (!get_expanded_path(folder, cfg_path))
 	{
@@ -171,7 +179,8 @@ static bool load_config_data(T& buffer, const string_view folder, const string_v
 }
 
 template <typename T>
-static bool store_config_data(const T& data, const string_view folder, const string_view file) {
+static bool store_config_data(const T& data, const string_view folder, const string_view file)
+{
 	path cfg_path;
 	if (!get_expanded_path(folder, cfg_path))
 	{
@@ -201,7 +210,8 @@ static bool store_config_data(const T& data, const string_view folder, const str
 	return true;
 }
 
-static void update_available_configs(const string_view folder) {
+static void update_available_configs(const string_view folder)
+{
 	configs.clear();
 
 	path cfg_path;
@@ -228,7 +238,8 @@ static void update_available_configs(const string_view folder) {
 	}
 }
 
-void set_selected_config(const string_view config_name) {
+void set_selected_config(const string_view config_name)
+{
 	if (config_name.length() > CONFIG_NAME_MAX_LENGTH)
 	{
 		std::cout << "Error: Config name too long: " << config_name << std::endl;
@@ -240,14 +251,16 @@ void set_selected_config(const string_view config_name) {
 }
 
 
-void load_default_config_data(const string_view folder) {
+void load_default_config_data(const string_view folder)
+{
 	memcpy(&config, &default_config, sizeof(ConfigData));
 	set_selected_config(files::defaultConfig);
 
 	std::cout << "Default config loaded from memory." << std::endl;
 }
 
-bool load_cheat_config_data(const string_view folder, const string_view config_name) {
+bool load_cheat_config_data(const string_view folder, const string_view config_name)
+{
 	if (config_name.length() > CONFIG_NAME_MAX_LENGTH)
 	{
 		std::cout << "Error: Config name too long: " << config_name << std::endl;
@@ -270,7 +283,8 @@ bool load_cheat_config_data(const string_view folder, const string_view config_n
 	return false;
 }
 
-void load_all_config_data(const string_view folder) {
+void load_all_config_data(const string_view folder)
+{
 	update_available_configs(folder);
 
 	const auto persistent_exists = load_config_data(persistentConfig, folder, files::persistentConfig);
@@ -293,14 +307,16 @@ void load_all_config_data(const string_view folder) {
 }
 
 
-void store_persistent_config(const string_view folder) {
+void store_persistent_config(const string_view folder)
+{
 	if (store_config_data(persistentConfig, folder, files::persistentConfig))
 		std::cout << "Stored persistent config." << std::endl;
 	else
 		std::cout << "Failed to store persistent config." << std::endl;
 }
 
-void store_all_config_data(const string_view folder) {
+void store_all_config_data(const string_view folder)
+{
 	store_persistent_config(folder);
 
 	if (store_config_data(config, folder, string_view(persistentConfig.selectedConfig)))
@@ -312,7 +328,8 @@ void store_all_config_data(const string_view folder) {
 }
 
 
-void delete_config(const std::string_view folder, const std::string_view config_name) {
+void delete_config(const std::string_view folder, const std::string_view config_name)
+{
 	if (config_name == persistentConfig.selectedConfig)
 		load_default_config_data(folder);
 

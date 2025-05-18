@@ -4,7 +4,7 @@
 #include <shared_variables.h>
 #include <colors.h>
 
-const void c_overlay::renderCheats()
+const void c_overlay::draw_cheats()
 {
 	if (config.activeCheats.esp)
 	{

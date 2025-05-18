@@ -180,6 +180,7 @@
     </ClCompile>
     <ClCompile Include="overlay\src\drawing\cheat_ui.cpp" />
     <ClCompile Include="overlay\src\drawing\menu.cpp" />
+    <ClCompile Include="overlay\src\init_imgui.cpp" />
     <ClCompile Include="overlay\src\window_handle.cpp" />
     <ClCompile Include="src\cheats\src\aimBot.cpp" />
     <ClCompile Include="includes\src\config.cpp" />
