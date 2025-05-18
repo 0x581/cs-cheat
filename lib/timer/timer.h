@@ -1,7 +1,8 @@
-#ifndef TIMER_H
-#define TIMER_H
+#pragma once
+#include <chrono>
 
-class c_timer {
+class c_timer
+{
 private:
 	std::chrono::high_resolution_clock::time_point strt;
 public:
@@ -13,5 +14,3 @@ public:
 	bool held_button(unsigned int vk_code, unsigned int delay);
 	void until_press(unsigned int vk_code, unsigned int vk_code2);
 };
-
-#endif

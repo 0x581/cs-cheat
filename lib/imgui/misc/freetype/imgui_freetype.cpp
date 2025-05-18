@@ -84,8 +84,14 @@
 //-------------------------------------------------------------------------
 
 // Default memory allocators
-static void* ImGuiFreeTypeDefaultAllocFunc(size_t size, void* user_data) { IM_UNUSED(user_data); return IM_ALLOC(size); }
-static void  ImGuiFreeTypeDefaultFreeFunc(void* ptr, void* user_data) { IM_UNUSED(user_data); IM_FREE(ptr); }
+static void* ImGuiFreeTypeDefaultAllocFunc(size_t size, void* user_data)
+{
+	IM_UNUSED(user_data); return IM_ALLOC(size);
+}
+static void  ImGuiFreeTypeDefaultFreeFunc(void* ptr, void* user_data)
+{
+	IM_UNUSED(user_data); IM_FREE(ptr);
+}
 
 // Current memory allocators
 static void* (*GImGuiFreeTypeAllocFunc)(size_t size, void* user_data) = ImGuiFreeTypeDefaultAllocFunc;
@@ -172,8 +178,14 @@ namespace
 		const FT_Glyph_Metrics* LoadGlyph(uint32_t in_codepoint);
 		const FT_Bitmap* RenderGlyphAndGetInfo(GlyphInfo* out_glyph_info);
 		void                    BlitGlyph(const FT_Bitmap* ft_bitmap, uint32_t* dst, uint32_t dst_pitch, unsigned char* multiply_table = nullptr);
-		FreeTypeFont() { memset((void*)this, 0, sizeof(*this)); }
-		~FreeTypeFont() { CloseFont(); }
+		FreeTypeFont()
+		{
+			memset((void*)this, 0, sizeof(*this));
+		}
+		~FreeTypeFont()
+		{
+			CloseFont();
+		}
 
 		// [Internals]
 		FontInfo        Info;               // Font descriptor of the current font.
@@ -185,7 +197,8 @@ namespace
 		float           InvRasterizationDensity;
 	};
 
-	bool FreeTypeFont::InitFont(FT_Library ft_library, const ImFontConfig& src, unsigned int extra_font_builder_flags) {
+	bool FreeTypeFont::InitFont(FT_Library ft_library, const ImFontConfig& src, unsigned int extra_font_builder_flags)
+	{
 		FT_Error error = FT_New_Memory_Face(ft_library, (uint8_t*)src.FontData, (uint32_t)src.FontDataSize, (uint32_t)src.FontNo, &Face);
 		if (error != 0)
 			return false;
@@ -230,7 +243,8 @@ namespace
 		return true;
 	}
 
-	void FreeTypeFont::CloseFont() {
+	void FreeTypeFont::CloseFont()
+	{
 		if (Face)
 		{
 			FT_Done_Face(Face);
@@ -238,7 +252,8 @@ namespace
 		}
 	}
 
-	void FreeTypeFont::SetPixelHeight(int pixel_height) {
+	void FreeTypeFont::SetPixelHeight(int pixel_height)
+	{
 		// Vuhdo: I'm not sure how to deal with font sizes properly. As far as I understand, currently ImGui assumes that the 'pixel_height'
 		// is a maximum height of an any given glyph, i.e. it's the sum of font's ascender and descender. Seems strange to me.
 		// NB: FT_Set_Pixel_Sizes() doesn't seem to get us the same result.
@@ -260,7 +275,8 @@ namespace
 		Info.MaxAdvanceWidth = (float)FT_CEIL(metrics.max_advance) * InvRasterizationDensity;
 	}
 
-	const FT_Glyph_Metrics* FreeTypeFont::LoadGlyph(uint32_t codepoint) {
+	const FT_Glyph_Metrics* FreeTypeFont::LoadGlyph(uint32_t codepoint)
+	{
 		uint32_t glyph_index = FT_Get_Char_Index(Face, codepoint);
 		if (glyph_index == 0)
 			return nullptr;
@@ -300,7 +316,8 @@ namespace
 		return &slot->metrics;
 	}
 
-	const FT_Bitmap* FreeTypeFont::RenderGlyphAndGetInfo(GlyphInfo* out_glyph_info) {
+	const FT_Bitmap* FreeTypeFont::RenderGlyphAndGetInfo(GlyphInfo* out_glyph_info)
+	{
 		FT_GlyphSlot slot = Face->glyph;
 		FT_Error error = FT_Render_Glyph(slot, RenderMode);
 		if (error != 0)
@@ -317,7 +334,8 @@ namespace
 		return ft_bitmap;
 	}
 
-	void FreeTypeFont::BlitGlyph(const FT_Bitmap* ft_bitmap, uint32_t* dst, uint32_t dst_pitch, unsigned char* multiply_table) {
+	void FreeTypeFont::BlitGlyph(const FT_Bitmap* ft_bitmap, uint32_t* dst, uint32_t dst_pitch, unsigned char* multiply_table)
+	{
 		IM_ASSERT(ft_bitmap != nullptr);
 		const uint32_t w = ft_bitmap->width;
 		const uint32_t h = ft_bitmap->rows;
@@ -411,7 +429,10 @@ struct ImFontBuildSrcGlyphFT
 	uint32_t            Codepoint;
 	unsigned int* BitmapData;         // Point within one of the dst_tmp_bitmap_buffers[] array
 
-	ImFontBuildSrcGlyphFT() { memset((void*)this, 0, sizeof(*this)); }
+	ImFontBuildSrcGlyphFT()
+	{
+		memset((void*)this, 0, sizeof(*this));
+	}
 };
 
 struct ImFontBuildSrcDataFT
@@ -435,7 +456,8 @@ struct ImFontBuildDstDataFT
 	ImBitVector         GlyphsSet;          // This is used to resolve collision when multiple sources are merged into a same destination font.
 };
 
-bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, unsigned int extra_flags) {
+bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, unsigned int extra_flags)
+{
 	IM_ASSERT(atlas->Sources.Size > 0);
 
 	ImFontAtlasBuildInit(atlas);
@@ -759,15 +781,18 @@ bool ImFontAtlasBuildWithFreeTypeEx(FT_Library ft_library, ImFontAtlas* atlas, u
 }
 
 // FreeType memory allocation callbacks
-static void* FreeType_Alloc(FT_Memory /*memory*/, long size) {
+static void* FreeType_Alloc(FT_Memory /*memory*/, long size)
+{
 	return GImGuiFreeTypeAllocFunc((size_t)size, GImGuiFreeTypeAllocatorUserData);
 }
 
-static void FreeType_Free(FT_Memory /*memory*/, void* block) {
+static void FreeType_Free(FT_Memory /*memory*/, void* block)
+{
 	GImGuiFreeTypeFreeFunc(block, GImGuiFreeTypeAllocatorUserData);
 }
 
-static void* FreeType_Realloc(FT_Memory /*memory*/, long cur_size, long new_size, void* block) {
+static void* FreeType_Realloc(FT_Memory /*memory*/, long cur_size, long new_size, void* block)
+{
 	// Implement realloc() as we don't ask user to provide it.
 	if (block == nullptr)
 		return GImGuiFreeTypeAllocFunc((size_t)new_size, GImGuiFreeTypeAllocatorUserData);
@@ -789,7 +814,8 @@ static void* FreeType_Realloc(FT_Memory /*memory*/, long cur_size, long new_size
 	return block;
 }
 
-static bool ImFontAtlasBuildWithFreeType(ImFontAtlas* atlas) {
+static bool ImFontAtlasBuildWithFreeType(ImFontAtlas* atlas)
+{
 	// FreeType memory management: https://www.freetype.org/freetype2/docs/design/design-4.html
 	FT_MemoryRec_ memory_rec = {};
 	memory_rec.user = nullptr;
@@ -824,13 +850,15 @@ static bool ImFontAtlasBuildWithFreeType(ImFontAtlas* atlas) {
 	return ret;
 }
 
-const ImFontBuilderIO* ImGuiFreeType::GetBuilderForFreeType() {
+const ImFontBuilderIO* ImGuiFreeType::GetBuilderForFreeType()
+{
 	static ImFontBuilderIO io;
 	io.FontBuilder_Build = ImFontAtlasBuildWithFreeType;
 	return &io;
 }
 
-void ImGuiFreeType::SetAllocatorFunctions(void* (*alloc_func)(size_t sz, void* user_data), void (*free_func)(void* ptr, void* user_data), void* user_data) {
+void ImGuiFreeType::SetAllocatorFunctions(void* (*alloc_func)(size_t sz, void* user_data), void (*free_func)(void* ptr, void* user_data), void* user_data)
+{
 	GImGuiFreeTypeAllocFunc = alloc_func;
 	GImGuiFreeTypeFreeFunc = free_func;
 	GImGuiFreeTypeAllocatorUserData = user_data;
@@ -846,16 +874,19 @@ struct LunasvgPortState
 	std::unique_ptr<lunasvg::Document> svg = nullptr;
 };
 
-static FT_Error ImGuiLunasvgPortInit(FT_Pointer* _state) {
+static FT_Error ImGuiLunasvgPortInit(FT_Pointer* _state)
+{
 	*_state = IM_NEW(LunasvgPortState)();
 	return FT_Err_Ok;
 }
 
-static void ImGuiLunasvgPortFree(FT_Pointer* _state) {
+static void ImGuiLunasvgPortFree(FT_Pointer* _state)
+{
 	IM_DELETE(*(LunasvgPortState**)_state);
 }
 
-static FT_Error ImGuiLunasvgPortRender(FT_GlyphSlot slot, FT_Pointer* _state) {
+static FT_Error ImGuiLunasvgPortRender(FT_GlyphSlot slot, FT_Pointer* _state)
+{
 	LunasvgPortState* state = *(LunasvgPortState**)_state;
 
 	// If there was an error while loading the svg in ImGuiLunasvgPortPresetSlot(), the renderer hook still get called, so just returns the error.
@@ -870,7 +901,8 @@ static FT_Error ImGuiLunasvgPortRender(FT_GlyphSlot slot, FT_Pointer* _state) {
 	return state->err;
 }
 
-static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_Pointer* _state) {
+static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_Pointer* _state)
+{
 	FT_SVG_Document   document = (FT_SVG_Document)slot->other;
 	LunasvgPortState* state = *(LunasvgPortState**)_state;
 	FT_Size_Metrics& metrics = document->metrics;

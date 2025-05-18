@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../lib/imgui/pch.h"
+#include "imgui.h"
 
 #define MAGIC_BYTES "Merkur CS2 Config"
 
@@ -8,24 +8,29 @@ constexpr auto COLOR_NAME_MAX_LENGTH = 64;
 
 constexpr auto CONFIG_NAME_MAX_LENGTH = 64;
 
-struct PersistentConfigData {
+struct PersistentConfigData
+{
 	const char _magicBytes[sizeof(MAGIC_BYTES)] = MAGIC_BYTES;
 
-	struct MainWindowSettings {
+	struct MainWindowSettings
+	{
 		ImVec2 windowPosition;
 	} mainWindow;
 
-	struct BombSettings {
+	struct BombSettings
+	{
 		ImVec2 windowPosition;
 	} bombWindow;
 
 	char selectedConfig[CONFIG_NAME_MAX_LENGTH + 1];
 };
 
-struct ConfigData {
+struct ConfigData
+{
 	const char _magicBytes[sizeof(MAGIC_BYTES)] = MAGIC_BYTES;
 
-	struct ActiveCheats {
+	struct ActiveCheats
+	{
 		bool aimBot;
 		bool antiFlash;
 		bool bombTimer;
@@ -37,7 +42,8 @@ struct ConfigData {
 		bool rageBot;
 	} activeCheats;
 
-	struct EspSettings {
+	struct EspSettings
+	{
 		char selectedColor[COLOR_NAME_MAX_LENGTH];
 		bool renderFriendlies;
 		bool boxGlow;
@@ -53,7 +59,8 @@ struct ConfigData {
 		ImVec4 colorItem;
 	}esp;
 
-	struct AimBotSettings {
+	struct AimBotSettings
+	{
 		float pixelRadius;
 		float speedFactor;
 		bool drawFovCircle;
@@ -64,11 +71,13 @@ struct ConfigData {
 		int shotDelay = 30;
 	} aimBot;
 
-	struct FovSettings {
+	struct FovSettings
+	{
 		int desiredFov;
 	} fov;
 
-	struct RageBotSettings {
+	struct RageBotSettings
+	{
 		float pixelRadius = 120.f;
 		float speedFactor = 1.0f;
 		bool visible = false;

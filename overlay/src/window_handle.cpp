@@ -2,12 +2,13 @@
 
 #include <iostream>
 
-#include "../../lib/imgui/pch.h"
+#include "imgui.h"
 #include "../../lib/uiaccess/uiaccess.h"
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-LRESULT WINAPI WndProc_custom(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+LRESULT WINAPI WndProc_custom(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
 	// Forward to ImGui first
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		return true;
@@ -17,7 +18,8 @@ LRESULT WINAPI WndProc_custom(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 }
 
 
-BOOL use_uiaccess(HWND* pHandle) {
+BOOL use_uiaccess(HWND* pHandle)
+{
 
 	typedef HWND(WINAPI* CreateWindowInBand)(
 		DWORD dwExStyle,
@@ -100,7 +102,8 @@ BOOL use_uiaccess(HWND* pHandle) {
 }
 
 
-BOOL hook_nvidia(HWND* pHandle) {
+BOOL hook_nvidia(HWND* pHandle)
+{
 	HWND handle = FindWindow(L"CEF-OSC-WIDGET", L"NVIDIA GeForce Overlay");
 
 	if (!handle)
@@ -133,7 +136,8 @@ BOOL hook_nvidia(HWND* pHandle) {
 #define WINDOW_CLASS_NAME L"TopmostTransparentOverlayClass"
 
 
-BOOL new_window(HWND* pHandle) {
+BOOL new_window(HWND* pHandle)
+{
 	if (!pHandle)
 	{
 		std::cerr << "Error: pHandle is null." << std::endl;

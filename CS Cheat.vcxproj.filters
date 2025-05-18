@@ -40,7 +40,7 @@
     <ClCompile Include="overlay\src\overlay.cpp">
       <Filter>lib\dx11</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\timer\timer.cpp">
+    <ClCompile Include="lib\timer\timer.cpp">
       <Filter>lib\timer</Filter>
     </ClCompile>
     <ClCompile Include="src\cheats\src\antiFlash.cpp">
@@ -118,34 +118,31 @@
     <ClCompile Include="src\memory\map_driver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_impl_dx11.cpp">
+    <ClCompile Include="lib\imgui\imgui_impl_dx11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_impl_win32.cpp">
+    <ClCompile Include="lib\imgui\imgui_impl_win32.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\misc\fonts\binary_to_compressed_c.cpp">
+    <ClCompile Include="lib\imgui\imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui.cpp">
+    <ClCompile Include="lib\imgui\imgui_demo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_demo.cpp">
+    <ClCompile Include="lib\imgui\imgui_draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_draw.cpp">
+    <ClCompile Include="lib\imgui\imgui_tables.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_tables.cpp">
+    <ClCompile Include="lib\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\imgui_widgets.cpp">
+    <ClCompile Include="lib\imgui\misc\freetype\imgui_freetype.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\misc\freetype\imgui_freetype.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="lib\imgui\imgui\misc\cpp\imgui_stdlib.cpp">
+    <ClCompile Include="lib\imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="overlay\src\drawing\cheat_ui.cpp">
@@ -159,10 +156,10 @@
     <ClInclude Include="overlay\overlay.h">
       <Filter>lib\dx11</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\timer\timer.h">
+    <ClInclude Include="lib\timer\timer.h">
       <Filter>lib\timer</Filter>
     </ClInclude>
-    <ClInclude Include="lib\imgui\pch.h">
+    <ClInclude Include="lib\imgui.h">
       <Filter>lib</Filter>
     </ClInclude>
     <ClInclude Include="includes\vector_math.h">
@@ -196,37 +193,40 @@
     <ClInclude Include="src\cheats\src\cheat_entries.h" />
     <ClInclude Include="overlay\window_handle.h" />
     <ClInclude Include="src\memory\map_driver.h" />
-    <ClInclude Include="lib\imgui\imgui\imgui_impl_dx11.h" />
-    <ClInclude Include="lib\imgui\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="lib\imgui\imgui\imconfig.h" />
-    <ClInclude Include="lib\imgui\imgui\imgui.h" />
-    <ClInclude Include="lib\imgui\imgui\imgui_internal.h" />
-    <ClInclude Include="lib\imgui\imgui\imstb_rectpack.h" />
-    <ClInclude Include="lib\imgui\imgui\imstb_textedit.h" />
-    <ClInclude Include="lib\imgui\imgui\misc\freetype\imgui_freetype.h" />
-    <ClInclude Include="lib\imgui\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="lib\imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="lib\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="lib\imgui\imconfig.h" />
+    <ClInclude Include="lib\imgui\imgui.h" />
+    <ClInclude Include="lib\imgui\imgui_internal.h" />
+    <ClInclude Include="lib\imgui\imstb_rectpack.h" />
+    <ClInclude Include="lib\imgui\imstb_textedit.h" />
+    <ClInclude Include="lib\imgui\misc\freetype\imgui_freetype.h" />
+    <ClInclude Include="lib\imgui\misc\cpp\imgui_stdlib.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="script\fetchOffsets.py">
       <Filter>defines</Filter>
     </None>
-    <None Include="lib\imgui\imgui\imgui.natstepfilter" />
-    <None Include="lib\imgui\imgui\misc\freetype\README.md" />
+    <None Include="lib\imgui\imgui.natstepfilter" />
+    <None Include="lib\imgui\misc\freetype\README.md" />
+    <None Include="lib\imgui\misc\fonts\binary_to_compressed_c.cpp">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="lib\imgui\imgui\LICENSE.txt" />
-    <Text Include="lib\imgui\imgui\misc\README.txt" />
-    <Text Include="lib\imgui\imgui\misc\cpp\README.txt" />
+    <Text Include="lib\imgui\LICENSE.txt" />
+    <Text Include="lib\imgui\misc\README.txt" />
+    <Text Include="lib\imgui\misc\cpp\README.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="lib\imgui\imgui\misc\fonts\Roboto-Medium.ttf" />
-    <Font Include="lib\imgui\imgui\misc\fonts\Cousine-Regular.ttf" />
-    <Font Include="lib\imgui\imgui\misc\fonts\DroidSans.ttf" />
-    <Font Include="lib\imgui\imgui\misc\fonts\Karla-Regular.ttf" />
-    <Font Include="lib\imgui\imgui\misc\fonts\ProggyClean.ttf" />
-    <Font Include="lib\imgui\imgui\misc\fonts\ProggyTiny.ttf" />
+    <Font Include="lib\imgui\misc\fonts\Roboto-Medium.ttf" />
+    <Font Include="lib\imgui\misc\fonts\Cousine-Regular.ttf" />
+    <Font Include="lib\imgui\misc\fonts\DroidSans.ttf" />
+    <Font Include="lib\imgui\misc\fonts\Karla-Regular.ttf" />
+    <Font Include="lib\imgui\misc\fonts\ProggyClean.ttf" />
+    <Font Include="lib\imgui\misc\fonts\ProggyTiny.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <Natvis Include="lib\imgui\imgui\imgui.natvis" />
+    <Natvis Include="lib\imgui\imgui.natvis" />
   </ItemGroup>
 </Project>

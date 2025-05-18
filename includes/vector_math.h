@@ -3,37 +3,46 @@
 #include <vector>
 #include <iomanip>
 
-#include "../lib/imgui/pch.h"
+#include "imgui.h"
 
 #define ROW_MAJOR
 
-struct Matrix4x4 {
+struct Matrix4x4
+{
 	float matrix[4][4];
 
-	const float* operator[](int index) const {
+	const float* operator[](int index) const
+	{
 		return matrix[index];
 	}
 };
 
-struct Vector2 {
-	union {
-		struct {
+struct Vector2
+{
+	union
+	{
+		struct
+		{
 			float x, y;
 		};
 		float values[2];
 	};
 
-	Vector2(float x = 0, float y = 0) : x(x), y(y) {}
+	Vector2(float x = 0, float y = 0) : x(x), y(y)
+	{}
 
-	const float& operator[] (int index) const {
+	const float& operator[] (int index) const
+	{
 		return values[index];
 	}
 
-	operator ImVec2() const {
+	operator ImVec2() const
+	{
 		return ImVec2(x, y);
 	}
 
-	friend std::ostream& operator<<(std::ostream& os, const Vector2& v) {
+	friend std::ostream& operator<<(std::ostream& os, const Vector2& v)
+	{
 		std::ios_base::fmtflags f = os.flags();
 		std::streamsize p = os.precision();
 
@@ -47,37 +56,47 @@ struct Vector2 {
 	}
 };
 
-struct Vector3 {
-	union {
-		struct {
+struct Vector3
+{
+	union
+	{
+		struct
+		{
 			float x, y, z;
 		};
 		float values[3];
 	};
 
-	Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z) {}
+	Vector3(float x = 0, float y = 0, float z = 0) : x(x), y(y), z(z)
+	{}
 
-	const float& operator[] (int index) const {
+	const float& operator[] (int index) const
+	{
 		return values[index];
 	}
 
-	const bool operator== (const Vector3& other) const {
+	const bool operator== (const Vector3& other) const
+	{
 		return x == other.x && y == other.y && z == other.z;
 	}
 
-	Vector3 operator+ (const Vector3& other) const {
+	Vector3 operator+ (const Vector3& other) const
+	{
 		return { x + other.x, y + other.y, z + other.z };
 	}
 
-	Vector3 operator- (const Vector3& other) const {
+	Vector3 operator- (const Vector3& other) const
+	{
 		return { x - other.x, y - other.y, z - other.z };
 	}
 
-	float length() const {
+	float length() const
+	{
 		return pow(x * x + y * y + z * z, 0.5f);
 	}
 
-	Vector3 normalize() const {
+	Vector3 normalize() const
+	{
 		float len = length();
 
 		if (len == 0)
@@ -86,19 +105,23 @@ struct Vector3 {
 		return { x / len, y / len, z / len };
 	}
 
-	float dot(const Vector3& other) const {
+	float dot(const Vector3& other) const
+	{
 		return x * other.x + y * other.y + z * other.z;
 	}
 
-	Vector3 negate(const Vector3& other) const {
+	Vector3 negate(const Vector3& other) const
+	{
 		return { -other.x, -other.y, -other.z };
 	}
 
-	Vector2 xy() const {
+	Vector2 xy() const
+	{
 		return Vector2(x, y);
 	}
 
-	friend std::ostream& operator<<(std::ostream& os, const Vector3& v) {
+	friend std::ostream& operator<<(std::ostream& os, const Vector3& v)
+	{
 		std::ios_base::fmtflags f = os.flags();
 		std::streamsize p = os.precision();
 
@@ -113,23 +136,29 @@ struct Vector3 {
 };
 
 
-struct Vector4 {
-	union {
-		struct {
+struct Vector4
+{
+	union
+	{
+		struct
+		{
 			float x, y, z, w;
 		};
 		float values[4];
 	};
 
-	Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w) {}
+	Vector4(float x = 0, float y = 0, float z = 0, float w = 0) : x(x), y(y), z(z), w(w)
+	{}
 
-	const float& operator[] (int index) const {
+	const float& operator[] (int index) const
+	{
 		return values[index];
 	}
 };
 
 
-static Vector4 operator*(const Matrix4x4& m, const Vector4& v) {
+static Vector4 operator*(const Matrix4x4& m, const Vector4& v)
+{
 #ifdef ROW_MAJOR
 	return Vector4(
 		m[0][0] * v[0] + m[0][1] * v[1] + m[0][2] * v[2] + m[0][3] * v[3],
@@ -149,7 +178,8 @@ static Vector4 operator*(const Matrix4x4& m, const Vector4& v) {
 
 typedef Matrix4x4 ViewMatrix_t;
 
-static Vector3 worldToScreen(const Vector3& world_pos, const ViewMatrix_t& view_matrix) {
+static Vector3 worldToScreen(const Vector3& world_pos, const ViewMatrix_t& view_matrix)
+{
 	static int screenWidth = GetSystemMetrics(SM_CXSCREEN);
 	static int screenHeight = GetSystemMetrics(SM_CYSCREEN);
 

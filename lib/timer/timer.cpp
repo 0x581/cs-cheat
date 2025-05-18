@@ -1,21 +1,28 @@
-#include "../pch.h"
+#include "timer.h"
 
-void c_timer::start() {
+#include <Windows.h>
+#include <thread>
+
+void c_timer::start()
+{
 	strt = std::chrono::high_resolution_clock::now();
 }
 
-int c_timer::end() {
+int c_timer::end()
+{
 	auto end = std::chrono::high_resolution_clock::now();   // end of clock
 	std::chrono::duration<double> time_s = end - strt;
 	std::chrono::milliseconds time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_s);
 	return static_cast<int>(time_ms.count());
 }
 
-void c_timer::sleep_ms(unsigned int delay) {
+void c_timer::sleep_ms(unsigned int delay)
+{
 	std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 }
 
-void c_timer::q_sleep(int ms) {
+void c_timer::q_sleep(int ms)
+{
 	LONGLONG timerResolution{}, wantedTime{}, currentTime{};
 
 	QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER*>(&timerResolution));
@@ -25,28 +32,33 @@ void c_timer::q_sleep(int ms) {
 	wantedTime = (currentTime + ms * timerResolution) / timerResolution;
 	currentTime = 0;
 
-	while (wantedTime > 0) {
+	while (wantedTime > 0)
+	{
 		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&currentTime));
 		currentTime /= timerResolution;
 		wantedTime -= currentTime;
 	}
 }
 
-void c_timer::acc_sleep(unsigned int delay) {
+void c_timer::acc_sleep(unsigned int delay)
+{
 	auto s_clock = std::chrono::high_resolution_clock::now();
 	auto e_clock = std::chrono::high_resolution_clock::now();   // end of clock
 	std::chrono::duration<double> time_s = e_clock - s_clock;
 	std::chrono::milliseconds time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_s);
-	while (time_ms.count() < delay) {
+	while (time_ms.count() < delay)
+	{
 		e_clock = std::chrono::high_resolution_clock::now();   // end of clock
 		time_s = e_clock - s_clock;
 		time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_s);
 	}
 }
 
-bool c_timer::held_button(unsigned int vk_code, unsigned int delay) {
+bool c_timer::held_button(unsigned int vk_code, unsigned int delay)
+{
 	auto s_clock = std::chrono::high_resolution_clock::now();
-	while (GetAsyncKeyState(vk_code)) {
+	while (GetAsyncKeyState(vk_code))
+	{
 		auto e_clock = std::chrono::high_resolution_clock::now();   // end of clock
 		std::chrono::duration<double> time_s = e_clock - s_clock;
 		std::chrono::milliseconds time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_s);
@@ -55,9 +67,11 @@ bool c_timer::held_button(unsigned int vk_code, unsigned int delay) {
 	return false;
 }
 
-void c_timer::until_press(unsigned int vk_code, unsigned int vk_code2) {
-	while (true) {
-        if ((GetAsyncKeyState(vk_code) & 0x8000) && (GetAsyncKeyState(vk_code2) & 0x8000)) break;
-        else sleep_ms(5);
-    }
+void c_timer::until_press(unsigned int vk_code, unsigned int vk_code2)
+{
+	while (true)
+	{
+		if ((GetAsyncKeyState(vk_code) & 0x8000) && (GetAsyncKeyState(vk_code2) & 0x8000)) break;
+		else sleep_ms(5);
+	}
 }
