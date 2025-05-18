@@ -3,7 +3,7 @@
 #include "../lib/imgui/pch.h"
 
 
-constexpr auto scaling_value = 2;
+constexpr auto scaling_value = 1;
 
 
 constexpr int menu_anim_time = 350;
@@ -14,12 +14,6 @@ constexpr int menu_height = 500 * scaling_value;
 
 constexpr int bomb_width = 300;
 constexpr int bomb_height = 100;
-
-struct s_font
-{
-	ImFont* im_font;
-	FLOAT font_size;
-};
 
 class c_overlay
 {
@@ -36,6 +30,7 @@ private:
 
 	ImGuiContext* imguiContext;
 	INT breath;
+	ImFont* titleFont;
 	ImFont* font;
 
 private:

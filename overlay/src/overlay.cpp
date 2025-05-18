@@ -274,6 +274,7 @@ VOID c_overlay::init_imgui()
 
 	// --- Font Laden (dein Code) ---
 	font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f * scaling_value);
+	titleFont = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 20.0f * scaling_value);
 
 	style.ScaleAllSizes(scaling_value);
 

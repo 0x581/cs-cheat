@@ -39,6 +39,25 @@ static int current_main_nav_item = CONFIG;
 constexpr float label_width = 80.0f;
 
 
+static float calc_slider_start(const ImGuiStyle& style)
+{
+	const auto lbl1_length = (
+		style.WindowPadding.x
+		+ style.ItemInnerSpacing.x
+		+ ImGui::CalcTextSize("Shot Delay").x
+		);
+
+	const auto lbl2_length = (
+		style.WindowPadding.x
+		+ style.IndentSpacing
+		+ style.ItemInnerSpacing.x
+		+ ImGui::CalcTextSize("Smooth").x
+		);
+
+	return max(lbl1_length, lbl2_length);
+}
+
+
 static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font)
 {
 	ImGui::BeginChild("NavBar", ImVec2(0, 0), ImGuiChildFlags_Borders, ImGuiWindowFlags_NoScrollbar);
@@ -76,9 +95,8 @@ static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font)
 	ImGui::EndChild();
 }
 
-static void draw_aim_submenu(const ImGuiStyle& style)
+static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const float slider_indent)
 {
-
 	if (ImGui::CollapsingHeader("Aimbot Options", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::Checkbox("Triggerbot", &config.activeCheats.triggerBot);
@@ -92,9 +110,11 @@ static void draw_aim_submenu(const ImGuiStyle& style)
 				{
 
 					ImGui::Text("Ragebot use the aimbot funktions.");
-					ImGui::Text("Shot Delay ");
-					ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
-					ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
+
+					ImGui::AlignTextToFramePadding();
+					ImGui::Text("Shot Delay");
+					ImGui::SameLine(slider_indent);
+					ImGui::PushItemWidth(-1);
 					ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms");
 					ImGui::PopItemWidth();
 
@@ -105,25 +125,35 @@ static void draw_aim_submenu(const ImGuiStyle& style)
 			ImGui::Checkbox("Draw FOV Circle", &config.aimBot.drawFovCircle);
 			if (config.aimBot.drawFovCircle)
 			{
-				ImGui::SameLine(0, style.ItemSpacing.x * 2);
+				ImGui::SameLine(0, style.ItemInnerSpacing.x * 2);
 				ImGui::ColorEdit4("##FovCircleColor", (float*)&config.aimBot.fovCircleColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
-				ImGui::Text("FOV");
-				ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
-				ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
-				ImGui::SliderFloat("##FOV", &config.aimBot.pixelRadius, 0.0f, 400.0f, "%.0fpx");
-				ImGui::PopItemWidth();
 			}
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("FOV");
+			ImGui::SameLine(slider_indent);
+			ImGui::PushItemWidth(-1);
+			ImGui::SliderFloat("##AimbotRadius", &config.aimBot.pixelRadius, 0.0f, 400.0f, "%.0fpx");
+			ImGui::PopItemWidth();
+
+			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Smooth");
-			ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
-			ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
+			ImGui::SameLine(slider_indent);
+			ImGui::PushItemWidth(-1);
 			ImGui::SliderFloat("##Smooth", &config.aimBot.speedFactor, 0.0f, 2.0f, "%.2f");
 			ImGui::PopItemWidth();
+
 			ImGui::Checkbox("Ignore Team", &config.aimBot.ignoreTeam);
-			ImGui::Checkbox("visible(soon)", &config.aimBot.checkVisible);
+			ImGui::Checkbox("visible (soon)", &config.aimBot.checkVisible);
 
 			// --- Hitbox Auswahl ---
 			static const char* hitboxItems[] = { "Head", "Neck", "Spine" };
-			ImGui::Combo("Hitbox", &config.aimBot.hitbox, hitboxItems, IM_ARRAYSIZE(hitboxItems));
+
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Hitbox");
+			ImGui::SameLine(slider_indent);
+			ImGui::PushItemWidth(-1);
+			ImGui::Combo("##Hitbox", &config.aimBot.hitbox, hitboxItems, IM_ARRAYSIZE(hitboxItems));
+			ImGui::PopItemWidth();
 
 			ImGui::Unindent();
 		}
@@ -159,37 +189,59 @@ static void draw_visuals_submenu(const ImGuiStyle& style)
 	{
 		if (ImGui::CollapsingHeader("ESP Colors", ImGuiTreeNodeFlags_DefaultOpen))
 		{
+			const float lbl1_width = (
+				style.WindowPadding.x
+				+ style.IndentSpacing
+				+ style.ItemInnerSpacing.x
+				+ ImGui::CalcTextSize("Enemy Hidden (soon)").x
+				);
 
-			float color_label_width = 180.0f;
+			const float lbl2_width = (
+				style.WindowPadding.x
+				+ style.IndentSpacing
+				+ style.ItemInnerSpacing.x
+				+ ImGui::CalcTextSize("Team Hidden (soon)").x
+				);
+
+			const auto color_indent = max(lbl1_width, lbl2_width);
+
+			ImGui::Indent();
+
+			ImGui::AlignTextToFramePadding();
 			ImGui::Text("Enemy Visible");
-			ImGui::SameLine(color_label_width);
+			ImGui::SameLine(color_indent);
 			ImGui::ColorEdit4("##EnemyVisColor", (float*)&config.esp.colorEnemyVisible, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 
-			ImGui::Text("Enemy Hidden(soon)");
-			ImGui::SameLine(color_label_width);
+			ImGui::AlignTextToFramePadding();
+			ImGui::Text("Enemy Hidden (soon)");
+			ImGui::SameLine(color_indent);
 			ImGui::ColorEdit4("##EnemyHidColor", (float*)&config.esp.colorEnemyHidden, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 
 			if (config.esp.renderFriendlies)
 			{
+				ImGui::AlignTextToFramePadding();
 				ImGui::Text("Team Visible");
-				ImGui::SameLine(color_label_width);
+				ImGui::SameLine(color_indent);
 				ImGui::ColorEdit4("##TeamVisColor", (float*)&config.esp.colorTeamVisible, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 
-				ImGui::Text("Team Hidden(soon)");
-				ImGui::SameLine(color_label_width);
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Team Hidden (soon)");
+				ImGui::SameLine(color_indent);
 				ImGui::ColorEdit4("##TeamHidColor", (float*)&config.esp.colorTeamHidden, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 			}
+			ImGui::Unindent();
+
 		}
 	}
 	ImGui::Separator();
 	if (ImGui::CollapsingHeader("Other Visuals", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Checkbox("Radar(risky)", &config.activeCheats.radar);
-		ImGui::Checkbox("Anti-Flash(risky)", &config.activeCheats.antiFlash);
+		ImGui::Checkbox("Radar (risky)", &config.activeCheats.radar);
+		ImGui::Checkbox("Anti-Flash (risky)", &config.activeCheats.antiFlash);
 	}
 }
 
-static void draw_misc_submenu(const ImGuiStyle& style)
+static void draw_misc_submenu(const ImGuiStyle& style, const float slider_indent)
 {
 	if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -197,10 +249,12 @@ static void draw_misc_submenu(const ImGuiStyle& style)
 		if (config.activeCheats.fovChanger)
 		{
 			ImGui::Indent();
+
+			ImGui::AlignTextToFramePadding();
 			ImGui::Text("FOV");
-			ImGui::SameLine(label_width + style.ItemInnerSpacing.x);
-			ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x - style.ItemInnerSpacing.x);
-			ImGui::SliderInt("##FOVValue", &config.fov.desiredFov, 60, 140);
+			ImGui::SameLine(slider_indent);
+			ImGui::PushItemWidth(-1);
+			ImGui::SliderInt("##FOV", &config.fov.desiredFov, 60, 140);
 			ImGui::PopItemWidth();
 			ImGui::Unindent();
 		}
@@ -220,7 +274,7 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 		{
 			const auto height = (
 				4 * (font->FontSize + style.FramePadding.y * 2.0f)
-				+ 3 * style.ItemSpacing.y
+				+ (4 - 1) * style.ItemSpacing.y
 				+ style.WindowPadding.y * 2.0f
 				);
 
@@ -230,7 +284,8 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 			ImGui::TableNextColumn();
 
 			ImGui::BeginChild("ConfigListPane", ImVec2(-1, height), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY);
-			ImGui::Text("Saved Configs:");
+
+			//ImGui::Text("Saved Configs:");
 			if (ImGui::BeginListBox("##ConfigList", ImVec2(-1, -1)))
 			{
 				for (const auto& config : configs)
@@ -293,30 +348,33 @@ void c_overlay::draw_menu()
 
 	persistentConfig.mainWindow.windowPosition = ImGui::GetWindowPos();
 
-	float nav_bar_width = 130.0f;
-
 	if (ImGui::BeginTable("TopLevelTable", 2, 0))
 	{
-		ImGui::TableSetupColumn("TopLevelLeft", ImGuiTableColumnFlags_WidthStretch, 27);
-		ImGui::TableSetupColumn("TopLevelRight", ImGuiTableColumnFlags_WidthStretch, 100);
+		ImGui::TableSetupColumn("TopLevelLeft", ImGuiTableColumnFlags_WidthStretch, 1);
+		ImGui::TableSetupColumn("TopLevelRight", ImGuiTableColumnFlags_WidthStretch, 4);
 
 		ImGui::TableNextColumn();
 
-		draw_navbar_submenu(style, font);
+		draw_navbar_submenu(style, titleFont);
 
 
 		ImGui::TableNextColumn();
 
 		ImGui::BeginChild("ContentArea", ImVec2(0, 0), true);
 		{
+			const auto slider_indent = calc_slider_start(style);
+
+			ImGui::PushFont(titleFont);
 			ImGui::Text("%s Settings", nav_items.at(current_main_nav_item));
+			ImGui::PopFont();
+
 			ImGui::Separator();
 			ImGui::Spacing();
 
 			switch (current_main_nav_item)
 			{
 			case MenuOrder::AIM:
-				draw_aim_submenu(style);
+				draw_aim_submenu(style, font, slider_indent);
 				break;
 
 			case MenuOrder::VISUALS:
@@ -324,7 +382,7 @@ void c_overlay::draw_menu()
 				break;
 
 			case MenuOrder::MISC:
-				draw_misc_submenu(style);
+				draw_misc_submenu(style, slider_indent);
 				break;
 
 			case MenuOrder::CONFIG:
