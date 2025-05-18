@@ -3,16 +3,26 @@
 #include "../lib/imgui/pch.h"
 
 
+constexpr auto scaling_value = 2;
+
+
 constexpr int menu_anim_time = 350;
 constexpr int breath_anim_time = 1000;
 
-constexpr int menu_width = 650;
-constexpr int menu_height = 500;
+constexpr int menu_width = 650 * scaling_value;
+constexpr int menu_height = 500 * scaling_value;
 
 constexpr int bomb_width = 300;
 constexpr int bomb_height = 100;
 
-class c_overlay {
+struct s_font
+{
+	ImFont* im_font;
+	FLOAT font_size;
+};
+
+class c_overlay
+{
 private:
 	HWND window_handle;
 	WNDCLASSEX window_class;
@@ -23,12 +33,10 @@ private:
 	ImDrawList* draw_list;
 	c_timer breath_timer, menu_timer;
 
-	struct s_font {
-		ImFont* im_font;
-		FLOAT font_size;
-	};
 
 	ImGuiContext* imguiContext;
+	INT breath;
+	ImFont* font;
 
 private:
 	template <typename T>
@@ -77,6 +85,4 @@ public:
 	bool exit = true;
 	bool ready_to_close = true;
 	bool show_menu = true;
-	INT breath;
-	s_font* font;
 };

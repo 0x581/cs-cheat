@@ -19,7 +19,8 @@ using std::string, std::vector, std::map;
 
 // microsoft safe release of pointers
 template <typename T>
-inline VOID c_overlay::safe_release(T*& p) {
+inline VOID c_overlay::safe_release(T*& p)
+{
 	if (NULL != p)
 	{
 		p->Release();
@@ -42,12 +43,11 @@ c_overlay::c_overlay() :
 	render_target_view(nullptr),
 	draw_list(nullptr),
 	imguiContext(nullptr),
-	breath(NULL) {
+	breath(NULL)
+{
 
 	if (!getWindowHandle(&window_handle))
 		throw std::runtime_error(string("Failed to acquire window handle."));
-
-	font = new s_font();
 
 	if (!init_device())
 		throw std::runtime_error(string("Failed to initialize DX device."));
@@ -57,17 +57,17 @@ c_overlay::c_overlay() :
 	std::thread(&c_overlay::anim_handler, this).detach();
 }
 
-c_overlay::~c_overlay() {
+c_overlay::~c_overlay()
+{
 	clear_screen();
 
 	dest_imgui();
 	dest_device();
-
-	delete font;
 }
 
 
-BOOL c_overlay::init_device() {
+BOOL c_overlay::init_device()
+{
 	DXGI_SWAP_CHAIN_DESC vSwapChainDesc = {};
 	ZeroMemory(&vSwapChainDesc, sizeof(vSwapChainDesc));
 	vSwapChainDesc.BufferCount = 2;
@@ -150,7 +150,8 @@ BOOL c_overlay::init_device() {
 	return TRUE;
 }
 
-VOID c_overlay::dest_device() {
+VOID c_overlay::dest_device()
+{
 	dest_render_target();
 	safe_release(swap_chain);
 	safe_release(device_context);
@@ -158,7 +159,8 @@ VOID c_overlay::dest_device() {
 }
 
 
-VOID c_overlay::init_imgui() {
+VOID c_overlay::init_imgui()
+{
 	IMGUI_CHECKVERSION();
 
 	imguiContext = ImGui::CreateContext();
@@ -271,16 +273,9 @@ VOID c_overlay::init_imgui() {
 	colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.04f, 0.04f, 0.05f, 0.65f);
 
 	// --- Font Laden (dein Code) ---
-	ImGuiIO& io = ImGui::GetIO();
-	if (font)
-	{
-		font->im_font = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f);
-		font->font_size = 16.f;
-	}
-	else
-	{
-		io.Fonts->AddFontDefault();
-	}
+	font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f * scaling_value);
+
+	style.ScaleAllSizes(scaling_value);
 
 	ImGui_ImplWin32_Init(window_handle);
 	ImGui_ImplDX11_Init(d3d_device, device_context);
@@ -288,7 +283,8 @@ VOID c_overlay::init_imgui() {
 	SetWindowLongPtr(window_handle, GWLP_WNDPROC, (LONG_PTR)WndProc_custom);
 }
 
-VOID c_overlay::dest_imgui() {
+VOID c_overlay::dest_imgui()
+{
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 
@@ -296,7 +292,8 @@ VOID c_overlay::dest_imgui() {
 }
 
 
-VOID c_overlay::init_render_target() {
+VOID c_overlay::init_render_target()
+{
 	ID3D11Texture2D* back_buffer = nullptr;
 	swap_chain->GetBuffer(0, IID_PPV_ARGS(&back_buffer));
 	if (back_buffer)
@@ -305,12 +302,14 @@ VOID c_overlay::init_render_target() {
 	back_buffer->Release();
 }
 
-VOID c_overlay::dest_render_target() {
+VOID c_overlay::dest_render_target()
+{
 	safe_release(render_target_view);
 }
 
 
-const void c_overlay::render(FLOAT width, FLOAT height) {
+const void c_overlay::render(FLOAT width, FLOAT height)
+{
 	if (exit)
 	{
 		ready_to_close = true;
@@ -339,7 +338,8 @@ const void c_overlay::render(FLOAT width, FLOAT height) {
 	draw_menu();
 }
 
-void c_overlay::HandleInput() {
+void c_overlay::HandleInput()
+{
 
 	constexpr auto set_focus = [](HWND window_handle, bool focus) {
 		static bool was_focussed = !(GetWindowLong(window_handle, GWL_EXSTYLE) & WS_EX_TRANSPARENT);
@@ -384,7 +384,8 @@ void c_overlay::HandleInput() {
 		);
 
 	bool mouse_over_bomb = (
-		p.x >= bomb_tl.x
+		config.activeCheats.bombTimer
+		&& p.x >= bomb_tl.x
 		&& p.y >= bomb_tl.y
 		&& p.x < bomb_br.x
 		&& p.y < bomb_br.y
@@ -394,7 +395,8 @@ void c_overlay::HandleInput() {
 }
 
 
-BOOL c_overlay::msg_loop() {
+BOOL c_overlay::msg_loop()
+{
 	if (window_handle)
 	{
 		HandleInput();
@@ -424,20 +426,22 @@ BOOL c_overlay::msg_loop() {
 	return false;
 }
 
-void c_overlay::clear_screen() {
+void c_overlay::clear_screen()
+{
 	constexpr ImVec4 clear_clr = { 0,0,0,0 };
 
 	device_context->ClearRenderTargetView(render_target_view, (float*)&clear_clr);
 }
 
 
-void c_overlay::anim_handler() {
+void c_overlay::anim_handler()
+{
 	// timers for our animations
 	breath_timer.start();
 
 	bool menuKeyReleased = true;
 
-	for (;!exit;)
+	for (; !exit;)
 	{
 		RECT rect{ 0 };
 		POINT point{ 0 };
@@ -473,6 +477,7 @@ void c_overlay::anim_handler() {
 	}
 }
 
-VOID c_overlay::init_draw_list() {
+VOID c_overlay::init_draw_list()
+{
 	draw_list = ImGui::GetBackgroundDrawList();
 }

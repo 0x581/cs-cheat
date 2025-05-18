@@ -4,7 +4,8 @@
 #include <shared_variables.h>
 #include <colors.h>
 
-const void c_overlay::renderCheats() {
+const void c_overlay::renderCheats()
+{
 	if (config.activeCheats.esp)
 	{
 		float dynamicGlowSize = 0.0f;

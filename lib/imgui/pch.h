@@ -1,5 +1,5 @@
-#ifndef PCH_H_
-#define PCH_H_
+#pragma once
+
 
 #define M_PI 3.1415926535
 
@@ -26,5 +26,3 @@
 #include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
 #include "imgui/imgui_internal.h"	// gradient
-
-#endif
