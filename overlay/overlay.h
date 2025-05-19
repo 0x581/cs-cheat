@@ -27,6 +27,8 @@ private:
 
 	ImFont* titleFont;
 	ImFont* font;
+	ImFont* bombFont1;
+	ImFont* bombFont2;
 
 	bool show_menu;
 

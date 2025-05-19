@@ -39,7 +39,7 @@ c_overlay::c_overlay() :
 	window_height((FLOAT)GetSystemMetrics(SM_CYSCREEN)),
 	window_scale_changed(false),
 	menuSize(menu_width* persistentConfig.mainWindow.scale, menu_height* persistentConfig.mainWindow.scale),
-	bombSize(bomb_width, bomb_height),
+	bombSize(bomb_width* persistentConfig.bombWindow.scale, bomb_height* persistentConfig.bombWindow.scale),
 	//			  //
 	// DX11 stuff //
 	//			  //
@@ -254,7 +254,7 @@ void c_overlay::HandleInput()
 	ImVec2 menu_tl = persistentConfig.mainWindow.position;
 	ImVec2 menu_br = ImVec2(menu_tl.x + menuSize.x, menu_tl.y + menuSize.y);
 
-	ImVec2 bomb_tl = persistentConfig.bombWindow.windowPosition;
+	ImVec2 bomb_tl = persistentConfig.bombWindow.position;
 	ImVec2 bomb_br = ImVec2(bomb_tl.x + bombSize.x, bomb_tl.y + bombSize.y);
 
 	POINT p{};
@@ -289,6 +289,7 @@ BOOL c_overlay::msg_loop()
 		{
 			update_style();
 			menuSize = ImVec2(menu_width * persistentConfig.mainWindow.scale, menu_height * persistentConfig.mainWindow.scale);
+			bombSize = ImVec2(bomb_width * persistentConfig.bombWindow.scale, bomb_height * persistentConfig.bombWindow.scale);
 			window_scale_changed = false;
 		}
 

@@ -20,7 +20,8 @@ struct PersistentConfigData
 
 	struct BombSettings
 	{
-		ImVec2 windowPosition;
+		ImVec2 position;
+		float scale;
 	} bombWindow;
 
 	char selectedConfig[CONFIG_NAME_MAX_LENGTH + 1];

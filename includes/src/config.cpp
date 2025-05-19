@@ -58,7 +58,8 @@ static constexpr const PersistentConfigData default_persistent_config{
 		.scale = 1.0,
 	},
 	.bombWindow {
-		.windowPosition = ImVec2(50, 50),
+		.position = ImVec2(50, 50),
+		.scale = 1.0,
 	},
 	.selectedConfig{0},
 };

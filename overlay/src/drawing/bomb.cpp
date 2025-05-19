@@ -4,9 +4,10 @@
 #include <shared_variables.h>
 
 
-void c_overlay::draw_bomb() {
-	ImGui::SetNextWindowPos(persistentConfig.bombWindow.windowPosition, ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(bomb_width, bomb_height), ImGuiCond_FirstUseEver);
+void c_overlay::draw_bomb()
+{
+	ImGui::SetNextWindowPos(persistentConfig.bombWindow.position, ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(bombSize);
 
 	ImGui::Begin(
 		"Bomb GUI",
@@ -17,7 +18,9 @@ void c_overlay::draw_bomb() {
 		| ImGuiWindowFlags_NoBackground
 	);
 
-	persistentConfig.bombWindow.windowPosition = ImGui::GetWindowPos();
+	persistentConfig.bombWindow.position = ImGui::GetWindowPos();
+
+	ImGui::PushFont(bombFont1);
 
 	if (bombData.planted == true)
 	{
@@ -38,5 +41,7 @@ void c_overlay::draw_bomb() {
 		ImGui::Text("Bomb is not planted.");
 	}
 	ImGui::PopStyleColor();
+
+	ImGui::PopFont();
 	ImGui::End();
 }

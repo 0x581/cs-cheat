@@ -278,7 +278,12 @@ static void draw_misc_submenu(const ImGuiStyle& style, const float slider_indent
 static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 {
 	static char configNameBuffer[CONFIG_NAME_MAX_LENGTH + 1] = "";
-
+	static bool first = true;
+	if (first)
+	{
+		memcpy(configNameBuffer, persistentConfig.selectedConfig, CONFIG_NAME_MAX_LENGTH);
+		first = false;
+	}
 
 	if (ImGui::CollapsingHeader("Manage Configurations", ImGuiTreeNodeFlags_DefaultOpen))
 	{
@@ -344,9 +349,10 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 
 static void draw_settings_submenu(const ImGuiStyle& style, const float slider_indent, bool& window_scale_changed)
 {
-	static bool value_changed_while_selected = false;
+	static bool menu_value_changed_while_selected = false;
+	static bool bomb_value_changed_while_selected = false;
 
-	if (ImGui::CollapsingHeader("Window", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Menu Window", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::AlignTextToFramePadding();
 		ImGui::Text("Scale");
@@ -357,16 +363,42 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 			&persistentConfig.mainWindow.scale,
 			1.0,
 			3.0,
-			"%.3fx",
+			"%.2fx",
 			ImGuiSliderFlags_ClampOnInput
 		);
 		ImGui::PopItemWidth();
 
-		value_changed_while_selected |= value_changed;
+		menu_value_changed_while_selected |= value_changed;
 
-		if (value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
+		if (menu_value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
 		{
-			value_changed_while_selected = false;
+			menu_value_changed_while_selected = false;
+			window_scale_changed = true;
+		}
+	}
+
+
+	if (ImGui::CollapsingHeader("Bomb Window", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::AlignTextToFramePadding();
+		ImGui::Text("Scale");
+		ImGui::SameLine(slider_indent);
+		ImGui::PushItemWidth(-1);
+		const bool value_changed = ImGui::SliderFloat(
+			"##BombWindowScale",
+			&persistentConfig.bombWindow.scale,
+			1.0,
+			3.0,
+			"%.2fx",
+			ImGuiSliderFlags_ClampOnInput
+		);
+		ImGui::PopItemWidth();
+
+		bomb_value_changed_while_selected |= value_changed;
+
+		if (bomb_value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
+		{
+			bomb_value_changed_while_selected = false;
 			window_scale_changed = true;
 		}
 	}

@@ -119,17 +119,18 @@ VOID c_overlay::update_style()
 	style.FrameBorderSize = 0.0f;
 	style.TabBorderSize = 0.0f;
 
-	const auto scale = persistentConfig.mainWindow.scale;
+	const auto menu_scale = persistentConfig.mainWindow.scale;
+	const auto bomb_scale = persistentConfig.bombWindow.scale;
 
 	imgui_io.Fonts->ClearFonts();
 
 	// --- Font Laden (dein Code) ---
-	font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f * scale);
-	titleFont = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 20.0f * scale);
+	font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f * menu_scale);
+	titleFont = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 20.0f * menu_scale);
+	bombFont1 = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 25.0f * bomb_scale);
+	bombFont2 = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 18.0f * bomb_scale);
 
-	imgui_io.Fonts->Build();
-
-	style.ScaleAllSizes(scale);
+	style.ScaleAllSizes(menu_scale);
 
 	ImGui_ImplDX11_InvalidateDeviceObjects();
 	ImGui_ImplDX11_CreateDeviceObjects();
