@@ -8,7 +8,7 @@ void runAimBot(const CheatData& cheat_data);
 
 void runAntiFlash(const Memory& mem, const CheatData& cheatData);
 
-void runbombTimer(const CheatData& cheatData);
+void runBombTimer(const CheatData& cheatData);
 
 void runBunnyHop();
 

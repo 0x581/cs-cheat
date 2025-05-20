@@ -11,7 +11,8 @@
 #include "../memory/memory.h"
 
 
-static void run_all_cheats(const Memory& mem, const CheatData& cheat_data, const size_t iteration) {
+static void run_all_cheats(const Memory& mem, const CheatData& cheat_data, const size_t iteration)
+{
 	if (shouldAimBotRun(iteration))
 		runAimBot(cheat_data);
 
@@ -25,7 +26,7 @@ static void run_all_cheats(const Memory& mem, const CheatData& cheat_data, const
 		runBunnyHop();
 
 	if (shouldBombTimerRun(iteration))
-		runbombTimer(cheat_data);
+		runBombTimer(cheat_data);
 
 	if (shouldAntiFlashRun(iteration))
 		runAntiFlash(mem, cheat_data);
@@ -40,7 +41,8 @@ static void run_all_cheats(const Memory& mem, const CheatData& cheat_data, const
 		runRageAimbot(cheat_data);
 }
 
-static bool check_connection(Memory& mem) {
+static bool check_connection(Memory& mem)
+{
 	const auto previous = mem.is_valid;
 	auto alive = mem.isProcessAlive();
 
@@ -58,7 +60,8 @@ static bool check_connection(Memory& mem) {
 	return alive;
 }
 
-void run_cheat_loop(bool& terminate) {
+void run_cheat_loop(bool& terminate)
+{
 	Memory mem;
 	EntityList entity_list{ };
 	CheatData cheat_data{ };
