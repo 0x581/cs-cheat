@@ -81,20 +81,21 @@ const void c_overlay::draw_cheats()
 
 			if (config.esp.health)
 			{
+				
 				const auto health_max = espRenderData.maxHealth;
 				const auto health = espRenderData.health;
 				const auto health_ratio = static_cast<float>(health) / static_cast<float>(health_max);
 
 				const auto health_color = ImGui::ColorConvertFloat4ToU32(friendly ? config.esp.colorTeamVisible : config.esp.colorEnemyVisible);
 
-				const auto height = max.y - min.y;
-				const auto width = (max.x - min.x) * 0.2f;
-				const auto border_width = width * 0.1f;
+				const float bar_width = 4.f;        
+				const float bar_spacing = 4.f;      
+				const auto height = max.y - min.y;  
+				const auto border_width = 1.f;    
 
-				const auto left = min.x - width - 5.f;
+				const auto left = min.x - bar_width - bar_spacing;
 				const auto top = min.y;
-
-				const auto right = left + width;
+				const auto right = left + bar_width;
 				const auto bottom = top + height;
 
 				const auto health_height = height * health_ratio;
@@ -102,7 +103,16 @@ const void c_overlay::draw_cheats()
 
 				rect_filled(ImVec2(left, top_health), ImVec2(right, bottom), health_color);
 				rect(ImVec2(left, top), ImVec2(right, bottom), rgbColors::black, border_width);
+				char health_text[16];
+				snprintf(health_text, sizeof(health_text), "%d", health); 
+
+				const auto health_text_pos = ImVec2{
+						left - ImGui::CalcTextSize(health_text).x - 2.f, 
+						top + (height / 15.f) - (ImGui::CalcTextSize(health_text).y / 2.f) 
+				};
+				text(health_text_pos, health_text, health_color);
 			}
+
 		}
 	}
 
