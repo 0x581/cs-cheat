@@ -361,7 +361,7 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 		const bool value_changed = ImGui::SliderFloat(
 			"##MainWindowScale",
 			&persistentConfig.mainWindow.scale,
-			1.0,
+			0.5,
 			3.0,
 			"%.2fx",
 			ImGuiSliderFlags_ClampOnInput
