@@ -51,7 +51,6 @@ private:
 
 	VOID init_render_target();
 	VOID dest_render_target();
-	const VOID draw_cheats();
 	const VOID render();
 
 	VOID update_on_resolution_change();
@@ -60,6 +59,7 @@ private:
 
 	VOID draw_menu();
 	VOID draw_bomb();
+	const VOID draw_cheats();
 
 	VOID HandleInput();
 
