@@ -40,27 +40,28 @@ const void c_overlay::draw_cheats()
 			{
 				const BoneData& bones = espRenderData.bones;
 
+				const auto line_width = 1 / (espRenderData.distance) * 200 * config.esp.boneWidth;
 
-				line(bones.head, bones.neck, currentColorU32);
-				line(bones.neck, bones.spine4, currentColorU32);
-				line(bones.spine4, bones.spine3, currentColorU32);
-				line(bones.spine3, bones.spine2, currentColorU32);
-				line(bones.spine2, bones.spine1, currentColorU32);
-				line(bones.spine1, bones.hip, currentColorU32);
-				line(bones.spine4, bones.l_shoulder, currentColorU32);
-				line(bones.l_shoulder, bones.l_arm, currentColorU32);
-				line(bones.l_arm, bones.l_wrist, currentColorU32);
-				line(bones.l_wrist, bones.l_hand, currentColorU32);
-				line(bones.spine4, bones.r_shoulder, currentColorU32);
-				line(bones.r_shoulder, bones.r_arm, currentColorU32);
-				line(bones.r_arm, bones.r_wrist, currentColorU32);
-				line(bones.r_wrist, bones.r_hand, currentColorU32);
-				line(bones.hip, bones.l_hip, currentColorU32);
-				line(bones.l_hip, bones.l_knee, currentColorU32);
-				line(bones.l_knee, bones.l_foot, currentColorU32);
-				line(bones.hip, bones.r_hip, currentColorU32);
-				line(bones.r_hip, bones.r_knee, currentColorU32);
-				line(bones.r_knee, bones.r_foot, currentColorU32);
+				line(bones.head, bones.neck, currentColorU32, line_width);
+				line(bones.neck, bones.spine4, currentColorU32, line_width);
+				line(bones.spine4, bones.spine3, currentColorU32, line_width);
+				line(bones.spine3, bones.spine2, currentColorU32, line_width);
+				line(bones.spine2, bones.spine1, currentColorU32, line_width);
+				line(bones.spine1, bones.hip, currentColorU32, line_width);
+				line(bones.spine4, bones.l_shoulder, currentColorU32, line_width);
+				line(bones.l_shoulder, bones.l_arm, currentColorU32, line_width);
+				line(bones.l_arm, bones.l_wrist, currentColorU32, line_width);
+				line(bones.l_wrist, bones.l_hand, currentColorU32, line_width);
+				line(bones.spine4, bones.r_shoulder, currentColorU32, line_width);
+				line(bones.r_shoulder, bones.r_arm, currentColorU32, line_width);
+				line(bones.r_arm, bones.r_wrist, currentColorU32, line_width);
+				line(bones.r_wrist, bones.r_hand, currentColorU32, line_width);
+				line(bones.hip, bones.l_hip, currentColorU32, line_width);
+				line(bones.l_hip, bones.l_knee, currentColorU32, line_width);
+				line(bones.l_knee, bones.l_foot, currentColorU32, line_width);
+				line(bones.hip, bones.r_hip, currentColorU32, line_width);
+				line(bones.r_hip, bones.r_knee, currentColorU32, line_width);
+				line(bones.r_knee, bones.r_foot, currentColorU32, line_width);
 			}
 
 			if (config.esp.box)
@@ -81,17 +82,16 @@ const void c_overlay::draw_cheats()
 
 			if (config.esp.health)
 			{
-				
 				const auto health_max = espRenderData.maxHealth;
 				const auto health = espRenderData.health;
 				const auto health_ratio = static_cast<float>(health) / static_cast<float>(health_max);
 
 				const auto health_color = ImGui::ColorConvertFloat4ToU32(friendly ? config.esp.colorTeamVisible : config.esp.colorEnemyVisible);
 
-				const float bar_width = 4.f;        
-				const float bar_spacing = 4.f;      
-				const auto height = max.y - min.y;  
-				const auto border_width = 1.f;    
+				const float bar_width = 4.f;
+				const float bar_spacing = 4.f;
+				const auto height = max.y - min.y;
+				const auto border_width = 1.f;
 
 				const auto left = min.x - bar_width - bar_spacing;
 				const auto top = min.y;
@@ -104,11 +104,11 @@ const void c_overlay::draw_cheats()
 				rect_filled(ImVec2(left, top_health), ImVec2(right, bottom), health_color);
 				rect(ImVec2(left, top), ImVec2(right, bottom), rgbColors::black, border_width);
 				char health_text[16];
-				snprintf(health_text, sizeof(health_text), "%d", health); 
+				snprintf(health_text, sizeof(health_text), "%d", health);
 
 				const auto health_text_pos = ImVec2{
-						left - ImGui::CalcTextSize(health_text).x - 2.f, 
-						top + (height / 15.f) - (ImGui::CalcTextSize(health_text).y / 2.f) 
+						left - ImGui::CalcTextSize(health_text).x - 2.f,
+						top + (height / 15.f) - (ImGui::CalcTextSize(health_text).y / 2.f)
 				};
 				text(health_text_pos, health_text, health_color);
 			}

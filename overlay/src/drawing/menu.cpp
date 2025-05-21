@@ -173,7 +173,7 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 	}
 }
 
-static void draw_visuals_submenu(const ImGuiStyle& style)
+static void draw_visuals_submenu(const ImGuiStyle& style, const float slider_indent)
 {
 
 	if (ImGui::CollapsingHeader("ESP General", ImGuiTreeNodeFlags_DefaultOpen))
@@ -184,6 +184,15 @@ static void draw_visuals_submenu(const ImGuiStyle& style)
 			ImGui::Indent();
 			ImGui::Checkbox("Show Teammates", &config.esp.renderFriendlies);
 			ImGui::Checkbox("Bone ESP", &config.esp.bone);
+			if (config.esp.bone)
+			{
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("Width");
+				ImGui::SameLine(slider_indent);
+				ImGui::PushItemWidth(-1);
+				ImGui::SliderFloat("##EspBoneWidth", &config.esp.boneWidth, 0.5f, 10.0f, "%.2fx", ImGuiSliderFlags_ClampOnInput);
+				ImGui::PopItemWidth();
+			}
 			ImGui::Checkbox("Name ESP", &config.esp.name);
 			ImGui::Checkbox("Health Bar", &config.esp.health);
 			ImGui::Checkbox("Box ESP", &config.esp.box);
@@ -455,7 +464,7 @@ void c_overlay::draw_menu()
 				break;
 
 			case MenuOrder::VISUALS:
-				draw_visuals_submenu(style);
+				draw_visuals_submenu(style, slider_indent);
 				break;
 
 			case MenuOrder::MISC:

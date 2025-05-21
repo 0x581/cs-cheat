@@ -53,6 +53,7 @@ struct ConfigData
 		bool box;
 		bool name;
 		bool health;
+		float boneWidth;
 
 		ImVec4 colorEnemyVisible;
 		ImVec4 colorEnemyHidden;

@@ -36,6 +36,7 @@ static constexpr const ConfigData default_config{
 		.bone = false,
 		.name = false,
 		.health = false,
+		.boneWidth = 1.0,
 		.colorEnemyVisible = {1.0f, 0.0f, 0.0f, 1.0f},
 		.colorEnemyHidden = {1.0f, 0.5f, 0.0f, 1.0f},
 		.colorTeamVisible = {0.0f, 1.0f, 0.0f, 1.0f},
