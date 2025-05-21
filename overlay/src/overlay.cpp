@@ -335,11 +335,11 @@ VOID c_overlay::state_handler()
 		Sleep(1);
 
 		// panic key
-		if (GetAsyncKeyState(keybinds::quickExit) & 0x8000)
+		if (GetAsyncKeyState(keybinds::quickExit) != 0)
 			exit = true;
 
 		// Show/Hide menu
-		if (GetAsyncKeyState(keybinds::showMenu) & 0x8000)
+		if (GetAsyncKeyState(keybinds::showMenu) != 0)
 		{
 			if (!menu_key_held_last_frame)
 				show_menu = !show_menu;
