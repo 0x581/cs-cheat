@@ -5,7 +5,8 @@
 #include <cs_defines.h>
 
 
-struct C4Data {
+struct C4Data
+{
 	bool planted;
 	uint32_t site;
 	GameTime_t explosionTime;
@@ -14,7 +15,8 @@ struct C4Data {
 	CEntityIndex defuser;
 };
 
-struct PlayerData {
+struct PlayerData
+{
 	bool isValid{ 0 };
 	uintptr_t pawnPtr{ 0 };
 	uintptr_t controllerPtr{ 0 };
@@ -32,7 +34,8 @@ struct PlayerData {
 	bool isScoped{ 0 };
 };
 
-struct CheatData {
+struct CheatData
+{
 	PlayerData playerEntities[64];
 
 	PlayerData localPlayer;

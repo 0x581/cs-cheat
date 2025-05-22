@@ -7,7 +7,8 @@
 #include "cs_defines.h"
 #include "boneData.h"
 
-struct EspRenderData {
+struct EspRenderData
+{
 	bool isValid{ false };
 	bool isVisible{ false };
 	bool isFriendly{ false };
@@ -20,12 +21,15 @@ struct EspRenderData {
 	BoneData bones{};
 };
 
-struct ESPData {
+struct ESPData
+{
+	bool isValid{ false };
 	std::chrono::steady_clock::time_point capture_time{ };
 	EspRenderData data[64]{};
 };
 
-struct BombData {
+struct BombData
+{
 	bool planted{ false };
 	bool canBeDefused{ false };
 	float timeRemaining{ 0.f };

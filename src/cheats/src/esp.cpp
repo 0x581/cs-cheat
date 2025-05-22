@@ -70,4 +70,6 @@ void runEsp(const CheatData& cheatData)
 
 		espData.data[i].isValid = true;
 	}
+
+	espData.isValid = true;
 }

@@ -9,6 +9,7 @@
 #include "src/cheat_entries.h"
 
 #include "../memory/memory.h"
+#include <shared_variables.h>
 
 
 static void run_all_cheats(const Memory& mem, const CheatData& cheat_data, const size_t iteration)
@@ -84,11 +85,12 @@ void run_cheat_loop(bool& terminate)
 
 		std::this_thread::sleep_until(lastTime);
 
-		if (!read_entity_system(mem, entity_list))
+		if (!read_entity_system(mem, entity_list) || !read_cheat_data(mem, entity_list, cheat_data))
+		{
+			espData.isValid = false;
 			continue;
+		}
 
-		if (!read_cheat_data(mem, entity_list, cheat_data))
-			continue;
 
 		run_all_cheats(mem, cheat_data, iteration);
 	}

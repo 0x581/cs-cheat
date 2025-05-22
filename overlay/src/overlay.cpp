@@ -94,8 +94,8 @@ BOOL c_overlay::init_device()
 	vSwapChainDesc.BufferDesc.Width = 0;
 	vSwapChainDesc.BufferDesc.Height = 0;
 	vSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	vSwapChainDesc.BufferDesc.RefreshRate.Numerator = 240;
-	vSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+	vSwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+	vSwapChainDesc.BufferDesc.RefreshRate.Denominator = 0;
 	vSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH; // | DXGI_SWAP_CHAIN_FLAG_FOREGROUND_LAYER;
 	vSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	vSwapChainDesc.OutputWindow = window_handle;
@@ -318,7 +318,7 @@ BOOL c_overlay::msg_loop()
 		device_context->OMSetRenderTargets(1, &render_target_view, NULL);
 		clear_screen();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-		swap_chain->Present(1, 0);
+		swap_chain->Present(0, 0);
 
 		return msg.message != WM_QUIT;
 	}

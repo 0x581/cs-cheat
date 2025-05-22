@@ -6,7 +6,7 @@
 
 const void c_overlay::draw_cheats()
 {
-	if (config.activeCheats.esp)
+	if (config.activeCheats.esp && espData.isValid)
 	{
 		float dynamicGlowSize = 0.0f;
 		if (config.esp.boxGlow)

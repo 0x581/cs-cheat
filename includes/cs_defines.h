@@ -22,7 +22,7 @@ struct CBoneData
 
 struct CBoneArray
 {
-	CBoneData pelvis;			// 0
+	CBoneData pelvis;		// 0
 	CBoneData spine_1;		// 1
 	CBoneData spine_2;		// 2
 	CBoneData spine_3;		// 3
@@ -56,7 +56,7 @@ struct CBoneArray
 	CBoneData r_knee;		// 26
 	CBoneData r_foot;		// 27
 
-	CBoneData root_motion;		// 28
+	CBoneData root_motion;	// 28
 };
 
 class CGlobalVarsBase
