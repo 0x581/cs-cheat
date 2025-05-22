@@ -183,6 +183,12 @@ static bool load_config_data(T& buffer, const string_view folder, const string_v
 template <typename T>
 static bool store_config_data(const T& data, const string_view folder, const string_view file)
 {
+	if (file == files::defaultConfig)
+	{
+		std::cout << "Error: Cannot store default config." << std::endl;
+		return false;
+	}
+
 	path cfg_path;
 	if (!get_expanded_path(folder, cfg_path))
 	{
