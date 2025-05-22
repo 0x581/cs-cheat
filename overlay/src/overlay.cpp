@@ -265,14 +265,14 @@ void c_overlay::HandleInput()
 	POINT p{};
 	GetCursorPos(&p);
 
-	bool mouse_over_imgui = (
+	const bool mouse_over_menu = (
 		p.x >= menu_tl.x
 		&& p.y >= menu_tl.y
 		&& p.x < menu_br.x
 		&& p.y < menu_br.y
 		);
 
-	bool mouse_over_bomb = (
+	const bool mouse_over_bomb = (
 		config.activeCheats.bombTimer
 		&& p.x >= bomb_tl.x
 		&& p.y >= bomb_tl.y
@@ -280,7 +280,9 @@ void c_overlay::HandleInput()
 		&& p.y < bomb_br.y
 		);
 
-	set_focus(window_handle, mouse_over_imgui || mouse_over_bomb);
+	const bool want_mouse = ImGui::GetIO().WantCaptureMouse;
+
+	set_focus(window_handle, mouse_over_menu || mouse_over_bomb || want_mouse);
 }
 
 
