@@ -1,8 +1,10 @@
 #include "../keyboard.h"
 
 #include <Windows.h>
+#include <bitset>
 
-bool g_keyStates[256] = { false };
+static std::bitset<256> g_keyStates;
+static int mostRecentKey = -1;
 
 static HHOOK g_keyboardHook = nullptr;
 
@@ -13,17 +15,21 @@ static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lP
 		KBDLLHOOKSTRUCT* pKbdStruct = (KBDLLHOOKSTRUCT*)lParam;
 
 		if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN)
+		{
 			g_keyStates[pKbdStruct->vkCode] = true;
+			mostRecentKey = pKbdStruct->vkCode;
+		}
 		else if (wParam == WM_KEYUP || wParam == WM_SYSKEYUP)
 			g_keyStates[pKbdStruct->vkCode] = false;
 	}
 	return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
 }
 
-bool IsKeyPressed(int keyCode)
+const bool IsKeyPressed(int keyCode)
 {
 	if (keyCode < 0 || keyCode >= 256)
 		return false;
+
 	return g_keyStates[keyCode];
 }
 
