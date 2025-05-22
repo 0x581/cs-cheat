@@ -151,6 +151,9 @@
     <ClCompile Include="overlay\src\init_imgui.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="includes\src\keyboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\memory\memory.h">
@@ -205,6 +208,7 @@
     <ClInclude Include="lib\imgui\imstb_textedit.h" />
     <ClInclude Include="lib\imgui\misc\freetype\imgui_freetype.h" />
     <ClInclude Include="lib\imgui\misc\cpp\imgui_stdlib.h" />
+    <ClInclude Include="includes\keyboard.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="script\fetchOffsets.py">

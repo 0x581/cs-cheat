@@ -11,9 +11,11 @@
 #include <colors.h>
 #include <config.h>
 #include <keybinds.h>
+#include <keyboard.h>
 #include <shared_variables.h>
 
 #include "../window_handle.h"
+#include <keyboard.h>
 
 
 using std::string, std::vector, std::map;
@@ -63,6 +65,9 @@ c_overlay::c_overlay() :
 {
 	if (!getWindowHandle(&window_handle))
 		throw std::runtime_error(string("Failed to acquire window handle."));
+
+	if (!init_keyboard_hook())
+		throw std::runtime_error(string("Failed to create keyboard hook."));
 
 	if (!init_device())
 		throw std::runtime_error(string("Failed to initialize DX device."));
@@ -335,11 +340,11 @@ VOID c_overlay::state_handler()
 		Sleep(1);
 
 		// panic key
-		if (GetAsyncKeyState(keybinds::quickExit) != 0)
+		if (IsKeyPressed(keybinds::quickExit))
 			exit = true;
 
 		// Show/Hide menu
-		if (GetAsyncKeyState(keybinds::showMenu) != 0)
+		if (IsKeyPressed(keybinds::showMenu))
 		{
 			if (!menu_key_held_last_frame)
 				show_menu = !show_menu;
