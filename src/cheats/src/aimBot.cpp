@@ -54,7 +54,7 @@ void runAimBot(const CheatData& cheat_data) {
 			targetBone = playerEntity.bones.neck;
 			break;
 		case 2:
-			targetBone = playerEntity.bones.spine1;
+			targetBone = playerEntity.bones.spine_1;
 			break;
 		default:
 			targetBone = playerEntity.bones.head;
