@@ -85,6 +85,12 @@ struct ConfigData
 		int hitbox;
 		int shotDelay;
 	} rageBot;
+
+    struct DevSettings 
+    {
+        bool devMode;
+		bool allON;
+    } devSettings; 
 };
 
 
