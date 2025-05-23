@@ -243,7 +243,7 @@ void c_overlay::HandleInput()
 		else
 			SetWindowLong(window_handle, GWL_EXSTYLE, style | WS_EX_TRANSPARENT);
 
-		std::cout << "Interface is now " << (focus ? "focused" : "unfocused") << std::endl;
+		// std::cout << "Interface is now " << (focus ? "focused" : "unfocused") << std::endl;
 
 
 		was_focussed = focus;
