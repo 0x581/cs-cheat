@@ -1,8 +1,9 @@
 #include "../keyboard.h"
 
 #include <Windows.h>
+#include <bitset>
 
-bool g_keyStates[256] = { false };
+std::bitset<256> g_keyStates = { false };
 static int mostRecentKey = -1;
 
 static HHOOK g_keyboardHook = nullptr;
@@ -74,10 +75,13 @@ static LRESULT CALLBACK LowLevelMouseProc(
 				break;
 			}
 
-			g_keyStates[key] = down;
+			if (key >= 0 && key <= g_keyStates.size())
+			{
+				g_keyStates[key] = down;
 
-			if (down)
-				mostRecentKey = key;
+				if (down)
+					mostRecentKey = key;
+			}
 		}
 	}
 	return CallNextHookEx(g_mouseHook, nCode, wParam, lParam);
