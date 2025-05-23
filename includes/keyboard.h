@@ -2,6 +2,6 @@
 
 const bool IsKeyPressed(const int vkCode);
 
-bool init_keyboard_hook();
+bool init_input_hook();
 
-void clear_keyboard_hook();
+void clear_input_hook();

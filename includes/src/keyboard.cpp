@@ -96,7 +96,7 @@ const bool IsKeyPressed(const int vkCode)
 	return g_keyStates[vkCode];
 }
 
-bool init_keyboard_hook()
+bool init_input_hook()
 {
 	g_keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, GetModuleHandle(NULL), 0);
 
@@ -105,7 +105,7 @@ bool init_keyboard_hook()
 	return (g_keyboardHook != NULL) && (g_mouseHook != NULL);
 }
 
-void clear_keyboard_hook()
+void clear_input_hook()
 {
 	if (g_keyboardHook != NULL)
 	{

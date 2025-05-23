@@ -66,7 +66,7 @@ c_overlay::c_overlay() :
 	if (!getWindowHandle(&window_handle))
 		throw std::runtime_error(string("Failed to acquire window handle."));
 
-	if (!init_keyboard_hook())
+	if (!init_input_hook())
 		throw std::runtime_error(string("Failed to create keyboard hook."));
 
 	if (!init_device())
