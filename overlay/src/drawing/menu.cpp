@@ -118,19 +118,21 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 		{
 			if (ImGui::CollapsingHeader("Ragebot Options", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				ImGui::Checkbox("Enable Ragebot", &config.activeCheats.rageBot);
-				if (config.activeCheats.rageBot)
-				{
+				if (config.devSettings.devMode) {
+					ImGui::Checkbox("Enable Ragebot", &config.activeCheats.rageBot);
+					if (config.activeCheats.rageBot)
+					{
 
-					ImGui::Text("Ragebot use the aimbot funktions.");
+						ImGui::Text("Ragebot use the aimbot funktions.");
 
-					ImGui::AlignTextToFramePadding();
-					ImGui::Text("Shot Delay");
-					ImGui::SameLine(slider_indent);
-					ImGui::PushItemWidth(-1);
-					ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms", ImGuiSliderFlags_ClampOnInput);
-					ImGui::PopItemWidth();
+						ImGui::AlignTextToFramePadding();
+						ImGui::Text("Shot Delay");
+						ImGui::SameLine(slider_indent);
+						ImGui::PushItemWidth(-1);
+						ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms", ImGuiSliderFlags_ClampOnInput);
+						ImGui::PopItemWidth();
 
+					}
 				}
 			}
 			ImGui::Indent();
@@ -256,30 +258,36 @@ static void draw_visuals_submenu(const ImGuiStyle& style, const float slider_ind
 		}
 	}
 	ImGui::Separator();
-	if (ImGui::CollapsingHeader("Other Visuals", ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		ImGui::Checkbox("Radar (risky)", &config.activeCheats.radar);
-		ImGui::Checkbox("Anti-Flash (risky)", &config.activeCheats.antiFlash);
+	if (config.devSettings.devMode) {
+		if (ImGui::CollapsingHeader("Other Visuals", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::Checkbox("Radar (risky)", &config.activeCheats.radar);
+			ImGui::Checkbox("Anti-Flash (risky)", &config.activeCheats.antiFlash);
+		}
 	}
+	
 }
 
 static void draw_misc_submenu(const ImGuiStyle& style, const float slider_indent)
 {
 	if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Checkbox("FOV Changer", &config.activeCheats.fovChanger);
-		if (config.activeCheats.fovChanger)
-		{
-			ImGui::Indent();
+		if (config.devSettings.devMode) {
+			ImGui::Checkbox("FOV Changer", &config.activeCheats.fovChanger);
+			if (config.activeCheats.fovChanger)
+			{
+				ImGui::Indent();
 
-			ImGui::AlignTextToFramePadding();
-			ImGui::Text("FOV");
-			ImGui::SameLine(slider_indent);
-			ImGui::PushItemWidth(-1);
-			ImGui::SliderInt("##FOV", &config.fov.desiredFov, 60, 140, "%d", ImGuiSliderFlags_ClampOnInput);
-			ImGui::PopItemWidth();
-			ImGui::Unindent();
+				ImGui::AlignTextToFramePadding();
+				ImGui::Text("FOV");
+				ImGui::SameLine(slider_indent);
+				ImGui::PushItemWidth(-1);
+				ImGui::SliderInt("##FOV", &config.fov.desiredFov, 60, 140, "%d", ImGuiSliderFlags_ClampOnInput);
+				ImGui::PopItemWidth();
+				ImGui::Unindent();
+			}
 		}
+		
 		ImGui::Checkbox("Bomb Info Panel™", &config.activeCheats.bombTimer);
 	}
 }
@@ -353,6 +361,53 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 
 			ImGui::EndTable();
 		}
+		ImGui::Checkbox("Dev mode", &config.devSettings.devMode);
+		if (config.devSettings.devMode)
+		{
+			ImGui::Text("Dev mode is enabled, some features may not work as intended.");
+			ImGui::Checkbox("All On", &config.devSettings.allON);
+			if(config.devSettings.allON)
+			{
+				config.activeCheats.aimBot = true;
+				config.activeCheats.rageBot = true;
+				config.esp.bone = true;
+				config.esp.name = true;
+				config.esp.box = true;
+				config.esp.health = true;
+				config.esp.renderFriendlies = true;
+				config.esp.boxGlow = true;
+				config.aimBot.drawFovCircle = true;
+				config.aimBot.ignoreTeam = true;
+				config.aimBot.checkVisible = true;
+				config.activeCheats.esp = true;
+				config.activeCheats.triggerBot = true;
+				config.activeCheats.radar = true;
+				config.activeCheats.antiFlash = true;
+				config.activeCheats.bombTimer = true;
+				config.activeCheats.fovChanger = true;
+			}
+			else
+			{
+				config.activeCheats.aimBot = false;
+				config.activeCheats.rageBot = false;
+				config.esp.bone = false;
+				config.esp.name = false;
+				config.esp.box = false;
+				config.esp.health = false;
+				config.esp.renderFriendlies = false;
+				config.esp.boxGlow = false;
+				config.aimBot.drawFovCircle = false;
+				config.aimBot.ignoreTeam = false;
+				config.aimBot.checkVisible = false;
+				config.activeCheats.esp = false;
+				config.activeCheats.triggerBot = false;
+				config.activeCheats.radar = false;
+				config.activeCheats.antiFlash = false;
+				config.activeCheats.bombTimer = false;
+				config.activeCheats.fovChanger = false;
+			}
+		}
+			
 	}
 }
 
