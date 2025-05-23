@@ -198,6 +198,7 @@ static void from_json(ConfigData& buffer, const json j, const bool verbose)
 		auto& aimBot = buffer.aimBot;
 		auto& fov = buffer.fov;
 		auto& rageBot = buffer.rageBot;
+		auto& devSettings = buffer.devSettings;
 
 		// Active Cheats
 		if (j.contains("activeCheats"))
@@ -281,6 +282,14 @@ static void from_json(ConfigData& buffer, const json j, const bool verbose)
 		else
 			rageBot = default_config.rageBot;
 
+		if (j.contains("devSettings"))
+		{
+			const auto& devJson = j["devSettings"];
+			devSettings.devMode = devJson.value("devMode", default_config.devSettings.devMode);
+		}
+		else
+			devSettings = default_config.devSettings;
+
 	}
 	catch (const json::exception& e)
 	{
@@ -298,6 +307,7 @@ static json to_json(const ConfigData& buffer)
 	auto& aimBot = buffer.aimBot;
 	auto& fov = buffer.fov;
 	auto& rageBot = buffer.rageBot;
+	auto& devSettings = buffer.devSettings;
 
 	json j;
 
@@ -354,6 +364,10 @@ static json to_json(const ConfigData& buffer)
 		{"visible", rageBot.visible},
 		{"hitbox", rageBot.hitbox},
 		{"shotDelay", rageBot.shotDelay}
+	};
+
+	j["devSettings"] = {
+		{"devMode", devSettings.devMode},
 	};
 
 	return j;

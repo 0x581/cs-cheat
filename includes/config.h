@@ -86,11 +86,10 @@ struct ConfigData
 		int shotDelay;
 	} rageBot;
 
-    struct DevSettings 
-    {
-        bool devMode;
-		bool allON;
-    } devSettings; 
+	struct DevSettings
+	{
+		bool devMode;
+	} devSettings;
 };
 
 
