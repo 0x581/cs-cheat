@@ -2,15 +2,14 @@
 
 #include "imgui.h"
 
-#define MAGIC_BYTES "Merkur CS2 Config"
-
-constexpr auto COLOR_NAME_MAX_LENGTH = 64;
+#include <string_view>
+#include <json.h>
 
 constexpr auto CONFIG_NAME_MAX_LENGTH = 64;
 
 struct PersistentConfigData
 {
-	const char _magicBytes[sizeof(MAGIC_BYTES)] = MAGIC_BYTES;
+	static constexpr auto MAGIC_BYTES = std::string_view("Merkur CS2 Persistent Config\n");
 
 	struct MainWindowSettings
 	{
@@ -29,7 +28,7 @@ struct PersistentConfigData
 
 struct ConfigData
 {
-	const char _magicBytes[sizeof(MAGIC_BYTES)] = MAGIC_BYTES;
+	static constexpr auto MAGIC_BYTES = std::string_view("Merkur CS2 Cheat Config\n");
 
 	struct ActiveCheats
 	{
@@ -46,7 +45,6 @@ struct ConfigData
 
 	struct EspSettings
 	{
-		char selectedColor[COLOR_NAME_MAX_LENGTH];
 		bool renderFriendlies;
 		bool boxGlow;
 		bool bone;
@@ -60,7 +58,7 @@ struct ConfigData
 		ImVec4 colorTeamVisible;
 		ImVec4 colorTeamHidden;
 		ImVec4 colorItem;
-	}esp;
+	} esp;
 
 	struct AimBotSettings
 	{
@@ -81,11 +79,11 @@ struct ConfigData
 
 	struct RageBotSettings
 	{
-		float pixelRadius = 120.f;
-		float speedFactor = 1.0f;
-		bool visible = false;
-		int hitbox = 0;
-		int shotDelay = 30; // ms
+		float pixelRadius;
+		float speedFactor;
+		bool visible;
+		int hitbox;
+		int shotDelay;
 	} rageBot;
 };
 
