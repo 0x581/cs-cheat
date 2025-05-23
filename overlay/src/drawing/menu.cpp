@@ -118,7 +118,8 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 		{
 			if (ImGui::CollapsingHeader("Ragebot Options", ImGuiTreeNodeFlags_DefaultOpen))
 			{
-				if (config.devSettings.devMode) {
+				if (config.devSettings.devMode)
+				{
 					ImGui::Checkbox("Enable Ragebot", &config.activeCheats.rageBot);
 					if (config.activeCheats.rageBot)
 					{
@@ -258,21 +259,23 @@ static void draw_visuals_submenu(const ImGuiStyle& style, const float slider_ind
 		}
 	}
 	ImGui::Separator();
-	if (config.devSettings.devMode) {
+	if (config.devSettings.devMode)
+	{
 		if (ImGui::CollapsingHeader("Other Visuals", ImGuiTreeNodeFlags_DefaultOpen))
 		{
 			ImGui::Checkbox("Radar (risky)", &config.activeCheats.radar);
 			ImGui::Checkbox("Anti-Flash (risky)", &config.activeCheats.antiFlash);
 		}
 	}
-	
+
 }
 
 static void draw_misc_submenu(const ImGuiStyle& style, const float slider_indent)
 {
 	if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		if (config.devSettings.devMode) {
+		if (config.devSettings.devMode)
+		{
 			ImGui::Checkbox("FOV Changer", &config.activeCheats.fovChanger);
 			if (config.activeCheats.fovChanger)
 			{
@@ -287,7 +290,7 @@ static void draw_misc_submenu(const ImGuiStyle& style, const float slider_indent
 				ImGui::Unindent();
 			}
 		}
-		
+
 		ImGui::Checkbox("Bomb Info Panel™", &config.activeCheats.bombTimer);
 	}
 }
@@ -364,9 +367,13 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 		ImGui::Checkbox("Dev mode", &config.devSettings.devMode);
 		if (config.devSettings.devMode)
 		{
+			bool allOn = false;
+			bool allOff = false;
+
 			ImGui::Text("Dev mode is enabled, some features may not work as intended.");
-			ImGui::Checkbox("All On", &config.devSettings.allON);
-			if(config.devSettings.allON)
+			ImGui::Checkbox("All On", &allOn);
+			ImGui::Checkbox("All Off", &allOff);
+			if (allOn)
 			{
 				config.activeCheats.aimBot = true;
 				config.activeCheats.rageBot = true;
@@ -386,7 +393,7 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 				config.activeCheats.bombTimer = true;
 				config.activeCheats.fovChanger = true;
 			}
-			else
+			if (allOff)
 			{
 				config.activeCheats.aimBot = false;
 				config.activeCheats.rageBot = false;
@@ -407,7 +414,7 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 				config.activeCheats.fovChanger = false;
 			}
 		}
-			
+
 	}
 }
 
