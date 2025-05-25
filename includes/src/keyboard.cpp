@@ -12,27 +12,32 @@ static HHOOK g_mouseHook = nullptr;
 
 static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-	if (nCode == HC_ACTION)
+	KBDLLHOOKSTRUCT* pKbdStruct = (KBDLLHOOKSTRUCT*)lParam;
+
+	if (nCode != HC_ACTION || pKbdStruct == nullptr || pKbdStruct->vkCode >= 256)
+		return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
+
+	const DWORD originalVkCode = pKbdStruct->vkCode;
+	DWORD effectiveVkCode = originalVkCode;
+	const bool isExtended = (pKbdStruct->flags & LLKHF_EXTENDED) != 0;
+	const bool isKeyDown = (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN);
+	const bool isKeyUp = (wParam == WM_KEYUP || wParam == WM_SYSKEYUP);
+
+	if (originalVkCode == VK_RETURN && isExtended)
+		effectiveVkCode = VK_SEPARATOR;
+
+	if (isKeyDown)
 	{
-		KBDLLHOOKSTRUCT* pKbdStruct = (KBDLLHOOKSTRUCT*)lParam;
-
-		if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN)
+		if (!g_keyStates[effectiveVkCode])
 		{
-			if (!g_keyStates[pKbdStruct->vkCode])
-			{
-				std::cout << "Key pressed: " << pKbdStruct->vkCode << std::endl;
-
-				g_keyStates[pKbdStruct->vkCode] = true;
-				mostRecentKey = pKbdStruct->vkCode;
-			}
-		}
-		else if (wParam == WM_KEYUP || wParam == WM_SYSKEYUP)
-		{
-			std::cout << "Key released: " << pKbdStruct->vkCode << std::endl;
-
-			g_keyStates[pKbdStruct->vkCode] = false;
+			g_keyStates[effectiveVkCode] = true;
+			mostRecentKey = pKbdStruct->vkCode;
 		}
 	}
+	else if (isKeyUp)
+		g_keyStates[effectiveVkCode] = false;
+
+
 	return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
 }
 
