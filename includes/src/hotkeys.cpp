@@ -43,7 +43,7 @@ static const char* get_key_name(const int key)
 		NAME_CASE(VK_SELECT, "Select");
 		NAME_CASE(VK_PRINT, "Print");
 		NAME_CASE(VK_EXECUTE, "Exec");
-		NAME_CASE(VK_SNAPSHOT, "Print");
+		NAME_CASE(VK_SNAPSHOT, "Print Screen");
 		NAME_CASE(VK_INSERT, "Ins");
 		NAME_CASE(VK_DELETE, "Del");
 		NAME_CASE(VK_HELP, "Help");
@@ -149,9 +149,7 @@ static const std::string get_localized_key_name(const int vkCode)
 	const char* keyName = get_key_name(vkCode);
 
 	if (keyName != nullptr)
-	{
 		return keyName;
-	}
 
 	const auto scanCode = MapVirtualKey(vkCode, MAPVK_VK_TO_VSC);
 
