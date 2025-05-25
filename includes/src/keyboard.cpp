@@ -2,9 +2,10 @@
 
 #include <Windows.h>
 #include <bitset>
+#include <iostream>
 
 std::bitset<256> g_keyStates = { false };
-static int mostRecentKey = -1;
+int mostRecentKey = -1;
 
 static HHOOK g_keyboardHook = nullptr;
 static HHOOK g_mouseHook = nullptr;
@@ -17,19 +18,25 @@ static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lP
 
 		if (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN)
 		{
-			g_keyStates[pKbdStruct->vkCode] = true;
-			mostRecentKey = pKbdStruct->vkCode;
+			if (!g_keyStates[pKbdStruct->vkCode])
+			{
+				std::cout << "Key pressed: " << pKbdStruct->vkCode << std::endl;
+
+				g_keyStates[pKbdStruct->vkCode] = true;
+				mostRecentKey = pKbdStruct->vkCode;
+			}
 		}
 		else if (wParam == WM_KEYUP || wParam == WM_SYSKEYUP)
+		{
+			std::cout << "Key released: " << pKbdStruct->vkCode << std::endl;
+
 			g_keyStates[pKbdStruct->vkCode] = false;
+		}
 	}
 	return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
 }
 
-static LRESULT CALLBACK LowLevelMouseProc(
-	int nCode,
-	WPARAM wParam,
-	LPARAM lParam)
+static LRESULT CALLBACK LowLevelMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
 	if (nCode == HC_ACTION)
 	{
@@ -66,12 +73,15 @@ static LRESULT CALLBACK LowLevelMouseProc(
 				down = false;
 				break;
 			case WM_XBUTTONDOWN:
-				key = HIWORD(pMhs->mouseData);
-				down = true;
-				break;
 			case WM_XBUTTONUP:
-				key = HIWORD(pMhs->mouseData);
-				down = false;
+				WORD xButtonFlags = HIWORD(pMhs->mouseData);
+
+				if (xButtonFlags == XBUTTON1)
+					key = VK_XBUTTON1;
+				else if (xButtonFlags == XBUTTON2)
+					key = VK_XBUTTON2;
+
+				down = (wParam == WM_XBUTTONDOWN);
 				break;
 			}
 

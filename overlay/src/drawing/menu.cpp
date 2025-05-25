@@ -2,6 +2,7 @@
 
 #include <config.h>
 #include <files.h>
+#include <hotkeys.h>
 
 static int filter_chars(ImGuiInputTextCallbackData* data)
 {
@@ -25,15 +26,17 @@ enum MenuOrder
 	VISUALS,
 	MISC,
 	CONFIG,
+	KEYBINDS,
 	SETTINGS,
 };
 
 constexpr const auto nav_items = std::to_array({
-	"Aim",
-	"Visuals",
-	"Misc",
-	"Config",
-	"Settings",
+	std::make_pair("Aim", "Aim Settings"),
+	std::make_pair("Visuals", "Visuals Settings"),
+	std::make_pair("Misc", "Misc Settings"),
+	std::make_pair("Config", "Config Settings"),
+	std::make_pair("Keybinds", "Keybinds"),
+	std::make_pair("Settings", "Settings"),
 	});
 
 static int current_main_nav_item = AIM;
@@ -60,7 +63,7 @@ static float calc_slider_start(const ImGuiStyle& style)
 
 static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font, ImFont* text_font)
 {
-	constexpr auto buttons_at_bottom = 1;
+	constexpr auto buttons_at_bottom = 2;
 
 	ImGui::BeginChild("NavBar", ImVec2(0, 0), ImGuiChildFlags_Borders, ImGuiWindowFlags_NoScrollbar);
 	{
@@ -96,7 +99,7 @@ static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font, ImF
 			}
 
 
-			if (ImGui::Button(nav_items.at(i), ImVec2(-1, 0)))
+			if (ImGui::Button(nav_items.at(i).first, ImVec2(-1, 0)))
 				current_main_nav_item = i;
 
 			if (is_selected)
@@ -141,6 +144,8 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 			ImGui::Checkbox("Draw FOV Circle", &config.aimBot.drawFovCircle);
 			if (config.aimBot.drawFovCircle)
 			{
+				static int currentKey = -1;
+
 				ImGui::SameLine(0, style.ItemInnerSpacing.x * 2);
 				ImGui::ColorEdit4("##FovCircleColor", (float*)&config.aimBot.fovCircleColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 			}
@@ -418,6 +423,28 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 	}
 }
 
+static void draw_keybinds_submenu(const ImGuiStyle& style)
+{
+	if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		HotkeyEdit("Quick Exit", &config.keybinds.quickExit);
+		HotkeyEdit("Toggle Menu", &config.keybinds.showMenu);
+	}
+
+	if (ImGui::CollapsingHeader("Aimbot", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		HotkeyEdit("Aimbot", &config.keybinds.aimBot);
+		HotkeyEdit("Triggerbot", &config.keybinds.triggerBot);
+		HotkeyEdit("Ragebot", &config.keybinds.rageBot);
+	}
+
+	if (config.devSettings.devMode && ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Text("Dev mode is enabled, some features may not work as intended.");
+		HotkeyEdit("BunnyHop", &config.keybinds.bunnyHop);
+	}
+}
+
 static void draw_settings_submenu(const ImGuiStyle& style, const float slider_indent, bool& window_scale_changed)
 {
 	static bool menu_value_changed_while_selected = false;
@@ -510,10 +537,7 @@ void c_overlay::draw_menu()
 			const auto slider_indent = calc_slider_start(style);
 
 			ImGui::PushFont(titleFont);
-			ImGui::Text(
-				(current_main_nav_item == SETTINGS) ? "Settings" : "%s Settings",
-				nav_items.at(current_main_nav_item)
-			);
+			ImGui::Text(nav_items.at(current_main_nav_item).second);
 			ImGui::PopFont();
 
 			ImGui::Separator();
@@ -535,6 +559,10 @@ void c_overlay::draw_menu()
 
 			case MenuOrder::CONFIG:
 				draw_config_submenu(style, font);
+				break;
+
+			case MenuOrder::KEYBINDS:
+				draw_keybinds_submenu(style);
 				break;
 
 			case MenuOrder::SETTINGS:

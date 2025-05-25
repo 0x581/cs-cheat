@@ -10,12 +10,13 @@
 
 #include <colors.h>
 #include <config.h>
-#include <keybinds.h>
 #include <keyboard.h>
 #include <shared_variables.h>
 
 #include "../window_handle.h"
-#include <keyboard.h>
+#include <hotkeys.h>
+
+static bool editing_hotkey_last_frame = false;
 
 
 using std::string, std::vector, std::map;
@@ -83,6 +84,8 @@ c_overlay::~c_overlay()
 
 	dest_imgui();
 	dest_device();
+
+	clear_input_hook();
 }
 
 
@@ -225,6 +228,9 @@ const void c_overlay::render()
 
 	if (show_menu)
 		draw_menu();
+
+	editing_hotkey_last_frame = editing_hotkey;
+	editing_hotkey = false;
 }
 
 void c_overlay::HandleInput()
@@ -336,17 +342,32 @@ VOID c_overlay::clear_screen()
 VOID c_overlay::state_handler()
 {
 	bool menu_key_held_last_frame = false;
+	bool quick_exit_held_last_frame = false;
 
 	for (; !exit;)
 	{
 		Sleep(1);
 
+		if (editing_hotkey_last_frame)
+		{
+			menu_key_held_last_frame = true;
+			quick_exit_held_last_frame = true;
+			continue;
+		}
+
 		// panic key
-		if (IsKeyPressed(keybinds::quickExit))
-			exit = true;
+		if (IsKeyPressed(config.keybinds.quickExit))
+		{
+			if (!quick_exit_held_last_frame)
+				exit = true;
+
+			quick_exit_held_last_frame = true;
+		}
+		else
+			quick_exit_held_last_frame = false;
 
 		// Show/Hide menu
-		if (IsKeyPressed(keybinds::showMenu))
+		if (IsKeyPressed(config.keybinds.showMenu))
 		{
 			if (!menu_key_held_last_frame)
 				show_menu = !show_menu;
@@ -356,6 +377,9 @@ VOID c_overlay::state_handler()
 		else
 			menu_key_held_last_frame = false;
 	}
+
+
+	clear_input_hook();
 }
 
 VOID c_overlay::init_draw_list()
