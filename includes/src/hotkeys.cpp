@@ -29,11 +29,11 @@ static const char* get_key_name(const int key)
 		NAME_CASE(VK_CONTROL, "Ctrl");
 		NAME_CASE(VK_MENU, "Alt");
 		NAME_CASE(VK_PAUSE, "Pause");
-		NAME_CASE(VK_CAPITAL, "Caps");
+		NAME_CASE(VK_CAPITAL, "Caps Lock");
 
 		NAME_CASE(VK_SPACE, "Space");
 		NAME_CASE(VK_PRIOR, "Page Up");
-		NAME_CASE(VK_NEXT, "Page Dn");
+		NAME_CASE(VK_NEXT, "Page Down");
 		NAME_CASE(VK_END, "End");
 		NAME_CASE(VK_HOME, "Home");
 		NAME_CASE(VK_LEFT, "Left");
@@ -44,8 +44,8 @@ static const char* get_key_name(const int key)
 		NAME_CASE(VK_PRINT, "Print");
 		NAME_CASE(VK_EXECUTE, "Exec");
 		NAME_CASE(VK_SNAPSHOT, "Print Screen");
-		NAME_CASE(VK_INSERT, "Ins");
-		NAME_CASE(VK_DELETE, "Del");
+		NAME_CASE(VK_INSERT, "Insert");
+		NAME_CASE(VK_DELETE, "Delete");
 		NAME_CASE(VK_HELP, "Help");
 
 		NAME_CASE('0', "0");
@@ -186,24 +186,22 @@ bool HotkeyEdit(const char* label, int* key_value)
 
 	const auto key_text_str = get_localized_key_name(*key_value);
 
-
-
 	// Calculate button size (square)
-	const float height = ImGui::GetFrameHeight();
 	const float width = style.FramePadding.x * 2 + ImGui::CalcTextSize(key_text_str.c_str()).x;
 
+	ImGui::AlignTextToFramePadding();
+	ImGui::Text(label);
+	ImGui::SameLine(ImGui::GetContentRegionAvail().x - width + style.WindowPadding.x);
+
+
 	// Draw the button with the key
-	if (ImGui::Button(key_text_str.c_str(), ImVec2(width, height)))
+	if (ImGui::Button(key_text_str.c_str()))
 	{
 		// Clear the last pressed key and open popup
 		*last_pressed_key = -1;
 
 		ImGui::OpenPopup("hotkey_popup");
 	}
-
-	// Same line for label
-	ImGui::SameLine();
-	ImGui::Text("%s", label);
 
 	// Hotkey selection popup
 	if (ImGui::BeginPopup("hotkey_popup"))
