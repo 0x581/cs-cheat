@@ -20,13 +20,15 @@ std::mutex mtx;
 std::condition_variable cv;
 bool done_flag = false;
 
-static void cleanUp() {
+static void cleanUp()
+{
 	delete overlay;
 
 	store_persistent_config(files::folder);
 }
 
-static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType) {
+static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType)
+{
 	switch (fdwCtrlType)
 	{
 	case CTRL_BREAK_EVENT:
@@ -49,7 +51,8 @@ static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType) {
 }
 
 
-int main() {
+int main()
+{
 	load_all_config_data(files::folder);
 
 	if (!SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE))

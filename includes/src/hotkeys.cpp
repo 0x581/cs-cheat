@@ -175,6 +175,8 @@ static const std::string get_localized_key_name(const int vkCode)
 
 bool HotkeyEdit(const char* label, int* key_value)
 {
+	static int last_frame_value = -1;
+
 	const ImGuiStyle& style = ImGui::GetStyle();
 
 	int* last_pressed_key = &mostRecentKey;
@@ -199,6 +201,7 @@ bool HotkeyEdit(const char* label, int* key_value)
 	{
 		// Clear the last pressed key and open popup
 		*last_pressed_key = -1;
+		last_frame_value = -1;
 
 		ImGui::OpenPopup("hotkey_popup");
 	}
@@ -212,7 +215,7 @@ bool HotkeyEdit(const char* label, int* key_value)
 		ImGui::Text("(ESC to cancel)");
 
 		// Check if a key was pressed
-		if (*last_pressed_key != -1)
+		if (*last_pressed_key != -1 && last_frame_value == *last_pressed_key)
 		{
 			if (*last_pressed_key == 27)
 			{ // ESC key cancels
@@ -225,6 +228,8 @@ bool HotkeyEdit(const char* label, int* key_value)
 				ImGui::CloseCurrentPopup();
 			}
 		}
+
+		last_frame_value = *last_pressed_key;
 
 		ImGui::EndPopup();
 	}
