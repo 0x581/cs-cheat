@@ -53,18 +53,17 @@ static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType)
 
 int main()
 {
-	load_all_config_data(files::folder);
-
 	if (!SetConsoleCtrlHandler(ConsoleCtrlHandler, TRUE))
 	{
 		std::cerr << "Error: Failed to set console control handler." << std::endl;
 		return 1;
 	}
 
+	load_all_config_data(files::folder);
+	overlay = new c_overlay();
+
 	bool terminate = false;
 	std::thread cheats_thread{ run_cheat_loop, std::ref(terminate) };
-
-	overlay = new c_overlay();
 
 	while (overlay->msg_loop() && !overlay->ready_to_close);
 	terminate = true;

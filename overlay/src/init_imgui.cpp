@@ -153,8 +153,6 @@ VOID c_overlay::init_imgui()
 	ImGui_ImplDX11_Init(d3d_device, device_context);
 
 	update_style();
-
-	SetWindowLongPtr(window_handle, GWLP_WNDPROC, (LONG_PTR)WndProc_custom);
 }
 
 VOID c_overlay::dest_imgui()

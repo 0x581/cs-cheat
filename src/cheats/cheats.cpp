@@ -48,7 +48,10 @@ static bool check_connection(Memory& mem)
 	auto alive = mem.isProcessAlive();
 
 	if (previous && !alive)
+	{
 		std::cout << "Connection to CS2 lost." << std::endl;
+		return false;
+	}
 
 	if (!alive)
 	{

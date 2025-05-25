@@ -504,8 +504,6 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 
 void c_overlay::draw_menu()
 {
-	ImGui::SetCurrentContext(imguiContext);
-
 	const ImGuiStyle& style = ImGui::GetStyle();
 
 	ImGui::SetNextWindowPos(persistentConfig.mainWindow.position, ImGuiCond_FirstUseEver);

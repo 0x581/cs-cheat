@@ -65,15 +65,18 @@ c_overlay::c_overlay() :
 	ready_to_close(false)
 {
 	if (!getWindowHandle(&window_handle))
-		throw std::runtime_error(string("Failed to acquire window handle."));
+		throw std::runtime_error("Failed to acquire window handle.");
 
 	if (!init_input_hook())
-		throw std::runtime_error(string("Failed to create keyboard hook."));
+		throw std::runtime_error("Failed to create keyboard hook.");
 
 	if (!init_device())
-		throw std::runtime_error(string("Failed to initialize DX device."));
+		throw std::runtime_error("Failed to initialize DX device.");
 
 	init_imgui();
+
+	if (!update_wnd_proc(window_handle))
+		throw std::runtime_error("Failed to change the WndProc Handler.");
 
 	std::thread(&c_overlay::state_handler, this).detach();
 }
