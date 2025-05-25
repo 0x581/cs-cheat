@@ -5,17 +5,90 @@
 #include "imgui.h"
 #include "uiaccess/uiaccess.h"
 
+constexpr auto WINDOW_CLASS_NAME = L"TopmostTransparentOverlayClass";
+constexpr auto WINDOW_NAME = L"Merkur Overlay";
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-LRESULT WINAPI WndProc_custom(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+typedef LRESULT(CALLBACK* PFN_DefWindowProc) (HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
+
+static PFN_DefWindowProc old_handler = DefWindowProc;
+
+
+static LRESULT WINAPI WndProc_custom(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	// Forward to ImGui first
 	if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
 		return true;
 
 	// Handle your other window messages or forward to original
-	return DefWindowProc(hWnd, msg, wParam, lParam);
+	return old_handler(hWnd, msg, wParam, lParam);
 }
+
+
+BOOL update_wnd_proc(HWND handle)
+{
+	if (!handle)
+	{
+		std::cerr << "Error: handle is null." << std::endl;
+		return FALSE;
+	}
+
+	old_handler = (PFN_DefWindowProc)SetWindowLongPtr(handle, GWLP_WNDPROC, (LONG_PTR)WndProc_custom);
+
+	if (old_handler == nullptr)
+	{
+		std::cerr << "Error: Failed to update WndProc handler: " << GetLastError() << std::endl;
+		return false;
+	}
+
+	return true;
+}
+
+
+static ATOM get_window_class()
+{
+	WNDCLASSEX wc = {
+		.cbSize = sizeof(wc),
+		.style = CS_CLASSDC,
+		.lpfnWndProc = DefWindowProc,
+		.cbClsExtra = 0L,
+		.cbWndExtra = 0L,
+		.hInstance = GetModuleHandle(NULL),
+		.hIcon = NULL,
+		.hCursor = LoadCursor(nullptr, IDC_ARROW),
+		.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH),
+		.lpszMenuName = NULL,
+		.lpszClassName = WINDOW_CLASS_NAME,
+		.hIconSm = NULL,
+	};
+
+	return RegisterClassEx(&wc);
+}
+
+
+static void configure_window(HWND handle)
+{
+	auto style = GetWindowLongPtr(handle, GWL_EXSTYLE);
+	style |= WS_EX_TRANSPARENT
+		| WS_EX_LAYERED
+		| WS_EX_TOPMOST
+		| WS_EX_TOOLWINDOW;
+	SetWindowLongPtr(handle, GWL_EXSTYLE, style);
+
+	// avoiding window flags: https://www.unknowncheats.me/forum/general-programming-and-reversing/229070-overlay-window-topmost-top-game-windows-video.html
+	MARGINS margins = {
+		.cxLeftWidth = -1,
+		.cxRightWidth = -1,
+		.cyTopHeight = -1,
+		.cyBottomHeight = -1,
+	};
+
+	DwmExtendFrameIntoClientArea(handle, &margins);
+	SetLayeredWindowAttributes(handle, 0, 0xFF, LWA_ALPHA);
+	SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+}
+
 
 
 BOOL use_uiaccess(HWND* pHandle)
@@ -37,144 +110,93 @@ BOOL use_uiaccess(HWND* pHandle)
 		DWORD dwBand
 		);
 
-	//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	constexpr auto ZBID_UIACCESS = 2; // UIAccess Band ID
 
-	DWORD dwErr = PrepareForUIAccess();
-
+	const DWORD dwErr = PrepareForUIAccess();
 	if (dwErr != ERROR_SUCCESS)
 		return dwErr;
 
 	std::cout << "Process has UI Access." << std::endl;
 
-	constexpr auto ZBID_UIACCESS = 2; // UIAccess Band ID
-
 	const auto user32_dll = LoadLibrary(L"user32.dll");
 	if (user32_dll == 0)
 	{
-		std::cout << "Failed to load user32.dll" << std::endl;
+		std::cerr << "Failed to load user32.dll: " << GetLastError() << std::endl;
 		return FALSE;
 	}
 
 	const auto pCreateWindowInBand = (CreateWindowInBand)GetProcAddress(user32_dll, "CreateWindowInBand");
-
-	WNDCLASSEXW wc = {
-		sizeof(wc),
-		CS_CLASSDC,
-		DefWindowProc,
-		0L,
-		0L,
-		GetModuleHandle(NULL),
-		NULL,
-		NULL,
-		NULL,
-		NULL,
-		L"ImGui Example",
-		NULL,
-	};
-	auto res = RegisterClassExW(&wc);
-
-	HWND hwnd = pCreateWindowInBand(
-		WS_EX_TOPMOST | WS_EX_NOACTIVATE,
-		(LPCWSTR)res,
-		NULL,
-		0x80000000,
-		0,
-		0,
-		0,
-		0,
-		NULL,
-		NULL,
-		GetModuleHandle(NULL),
-		LPVOID(res),
-		ZBID_UIACCESS
-	);
-
-	if (hwnd == 0)
+	if (pCreateWindowInBand == nullptr)
 	{
-		const auto error = GetLastError();
-		std::cout << "Failed to create window in band: " << error << std::endl;
+		std::cerr << "Failed to get CreateWindowInBand function address: " << GetLastError() << std::endl;
 		return FALSE;
 	}
 
-	*pHandle = hwnd;
-
-	return hwnd != NULL;
-}
-
-
-BOOL hook_nvidia(HWND* pHandle)
-{
-	HWND handle = FindWindow(L"CEF-OSC-WIDGET", L"NVIDIA GeForce Overlay");
-
-	if (!handle)
-	{
-		std::cout << "Failed to find NVIDIA Overlay window." << std::endl;
-		return false;
-	}
-
-	auto style = GetWindowLongPtr(handle, GWL_EXSTYLE);
-	style |= WS_EX_TRANSPARENT; // | WS_EX_LAYERED;
-	SetWindowLongPtr(handle, GWL_EXSTYLE, style);
-
-	// avoiding window flags: https://www.unknowncheats.me/forum/general-programming-and-reversing/229070-overlay-window-topmost-top-game-windows-video.html
-	MARGINS margins = {
-		.cxLeftWidth = -1,
-		.cxRightWidth = -1,
-		.cyTopHeight = -1,
-		.cyBottomHeight = -1,
-	};
-
-	DwmExtendFrameIntoClientArea(handle, &margins);
-	SetLayeredWindowAttributes(handle, 0, 0xFF, LWA_ALPHA);
-	SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-
-	*pHandle = handle;
-
-	return true;
-}
-
-#define WINDOW_CLASS_NAME L"TopmostTransparentOverlayClass"
-
-
-BOOL new_window(HWND* pHandle)
-{
-	if (!pHandle)
-	{
-		std::cerr << "Error: pHandle is null." << std::endl;
-		return FALSE;
-	}
-
-	WNDCLASSEX wc = {
-		.cbSize = sizeof(WNDCLASSEX),
-		.lpfnWndProc = DefWindowProc,
-		.hInstance = nullptr,
-		.hCursor = LoadCursor(nullptr, IDC_ARROW),
-		.hbrBackground = (HBRUSH)GetStockObject(NULL_BRUSH),
-		.lpszClassName = WINDOW_CLASS_NAME,
-	};
-
-	const auto atom = RegisterClassEx(&wc);
+	const auto atom = get_window_class();
 	if (atom == 0)
 	{
 		std::cerr << "Failed to register window class." << std::endl;
 		return FALSE;
 	}
 
-
-	// 2. Create the window
-	HWND handle = CreateWindowEx(
-		WS_EX_TOPMOST
-		| WS_EX_LAYERED,
+	HWND handle = pCreateWindowInBand(
+		0,
 		MAKEINTATOM(atom),
-		L"test",
+		WINDOW_NAME,
 		WS_POPUP,
 		0, 0,
 		GetSystemMetrics(SM_CXSCREEN),
 		GetSystemMetrics(SM_CYSCREEN),
+		NULL,
+		NULL,
+		GetModuleHandle(NULL),
+		LPVOID(atom),
+		ZBID_UIACCESS
+	);
+
+	if (handle == 0)
+	{
+		std::cerr << "Failed to create window in band: " << GetLastError() << std::endl;
+		return FALSE;
+	}
+
+	configure_window(handle);
+
+	*pHandle = handle;
+
+	return true;
+}
+
+
+BOOL hook_nvidia(HWND* pHandle)
+{
+	HWND nvidia_handle = FindWindow(L"CEF-OSC-WIDGET", L"NVIDIA GeForce Overlay");
+
+	if (!nvidia_handle)
+	{
+		std::cerr << "Failed to find NVIDIA Overlay window." << std::endl;
+		return false;
+	}
+
+	const auto atom = get_window_class();
+	if (atom == 0)
+	{
+		std::cerr << "Failed to register window class." << std::endl;
+		return FALSE;
+	}
+
+	HWND handle = CreateWindowEx(
+		0,
+		MAKEINTATOM(atom),
+		WINDOW_NAME,
+		WS_POPUP,
+		0, 0,
+		GetSystemMetrics(SM_CXSCREEN),
+		GetSystemMetrics(SM_CYSCREEN),
+		nvidia_handle,
 		nullptr,
-		nullptr,
-		nullptr,
-		nullptr
+		GetModuleHandle(NULL),
+		LPVOID(atom)
 	);
 
 	if (!handle)
@@ -184,17 +206,46 @@ BOOL new_window(HWND* pHandle)
 		return FALSE;
 	}
 
-	// avoiding window flags: https://www.unknowncheats.me/forum/general-programming-and-reversing/229070-overlay-window-topmost-top-game-windows-video.html
-	MARGINS margins = {
-		.cxLeftWidth = -1,
-		.cxRightWidth = -1,
-		.cyTopHeight = -1,
-		.cyBottomHeight = -1,
-	};
+	configure_window(handle);
 
-	DwmExtendFrameIntoClientArea(handle, &margins);
-	SetLayeredWindowAttributes(handle, 0, 0xFF, LWA_ALPHA);
-	SetWindowPos(handle, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	*pHandle = handle;
+
+	return true;
+}
+
+
+BOOL new_window(HWND* pHandle)
+{
+	const auto atom = get_window_class();
+	if (atom == 0)
+	{
+		std::cerr << "Failed to register window class." << std::endl;
+		return FALSE;
+	}
+
+
+	HWND handle = CreateWindowEx(
+		0,
+		MAKEINTATOM(atom),
+		WINDOW_NAME,
+		WS_POPUP,
+		0, 0,
+		GetSystemMetrics(SM_CXSCREEN),
+		GetSystemMetrics(SM_CYSCREEN),
+		nullptr,
+		nullptr,
+		GetModuleHandle(NULL),
+		LPVOID(atom)
+	);
+
+	if (!handle)
+	{
+		const auto error = GetLastError();
+		std::cerr << "Failed to create window: " << error << std::endl;
+		return FALSE;
+	}
+
+	configure_window(handle);
 
 	*pHandle = handle;
 
