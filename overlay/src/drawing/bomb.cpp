@@ -7,7 +7,7 @@
 void c_overlay::draw_bomb()
 {
 	ImGui::SetNextWindowPos(persistentConfig.bombWindow.position, ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(bombSize);
+	ImGui::SetNextWindowSize(bombScale);
 
 	ImGui::Begin(
 		"Bomb GUI",

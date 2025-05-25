@@ -513,16 +513,16 @@ void c_overlay::draw_menu()
 	const ImGuiStyle& style = ImGui::GetStyle();
 
 	ImGui::SetNextWindowPos(persistentConfig.mainWindow.position, ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(menuSize);
+	ImGui::SetNextWindowSize(persistentConfig.mainWindow.size, ImGuiCond_FirstUseEver);
 
 	ImGui::Begin("Main GUI",
 		nullptr,
 		ImGuiWindowFlags_NoTitleBar
-		| ImGuiWindowFlags_NoResize
 		| ImGuiWindowFlags_NoSavedSettings
 	);
 
 	persistentConfig.mainWindow.position = ImGui::GetWindowPos();
+	persistentConfig.mainWindow.size = ImGui::GetWindowSize();
 
 	if (ImGui::BeginTable("TopLevelTable", 2, 0))
 	{

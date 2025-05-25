@@ -1,5 +1,6 @@
 #pragma once
 
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
 constexpr float menu_width = 650.f;
@@ -14,8 +15,7 @@ private:
 	HWND window_handle;
 	FLOAT window_width, window_height;
 	bool window_scale_changed;
-	ImVec2 menuSize;
-	ImVec2 bombSize;
+	ImVec2 bombScale;
 
 	ID3D11Device* d3d_device;
 	ID3D11DeviceContext* device_context;

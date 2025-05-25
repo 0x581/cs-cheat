@@ -14,6 +14,7 @@ struct PersistentConfigData
 	struct MainWindowSettings
 	{
 		ImVec2 position;
+		ImVec2 size;
 		float scale;
 	} mainWindow;
 

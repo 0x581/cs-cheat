@@ -74,6 +74,7 @@ static constexpr const ConfigData default_config{
 static constexpr const PersistentConfigData default_persistent_config{
 	.mainWindow {
 		.position = ImVec2(50, 100),
+		.size = ImVec2(650, 500),
 		.scale = 1.0,
 	},
 	.bombWindow {
@@ -144,6 +145,7 @@ static void from_json(PersistentConfigData& buffer, const json j, const bool ver
 			const auto& mw = j["mainWindow"];
 
 			mainWindow.position = json_to_imvec2(mw.value("position", json()), mainWindow.position);
+			mainWindow.size = json_to_imvec2(mw.value("size", json()), mainWindow.size);
 			mainWindow.scale = mw.value("scale", default_persistent_config.mainWindow.scale);
 		}
 		else
@@ -187,6 +189,7 @@ static json to_json(const PersistentConfigData& buffer)
 
 	j["mainWindow"] = {
 		{"position", imvec2_to_json(mainWindow.position)},
+		{"size", imvec2_to_json(mainWindow.size)},
 		{"scale", mainWindow.scale}
 	};
 
