@@ -51,15 +51,16 @@ private:
 
 	VOID init_render_target();
 	VOID dest_render_target();
-	const VOID render();
 
 	VOID update_on_resolution_change();
 
 	VOID state_handler();
 
+	const VOID render();
+
 	VOID draw_menu();
 	VOID draw_bomb();
-	const VOID draw_cheats();
+	VOID draw_cheats();
 
 	VOID HandleInput();
 

@@ -219,10 +219,26 @@ const void c_overlay::render()
 
 	update_on_resolution_change();
 
-	init_draw_list(); // we only do this once a loop
+	init_draw_list();
 
 	string name = "Merkur Cheats";
 	text({ window_width - ImGui::CalcTextSize(name.c_str()).x - 5, 5 }, name, rgbColors::off_white, true);
+
+	if (persistentConfig.showFPS)
+	{
+		const auto& io = ImGui::GetIO();
+
+		static float time_since_last_update = 0.f;
+		static std::string fps_string{ };
+
+		if ((time_since_last_update += io.DeltaTime) > 0.25f)
+		{
+			fps_string = std::to_string((int)io.Framerate);
+			time_since_last_update = 0.f;
+		}
+
+		text({ 5, 5 }, fps_string, rgbColors::off_white, true);
+	}
 
 	draw_cheats();
 

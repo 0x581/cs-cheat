@@ -500,6 +500,12 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 			window_scale_changed = true;
 		}
 	}
+
+
+	if (ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::Checkbox("Show FPS", &persistentConfig.showFPS);
+	}
 }
 
 void c_overlay::draw_menu()
