@@ -90,6 +90,17 @@ struct ConfigData
 	{
 		bool devMode;
 	} devSettings;
+
+	struct KeyBinds
+	{
+		int showMenu;
+		int quickExit;
+
+		int bunnyHop;
+		int triggerBot;
+		int aimBot;
+		int rageBot;
+	} keybinds;
 };
 
 

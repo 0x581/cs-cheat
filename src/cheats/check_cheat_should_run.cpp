@@ -1,7 +1,6 @@
 
 
 #include <config.h>
-#include <keybinds.h>
 #include <keyboard.h>
 #include <delays.h>
 
@@ -13,7 +12,7 @@ static bool shouldAimBotRun(size_t iteration)
 	if (!config.activeCheats.aimBot)
 		return false;
 
-	return IsKeyPressed(keybinds::aimBot);
+	return IsKeyPressed(config.keybinds.aimBot);
 }
 
 static bool shouldTriggerBotRun(size_t iteration)
@@ -24,7 +23,7 @@ static bool shouldTriggerBotRun(size_t iteration)
 	if (!config.activeCheats.triggerBot)
 		return false;
 
-	return IsKeyPressed(keybinds::triggerbot);
+	return IsKeyPressed(config.keybinds.triggerBot);
 }
 
 static bool shouldEspRun(size_t iteration)
@@ -43,7 +42,7 @@ static bool shouldBunnyHopRun(size_t iteration)
 	if (!config.activeCheats.bunnyHop)
 		return false;
 
-	return IsKeyPressed(keybinds::bunnyHop);
+	return IsKeyPressed(config.keybinds.bunnyHop);
 }
 
 static bool shouldBombTimerRun(size_t iteration)
@@ -86,5 +85,5 @@ static bool shouldRageBotRun(size_t iteration)
 	if (!config.activeCheats.rageBot)
 		return false;
 
-	return IsKeyPressed(keybinds::rageBot);
+	return IsKeyPressed(config.keybinds.rageBot);
 }

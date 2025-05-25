@@ -59,7 +59,16 @@ static constexpr const ConfigData default_config{
 		.visible = false,
 		.hitbox = 0,
 		.shotDelay = 30,
-	}
+	},
+
+	.keybinds {
+		.showMenu = VK_PRIOR,
+		.quickExit = VK_NEXT,
+		.bunnyHop = VK_SPACE,
+		.triggerBot = VK_RBUTTON,
+		.aimBot = VK_RBUTTON,
+		.rageBot = VK_RBUTTON,
+	},
 };
 
 static constexpr const PersistentConfigData default_persistent_config{
@@ -199,6 +208,7 @@ static void from_json(ConfigData& buffer, const json j, const bool verbose)
 		auto& fov = buffer.fov;
 		auto& rageBot = buffer.rageBot;
 		auto& devSettings = buffer.devSettings;
+		auto& keybinds = buffer.keybinds;
 
 		// Active Cheats
 		if (j.contains("activeCheats"))
@@ -290,6 +300,18 @@ static void from_json(ConfigData& buffer, const json j, const bool verbose)
 		else
 			devSettings = default_config.devSettings;
 
+		if (j.contains("keybinds"))
+		{
+			const auto& kb = j["keybinds"];
+			keybinds.showMenu = kb.value("showMenu", default_config.keybinds.showMenu);
+			keybinds.quickExit = kb.value("quickExit", default_config.keybinds.quickExit);
+			keybinds.bunnyHop = kb.value("bunnyHop", default_config.keybinds.bunnyHop);
+			keybinds.triggerBot = kb.value("triggerBot", default_config.keybinds.triggerBot);
+			keybinds.aimBot = kb.value("aimBot", default_config.keybinds.aimBot);
+			keybinds.rageBot = kb.value("rageBot", default_config.keybinds.rageBot);
+		}
+		else
+			keybinds = default_config.keybinds;
 	}
 	catch (const json::exception& e)
 	{
@@ -308,6 +330,7 @@ static json to_json(const ConfigData& buffer)
 	auto& fov = buffer.fov;
 	auto& rageBot = buffer.rageBot;
 	auto& devSettings = buffer.devSettings;
+	auto& keybinds = buffer.keybinds;
 
 	json j;
 
@@ -368,6 +391,16 @@ static json to_json(const ConfigData& buffer)
 
 	j["devSettings"] = {
 		{"devMode", devSettings.devMode},
+	};
+
+	j["keybinds"] = {
+		{"showMenu", keybinds.showMenu},
+		{"quickExit", keybinds.quickExit},
+
+		{"bunnyHop", keybinds.bunnyHop},
+		{"triggerBot", keybinds.triggerBot},
+		{"aimBot", keybinds.aimBot},
+		{"rageBot", keybinds.rageBot}
 	};
 
 	return j;
