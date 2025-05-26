@@ -5,22 +5,17 @@
 
 void runBombTimer(const CheatData& cheatData)
 {
-	if (!cheatData.bombData.planted)
-	{
-		bombData.planted = false;
-		return;
-	}
+	const auto timeRemaining = cheatData.bombData.explosionTime - cheatData.globalVars.currentTime;
 
-	const auto explosionTime = cheatData.bombData.explosionTime;
-	const auto currentTime = cheatData.globalVars.currentTime;
+	const auto localPlayerDefuseTime = cheatData.localPlayer.hasDefuser ? 5.0 : 10.0;
 
-	const auto timeRemaining = explosionTime - currentTime;
-
-	const auto hasDefuser = cheatData.localPlayer.hasDefuser;
-
-	const auto defuseTime = hasDefuser ? 5.0 : 10.0;
-
-	bombData.canBeDefused = timeRemaining > defuseTime;
-	bombData.timeRemaining = timeRemaining;
-	bombData.planted = true;
+	bombData = {
+		.planted = cheatData.bombData.planted,
+		.timeRemaining = timeRemaining,
+		.localPlayerCanDefuse = timeRemaining > localPlayerDefuseTime,
+		.beingDefused = cheatData.bombData.beingDefused,
+		.defused = cheatData.bombData.defused,
+		.defuser = cheatData.bombData.defuser,
+		.site = cheatData.bombData.site
+	};
 }

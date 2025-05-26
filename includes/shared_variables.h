@@ -31,8 +31,12 @@ struct ESPData
 struct BombData
 {
 	bool planted{ false };
-	bool canBeDefused{ false };
 	float timeRemaining{ 0.f };
+	bool localPlayerCanDefuse{ false };
+	bool beingDefused{ false };
+	bool defused{ false };
+	CEntityIndex defuser{ 0 };
+	uint32_t site{ 0 };
 };
 
 extern ESPData espData;

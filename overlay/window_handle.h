@@ -8,4 +8,4 @@ BOOL new_window(HWND* pHandle);
 
 BOOL update_wnd_proc(HWND handle);
 
-constexpr auto getWindowHandle = hook_nvidia;
+constexpr auto getWindowHandle = use_uiaccess;
