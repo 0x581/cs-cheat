@@ -68,7 +68,7 @@ static void draw_navbar_submenu(const ImGuiStyle& style, ImFont* title_font, ImF
 	ImGui::BeginChild("NavBar", ImVec2(0, 0), ImGuiChildFlags_Borders, ImGuiWindowFlags_NoScrollbar);
 	{
 		ImGui::PushFont(title_font);
-		ImGui::Text("Merkur");
+		ImGui::TextUnformatted("Merkur");
 		ImGui::PopFont();
 		ImGui::Separator();
 		ImGui::Spacing();
@@ -127,10 +127,10 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 					if (config.activeCheats.rageBot)
 					{
 
-						ImGui::Text("Ragebot use the aimbot funktions.");
+						ImGui::TextUnformatted("Ragebot use the aimbot funktions.");
 
 						ImGui::AlignTextToFramePadding();
-						ImGui::Text("Shot Delay");
+						ImGui::TextUnformatted("Shot Delay");
 						ImGui::SameLine(slider_indent);
 						ImGui::PushItemWidth(-1);
 						ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms", ImGuiSliderFlags_ClampOnInput);
@@ -150,14 +150,14 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 				ImGui::ColorEdit4("##FovCircleColor", (float*)&config.aimBot.fovCircleColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 			}
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("FOV");
+			ImGui::TextUnformatted("FOV");
 			ImGui::SameLine(slider_indent);
 			ImGui::PushItemWidth(-1);
 			ImGui::SliderFloat("##AimbotRadius", &config.aimBot.pixelRadius, 0.0f, 400.0f, "%.0fpx", ImGuiSliderFlags_ClampOnInput);
 			ImGui::PopItemWidth();
 
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Smooth");
+			ImGui::TextUnformatted("Smooth");
 			ImGui::SameLine(slider_indent);
 			ImGui::PushItemWidth(-1);
 			ImGui::SliderFloat("##Smooth", &config.aimBot.speedFactor, 0.0f, 2.0f, "%.2f", ImGuiSliderFlags_ClampOnInput);
@@ -170,7 +170,7 @@ static void draw_aim_submenu(const ImGuiStyle& style, const ImFont* font, const 
 			static const char* hitboxItems[] = { "Head", "Neck", "Spine" };
 
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Hitbox");
+			ImGui::TextUnformatted("Hitbox");
 			ImGui::SameLine(slider_indent);
 			ImGui::PushItemWidth(-1);
 			ImGui::Combo("##Hitbox", &config.aimBot.hitbox, hitboxItems, IM_ARRAYSIZE(hitboxItems));
@@ -195,7 +195,7 @@ static void draw_visuals_submenu(const ImGuiStyle& style, const float slider_ind
 			if (config.esp.bone)
 			{
 				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Width");
+				ImGui::TextUnformatted("Width");
 				ImGui::SameLine(slider_indent);
 				ImGui::PushItemWidth(-1);
 				ImGui::SliderFloat("##EspBoneWidth", &config.esp.boneWidth, 0.5f, 10.0f, "%.2fx", ImGuiSliderFlags_ClampOnInput);
@@ -238,24 +238,24 @@ static void draw_visuals_submenu(const ImGuiStyle& style, const float slider_ind
 			ImGui::Indent();
 
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Enemy Visible");
+			ImGui::TextUnformatted("Enemy Visible");
 			ImGui::SameLine(color_indent);
 			ImGui::ColorEdit4("##EnemyVisColor", (float*)&config.esp.colorEnemyVisible, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 
 			ImGui::AlignTextToFramePadding();
-			ImGui::Text("Enemy Hidden (soon)");
+			ImGui::TextUnformatted("Enemy Hidden (soon)");
 			ImGui::SameLine(color_indent);
 			ImGui::ColorEdit4("##EnemyHidColor", (float*)&config.esp.colorEnemyHidden, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 
 			if (config.esp.renderFriendlies)
 			{
 				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Team Visible");
+				ImGui::TextUnformatted("Team Visible");
 				ImGui::SameLine(color_indent);
 				ImGui::ColorEdit4("##TeamVisColor", (float*)&config.esp.colorTeamVisible, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 
 				ImGui::AlignTextToFramePadding();
-				ImGui::Text("Team Hidden (soon)");
+				ImGui::TextUnformatted("Team Hidden (soon)");
 				ImGui::SameLine(color_indent);
 				ImGui::ColorEdit4("##TeamHidColor", (float*)&config.esp.colorTeamHidden, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
 			}
@@ -287,7 +287,7 @@ static void draw_misc_submenu(const ImGuiStyle& style, const float slider_indent
 				ImGui::Indent();
 
 				ImGui::AlignTextToFramePadding();
-				ImGui::Text("FOV");
+				ImGui::TextUnformatted("FOV");
 				ImGui::SameLine(slider_indent);
 				ImGui::PushItemWidth(-1);
 				ImGui::SliderInt("##FOV", &config.fov.desiredFov, 60, 140, "%d", ImGuiSliderFlags_ClampOnInput);
@@ -328,7 +328,6 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 
 			ImGui::BeginChild("ConfigListPane", ImVec2(-1, height), ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY);
 
-			//ImGui::Text("Saved Configs:");
 			if (ImGui::BeginListBox("##ConfigList", ImVec2(-1, -1)))
 			{
 				for (const auto& config : configs)
@@ -375,7 +374,7 @@ static void draw_config_submenu(const ImGuiStyle& style, const ImFont* font)
 			bool allOn = false;
 			bool allOff = false;
 
-			ImGui::Text("Dev mode is enabled, some features may not work as intended.");
+			ImGui::TextUnformatted("Dev mode is enabled, some features may not work as intended.");
 			ImGui::Checkbox("All On", &allOn);
 			ImGui::Checkbox("All Off", &allOff);
 			if (allOn)
@@ -440,7 +439,7 @@ static void draw_keybinds_submenu(const ImGuiStyle& style)
 
 	if (config.devSettings.devMode && ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		ImGui::Text("Dev mode is enabled, some features may not work as intended.");
+		ImGui::TextUnformatted("Dev mode is enabled, some features may not work as intended.");
 		HotkeyEdit("BunnyHop", &config.keybinds.bunnyHop);
 	}
 }
@@ -453,7 +452,7 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 	if (ImGui::CollapsingHeader("Menu Window", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Scale");
+		ImGui::TextUnformatted("Scale");
 		ImGui::SameLine(slider_indent);
 		ImGui::PushItemWidth(-1);
 		const bool value_changed = ImGui::SliderFloat(
@@ -479,7 +478,7 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 	if (ImGui::CollapsingHeader("Bomb Window", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::AlignTextToFramePadding();
-		ImGui::Text("Scale");
+		ImGui::TextUnformatted("Scale");
 		ImGui::SameLine(slider_indent);
 		ImGui::PushItemWidth(-1);
 		const bool value_changed = ImGui::SliderFloat(
@@ -541,7 +540,7 @@ void c_overlay::draw_menu()
 			const auto slider_indent = calc_slider_start(style);
 
 			ImGui::PushFont(titleFont);
-			ImGui::Text(nav_items.at(current_main_nav_item).second);
+			ImGui::TextUnformatted(nav_items.at(current_main_nav_item).second);
 			ImGui::PopFont();
 
 			ImGui::Separator();
