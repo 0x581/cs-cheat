@@ -47,30 +47,22 @@ void c_overlay::draw_bomb()
 	{
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
 		lines.push_back(std::string("Bomb has been planted on ") + (bombData.site ? "B.\n" : "A.\n"));
-
-		const auto time_str = std::to_string(bombData.timeRemaining);
-
-		lines.push_back(time_str.substr(0, time_str.find('.') + 3) + " seconds remaining.");
+		lines.push_back(std::format("%.2f seconds remaining.", bombData.timeRemaining));
 	}
 
+	const auto start_cursor_pos = ImGui::GetCursorPos();
 	const auto available = ImGui::GetContentRegionAvail();
 
 	const auto font_size = ImGui::GetFontSize();
-
 	const auto total_height = font_size * lines.size();
-
-	float current_height = 0.f;
-
-	const auto start_cursor_pos = ImGui::GetCursorPos();
+	float current_height = (available.y - total_height) * 0.5f;
 
 	for (const auto& line : lines)
 	{
 		const auto line_size = ImGui::CalcTextSize(line.c_str());
-
 		const auto text_x = (available.x - line_size.x) * 0.5f;
-		const auto text_y = (available.y - total_height) * 0.5f + current_height;
 
-		ImGui::SetCursorPos(start_cursor_pos + ImVec2(text_x, text_y));
+		ImGui::SetCursorPos(start_cursor_pos + ImVec2(text_x, current_height));
 
 		ImGui::TextUnformatted(line.c_str());
 
