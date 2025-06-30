@@ -10,11 +10,11 @@
 
 #include <colors.h>
 #include <config.h>
+#include <hotkeys.h>
 #include <keyboard.h>
 #include <shared_variables.h>
 
 #include "../window_handle.h"
-#include <hotkeys.h>
 
 static bool editing_hotkey_last_frame = false;
 
@@ -77,6 +77,9 @@ c_overlay::c_overlay() :
 	if (!update_wnd_proc(window_handle))
 		throw std::runtime_error("Failed to change the WndProc Handler.");
 
+	if (timeBeginPeriod(1) != TIMERR_NOERROR)
+		throw std::runtime_error("Failed to increase timer resolution.");
+
 	std::thread(&c_overlay::state_handler, this).detach();
 }
 
@@ -88,6 +91,8 @@ c_overlay::~c_overlay()
 	dest_device();
 
 	clear_input_hook();
+
+	timeEndPeriod(1);
 }
 
 
