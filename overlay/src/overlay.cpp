@@ -230,7 +230,7 @@ const void c_overlay::render()
 		static float time_since_last_update = 0.f;
 		static std::string fps_string{ };
 
-		if ((time_since_last_update += io.DeltaTime) > 0.25f)
+		if ((time_since_last_update += io.DeltaTime) > 1.f)
 		{
 			fps_string = std::to_string((int)io.Framerate);
 			time_since_last_update = 0.f;
@@ -313,8 +313,28 @@ void c_overlay::HandleInput()
 
 BOOL c_overlay::msg_loop()
 {
+	static auto next = std::chrono::high_resolution_clock::now();
+	static bool fps_was_limited_last_frame = false;
+
 	if (window_handle)
 	{
+		if (persistentConfig.targetFPS == 0)
+			fps_was_limited_last_frame = false;
+		else
+		{
+			const auto frame_time = std::chrono::microseconds((int)(1000000.f / persistentConfig.targetFPS));
+
+			if (!fps_was_limited_last_frame)
+				next = std::chrono::high_resolution_clock::now();
+
+			fps_was_limited_last_frame = true;
+
+			next += frame_time;
+
+			// Handle FPS
+			std::this_thread::sleep_until(next);
+		}
+
 		HandleInput();
 
 		if (window_scale_changed)
