@@ -24,6 +24,7 @@ struct PersistentConfigData
 		float scale;
 	} bombWindow;
 
+	int targetFPS;
 	bool showFPS;
 
 	char selectedConfig[CONFIG_NAME_MAX_LENGTH + 1];

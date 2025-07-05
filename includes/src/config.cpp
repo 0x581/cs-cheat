@@ -81,6 +81,7 @@ static constexpr const PersistentConfigData default_persistent_config{
 		.position = ImVec2(50, 50),
 		.scale = 1.0,
 	},
+	.targetFPS = 0,
 	.showFPS = false,
 	.selectedConfig{0},
 };
@@ -161,6 +162,7 @@ static void from_json(PersistentConfigData& buffer, const json j, const bool ver
 		else
 			bombWindow = default_persistent_config.bombWindow;
 
+		buffer.targetFPS = j.value("targetFPS", 0);
 		buffer.showFPS = j.value("showFPS", false);
 
 		const auto selectedConfig_str = j.value("selectedConfig", std::string());
@@ -198,6 +200,7 @@ static json to_json(const PersistentConfigData& buffer)
 		{"scale", bombWindow.scale}
 	};
 
+	j["targetFPS"] = buffer.targetFPS;
 	j["showFPS"] = buffer.showFPS;
 
 	j["selectedConfig"] = std::string(selectedConfig);

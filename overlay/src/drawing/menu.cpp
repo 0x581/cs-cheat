@@ -503,6 +503,26 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 
 	if (ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		ImGui::AlignTextToFramePadding();
+		ImGui::TextUnformatted("FPS");
+		ImGui::SameLine(slider_indent);
+		ImGui::PushItemWidth(-1);
+		const bool value_changed = ImGui::SliderInt(
+			"##FPS",
+			&persistentConfig.targetFPS,
+			59,
+			1000,
+			persistentConfig.targetFPS ? "%d" : "Unlimited",
+			ImGuiSliderFlags_ClampOnInput
+		);
+		ImGui::PopItemWidth();
+
+		if (persistentConfig.targetFPS == 59)
+			persistentConfig.targetFPS = 0;
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::TextUnformatted("Limits Maximum FPS. Ctrl click to manually edit.");
+
 		ImGui::Checkbox("Show FPS", &persistentConfig.showFPS);
 	}
 }
