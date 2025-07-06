@@ -315,6 +315,40 @@ void c_overlay::HandleInput()
 	set_focus(window_handle, mouse_over_menu || mouse_over_bomb || want_mouse);
 }
 
+VOID c_overlay::state_handler()
+{
+	static bool menu_key_held_last_frame = false;
+	static bool quick_exit_held_last_frame = false;
+
+	if (editing_hotkey_last_frame)
+	{
+		menu_key_held_last_frame = true;
+		quick_exit_held_last_frame = true;
+		return;
+	}
+
+	// panic key
+	if (IsKeyPressed(config.keybinds.quickExit))
+	{
+		if (!quick_exit_held_last_frame)
+			exit = true;
+
+		quick_exit_held_last_frame = true;
+	}
+	else
+		quick_exit_held_last_frame = false;
+
+	// Show/Hide menu
+	if (IsKeyPressed(config.keybinds.showMenu))
+	{
+		if (!menu_key_held_last_frame)
+			show_menu = !show_menu;
+
+		menu_key_held_last_frame = true;
+	}
+	else
+		menu_key_held_last_frame = false;
+}
 
 BOOL c_overlay::msg_loop()
 {
@@ -341,6 +375,7 @@ BOOL c_overlay::msg_loop()
 		}
 
 		HandleInput();
+		state_handler();
 
 		if (window_scale_changed)
 		{
@@ -379,50 +414,6 @@ VOID c_overlay::clear_screen()
 	constexpr ImVec4 clear_clr = { 0,0,0,0 };
 
 	device_context->ClearRenderTargetView(render_target_view, (float*)&clear_clr);
-}
-
-
-VOID c_overlay::state_handler()
-{
-	bool menu_key_held_last_frame = false;
-	bool quick_exit_held_last_frame = false;
-
-	for (; !exit;)
-	{
-		Sleep(1);
-
-		if (editing_hotkey_last_frame)
-		{
-			menu_key_held_last_frame = true;
-			quick_exit_held_last_frame = true;
-			continue;
-		}
-
-		// panic key
-		if (IsKeyPressed(config.keybinds.quickExit))
-		{
-			if (!quick_exit_held_last_frame)
-				exit = true;
-
-			quick_exit_held_last_frame = true;
-		}
-		else
-			quick_exit_held_last_frame = false;
-
-		// Show/Hide menu
-		if (IsKeyPressed(config.keybinds.showMenu))
-		{
-			if (!menu_key_held_last_frame)
-				show_menu = !show_menu;
-
-			menu_key_held_last_frame = true;
-		}
-		else
-			menu_key_held_last_frame = false;
-	}
-
-
-	clear_input_hook();
 }
 
 VOID c_overlay::init_draw_list()
