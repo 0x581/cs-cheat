@@ -81,6 +81,13 @@ struct ConfigData
 		int desiredFov;
 	} fov;
 
+	struct RcsSettings
+	{
+		 bool  Rcs;
+		 float OldPunchAngleX = 0.0f;
+		 float OldPunchAngleY = 0.0f;
+	} rcs;
+
 	struct RageBotSettings
 	{
 		float pixelRadius;
