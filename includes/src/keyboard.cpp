@@ -150,7 +150,6 @@ static void clear_input_hook()
 void run_input_hook(bool& terminate)
 {
 	const DWORD threadId = GetCurrentThreadId();
-	std::cout << "Input thread has TID " << threadId << std::endl;
 
 	if (!init_input_hook())
 		throw std::runtime_error("Failed to create keyboard hook.");

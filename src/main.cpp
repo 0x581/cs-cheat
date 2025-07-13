@@ -35,16 +35,15 @@ static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType)
 	case CTRL_BREAK_EVENT:
 	case CTRL_C_EVENT:
 	case CTRL_CLOSE_EVENT:
-		overlay->exit = true;
+		if (overlay)
+			overlay->exit = true;
 
-		{
-			std::unique_lock<std::mutex> lock(mtx);
+		std::unique_lock<std::mutex> lock(mtx);
 
-			if (done_flag)
-				return TRUE;
+		if (done_flag)
+			return TRUE;
 
-			cv.wait(lock, [] { return done_flag; });
-		}
+		cv.wait(lock, [] { return done_flag; });
 
 		return TRUE;
 	}
@@ -62,12 +61,11 @@ int main()
 
 	load_all_config_data(files::folder);
 
-	overlay = new c_overlay();
-
 	bool terminate = false;
 	std::thread input_hook{ run_input_hook, std::ref(terminate) };
 	std::thread cheats_thread{ run_cheat_loop, std::ref(terminate) };
 
+	overlay = new c_overlay();
 	overlay->run();
 	terminate = true;
 
