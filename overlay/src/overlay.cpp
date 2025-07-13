@@ -66,8 +66,8 @@ c_overlay::c_overlay() :
 	if (!getWindowHandle(&window_handle))
 		throw std::runtime_error("Failed to acquire window handle.");
 
-	if (!init_input_hook())
-		throw std::runtime_error("Failed to create keyboard hook.");
+	//if (!init_input_hook())
+	//	throw std::runtime_error("Failed to create keyboard hook.");
 
 	if (!init_device())
 		throw std::runtime_error("Failed to initialize DX device.");
@@ -409,6 +409,11 @@ BOOL c_overlay::msg_loop()
 	return false;
 }
 
+VOID c_overlay::run()
+{
+	while (msg_loop() && !ready_to_close);
+}
+
 VOID c_overlay::clear_screen()
 {
 	constexpr ImVec4 clear_clr = { 0,0,0,0 };
@@ -419,4 +424,12 @@ VOID c_overlay::clear_screen()
 VOID c_overlay::init_draw_list()
 {
 	draw_list = ImGui::GetBackgroundDrawList();
+}
+
+
+VOID run_overlay(c_overlay*& overlay)
+{
+	overlay = new c_overlay();
+
+	overlay->run();
 }

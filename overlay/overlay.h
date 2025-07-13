@@ -65,13 +65,11 @@ private:
 	VOID HandleInput();
 
 	VOID init_draw_list();
-public:
-	c_overlay();
-	~c_overlay();
 
 	BOOL msg_loop();
 
 	VOID clear_screen();
+
 	//					 //
 	// Drawing functions //
 	//					 //
@@ -84,4 +82,12 @@ public:
 	VOID box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size);
 
 	BOOL in_screen(const ImVec2& pos);
+public:
+	c_overlay();
+	~c_overlay();
+
+	VOID run();
 };
+
+
+VOID run_overlay(c_overlay*& overlay);
