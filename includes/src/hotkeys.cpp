@@ -242,14 +242,8 @@ bool HotkeyEdit(const char* label, int* key_value, bool* toggled)
 	{
 		ImGui::SameLine();
 
-		if (!*toggled)
-			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
-
-		if (ImGui::Button("Toggle"))
+		if (ImGui::Button(*toggled ? "Toggle" : "Hold", ImVec2(toggle_width, 0)))
 			value_changed = true;
-
-		if (!*toggled)
-			ImGui::PopStyleColor();
 
 		if (value_changed)
 			*toggled = !*toggled;
