@@ -39,6 +39,8 @@ struct BombData
 	uint32_t site{ 0 };
 };
 
+extern bool isConnected;
+
 extern ESPData espData;
 extern BombData bombData;
 

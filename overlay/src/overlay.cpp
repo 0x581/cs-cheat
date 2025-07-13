@@ -239,10 +239,13 @@ const void c_overlay::render()
 		text({ 5, 5 }, fps_string, rgbColors::off_white, true);
 	}
 
-	draw_cheats();
+	if (isConnected)
+	{
+		draw_cheats();
 
-	if (config.activeCheats.bombTimer)
-		draw_bomb();
+		if (config.activeCheats.bombTimer)
+			draw_bomb();
+	}
 
 	if (show_menu)
 		draw_menu();

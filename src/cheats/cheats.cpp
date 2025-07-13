@@ -61,6 +61,8 @@ static bool check_connection(Memory& mem)
 			std::cout << "Connection to CS2 established." << std::endl;
 	}
 
+	isConnected = alive;
+
 	return alive;
 }
 
