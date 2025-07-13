@@ -88,6 +88,3 @@ public:
 
 	VOID run();
 };
-
-
-VOID run_overlay(c_overlay*& overlay);

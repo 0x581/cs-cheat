@@ -7,6 +7,14 @@
 
 constexpr auto CONFIG_NAME_MAX_LENGTH = 64;
 
+struct ToggleableKeybind
+{
+	int key;
+	bool isToggle = false;
+	bool toggleState = false;
+	bool keybindChanged = false;
+};
+
 struct PersistentConfigData
 {
 	static constexpr auto MAGIC_BYTES = std::string_view("Merkur CS2 Persistent Config\n");
@@ -83,9 +91,9 @@ struct ConfigData
 
 	struct RcsSettings
 	{
-		 bool  Rcs;
-		 float OldPunchAngleX = 0.0f;
-		 float OldPunchAngleY = 0.0f;
+		bool  Rcs;
+		float OldPunchAngleX = 0.0f;
+		float OldPunchAngleY = 0.0f;
 	} rcs;
 
 	struct RageBotSettings
@@ -107,11 +115,12 @@ struct ConfigData
 		int showMenu;
 		int quickExit;
 
-		int bunnyHop;
-		int triggerBot;
-		int aimBot;
-		int rageBot;
+		ToggleableKeybind bunnyHop;
+		ToggleableKeybind triggerBot;
+		ToggleableKeybind aimBot;
+		ToggleableKeybind rageBot;
 	} keybinds;
+
 };
 
 

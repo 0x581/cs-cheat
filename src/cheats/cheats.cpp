@@ -5,7 +5,7 @@
 #include <delays.h>
 #include <entity_system.h>
 
-#include "check_cheat_should_run.cpp"
+#include "check_cheat_should_run.h"
 #include "src/cheat_entries.h"
 
 #include "../memory/memory.h"

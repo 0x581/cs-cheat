@@ -432,15 +432,15 @@ static void draw_keybinds_submenu(const ImGuiStyle& style)
 
 	if (ImGui::CollapsingHeader("Aimbot", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		HotkeyEdit("Aimbot", &config.keybinds.aimBot);
-		HotkeyEdit("Triggerbot", &config.keybinds.triggerBot);
-		HotkeyEdit("Ragebot", &config.keybinds.rageBot);
+		HotkeyEdit("Aimbot", config.keybinds.aimBot);
+		HotkeyEdit("Triggerbot", config.keybinds.triggerBot);
+		HotkeyEdit("Ragebot", config.keybinds.rageBot);
 	}
 
 	if (config.devSettings.devMode && ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::TextUnformatted("Dev mode is enabled, some features may not work as intended.");
-		HotkeyEdit("BunnyHop", &config.keybinds.bunnyHop);
+		HotkeyEdit("BunnyHop", config.keybinds.bunnyHop);
 	}
 }
 
