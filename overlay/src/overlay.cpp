@@ -420,11 +420,3 @@ VOID c_overlay::init_draw_list()
 {
 	draw_list = ImGui::GetBackgroundDrawList();
 }
-
-
-VOID run_overlay(c_overlay*& overlay)
-{
-	overlay = new c_overlay();
-
-	overlay->run();
-}
