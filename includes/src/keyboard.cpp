@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <bitset>
 #include <iostream>
+#include <thread>
 
 std::bitset<256> g_keyStates = { false };
 int mostRecentKey = -1;
@@ -36,7 +37,6 @@ static LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lP
 	}
 	else if (isKeyUp)
 		g_keyStates[effectiveVkCode] = false;
-
 
 	return CallNextHookEx(g_keyboardHook, nCode, wParam, lParam);
 }
@@ -111,16 +111,28 @@ const bool IsKeyPressed(const int vkCode)
 	return g_keyStates[vkCode];
 }
 
-bool init_input_hook()
+static bool init_input_hook()
 {
 	g_keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, LowLevelKeyboardProc, GetModuleHandle(NULL), 0);
 
+	if (!g_keyboardHook)
+	{
+		const auto error = GetLastError();
+		std::cout << "Failed to create keyboard hook. Error code: " << error << std::endl;
+	}
+
 	g_mouseHook = SetWindowsHookEx(WH_MOUSE_LL, LowLevelMouseProc, GetModuleHandle(NULL), 0);
+
+	if (!g_mouseHook)
+	{
+		const auto error = GetLastError();
+		std::cout << "Failed to create mouse hook. Error code: " << error << std::endl;
+	}
 
 	return (g_keyboardHook != NULL) && (g_mouseHook != NULL);
 }
 
-void clear_input_hook()
+static void clear_input_hook()
 {
 	if (g_keyboardHook != NULL)
 	{
@@ -133,4 +145,33 @@ void clear_input_hook()
 		UnhookWindowsHookEx(g_mouseHook);
 		g_mouseHook = NULL;
 	}
+}
+
+void run_input_hook(bool& terminate)
+{
+	const DWORD threadId = GetCurrentThreadId();
+	std::cout << "Input thread has TID " << threadId << std::endl;
+
+	if (!init_input_hook())
+		throw std::runtime_error("Failed to create keyboard hook.");
+
+	MSG msg;
+
+	while (!terminate)
+	{
+		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		{
+			if (msg.message == WM_QUIT)
+				break;
+
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+
+	clear_input_hook();
+
+	std::cout << "Input hook terminated." << std::endl;
 }

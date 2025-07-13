@@ -10,6 +10,7 @@
 #include "../overlay/overlay.h"
 
 #include "cheats/cheats.h"
+#include <keyboard.h>
 
 
 
@@ -62,11 +63,14 @@ int main()
 	load_all_config_data(files::folder);
 
 	bool terminate = false;
+	std::thread input_hook{ run_input_hook, std::ref(terminate) };
 	std::thread cheats_thread{ run_cheat_loop, std::ref(terminate) };
+
 	std::thread overlay_thread{ run_overlay, std::ref(overlay) };
 	overlay_thread.join();
 	terminate = true;
 
+	input_hook.join();
 	cheats_thread.join();
 
 	cleanUp();

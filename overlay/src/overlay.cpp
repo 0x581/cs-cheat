@@ -66,9 +66,6 @@ c_overlay::c_overlay() :
 	if (!getWindowHandle(&window_handle))
 		throw std::runtime_error("Failed to acquire window handle.");
 
-	//if (!init_input_hook())
-	//	throw std::runtime_error("Failed to create keyboard hook.");
-
 	if (!init_device())
 		throw std::runtime_error("Failed to initialize DX device.");
 
@@ -89,8 +86,6 @@ c_overlay::~c_overlay()
 
 	dest_imgui();
 	dest_device();
-
-	clear_input_hook();
 
 	timeEndPeriod(1);
 }

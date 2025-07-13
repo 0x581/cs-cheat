@@ -72,11 +72,8 @@ void run_cheat_loop(bool& terminate)
 
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
-	for (size_t iteration = 0;; ++iteration)
+	for (size_t iteration = 0; !terminate; ++iteration)
 	{
-		if (terminate)
-			break;
-
 		if (!check_connection(mem))
 		{
 			std::this_thread::sleep_for(delays::memConnectionWaitTime);
@@ -97,4 +94,6 @@ void run_cheat_loop(bool& terminate)
 
 		run_all_cheats(mem, cheat_data, iteration);
 	}
+
+	std::cout << "Cheat thread terminated." << std::endl;
 }
