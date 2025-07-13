@@ -71,12 +71,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(ProjectDir)output\</OutDir>
-    <IntDir>$(ProjectDir)output\intermediates\</IntDir>
+    <OutDir>$(ProjectDir)output\Debug\</OutDir>
+    <IntDir>$(ProjectDir)output\intermediates\Debug\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(ProjectDir)output\</OutDir>
-    <IntDir>$(ProjectDir)output\intermediates\</IntDir>
+    <OutDir>$(ProjectDir)output\Release\</OutDir>
+    <IntDir>$(ProjectDir)output\intermediates\Release\</IntDir>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgUseStatic>true</VcpkgUseStatic>
