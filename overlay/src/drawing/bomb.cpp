@@ -24,7 +24,7 @@ void c_overlay::draw_bomb()
 
 	persistentConfig.bombWindow.position = ImGui::GetWindowPos();
 
-	ImGui::PushFont(bombFont1);
+	ImGui::PushFont(bomb_font);
 
 	std::vector<std::string> lines;
 

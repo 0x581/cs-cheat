@@ -83,6 +83,18 @@ VOID c_overlay::text(const ImVec2& pos, const string& text, ImU32 color, bool ou
 	draw_list->AddText(font, font->FontSize, pos, color, text.c_str());
 }
 
+VOID c_overlay::esp_text(const string& text, const ImVec2& pos, ImU32 color, bool outline)
+{
+	if (outline)
+	{
+		draw_list->AddText(esp_font, esp_font->FontSize, { pos.x + 1, pos.y }, IM_COL32_BLACK, text.c_str());
+		draw_list->AddText(esp_font, esp_font->FontSize, { pos.x - 1, pos.y }, IM_COL32_BLACK, text.c_str());
+		draw_list->AddText(esp_font, esp_font->FontSize, { pos.x, pos.y + 1 }, IM_COL32_BLACK, text.c_str());
+		draw_list->AddText(esp_font, esp_font->FontSize, { pos.x, pos.y - 1 }, IM_COL32_BLACK, text.c_str());
+	}
+	draw_list->AddText(esp_font, esp_font->FontSize, pos, color, text.c_str());
+}
+
 // Filled circle. creates a gradient from middle color to outer color
 VOID c_overlay::radial_gradient(const ImVec2& center, float radius, ImU32 col_in, ImU32 col_out)
 {

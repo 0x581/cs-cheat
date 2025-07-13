@@ -54,8 +54,10 @@ c_overlay::c_overlay() :
 	//			   //
 	draw_list(nullptr),
 	imguiContext(nullptr),
+	title_font(nullptr),
 	font(nullptr),
-	titleFont(nullptr),
+	esp_font(nullptr),
+	bomb_font(nullptr),
 	//				//
 	// Flow control //
 	//				//

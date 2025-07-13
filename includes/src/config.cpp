@@ -37,7 +37,7 @@ static constexpr const ConfigData default_config{
 		.bone = false,
 		.name = false,
 		.health = false,
-		.boneWidth = 1.0,
+		.boneWidth = 1.0f,
 		.colorEnemyVisible = {1.0f, 0.0f, 0.0f, 1.0f},
 		.colorEnemyHidden = {1.0f, 0.5f, 0.0f, 1.0f},
 		.colorTeamVisible = {0.0f, 1.0f, 0.0f, 1.0f},
@@ -85,6 +85,7 @@ static constexpr const PersistentConfigData default_persistent_config{
 	.targetFPS = 0,
 	.showFPS = false,
 	.selectedConfig{0},
+	.esp_font_scale{1.0f},
 };
 
 
@@ -183,6 +184,8 @@ static void from_json(PersistentConfigData& buffer, const json j, const bool ver
 		buffer.targetFPS = j.value("targetFPS", 0);
 		buffer.showFPS = j.value("showFPS", false);
 
+		buffer.esp_font_scale = j.value("espFontScale", default_persistent_config.esp_font_scale);
+
 		const auto selectedConfig_str = j.value("selectedConfig", std::string());
 
 		const auto length = min(selectedConfig_str.length(), CONFIG_NAME_MAX_LENGTH);
@@ -222,6 +225,8 @@ static json to_json(const PersistentConfigData& buffer)
 	j["showFPS"] = buffer.showFPS;
 
 	j["selectedConfig"] = std::string(selectedConfig);
+
+	j["espFontScale"] = buffer.esp_font_scale;
 
 	return j;
 }

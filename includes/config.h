@@ -36,6 +36,8 @@ struct PersistentConfigData
 	bool showFPS;
 
 	char selectedConfig[CONFIG_NAME_MAX_LENGTH + 1];
+
+	float esp_font_scale;
 };
 
 struct ConfigData
@@ -62,6 +64,7 @@ struct ConfigData
 		bool bone;
 		bool box;
 		bool name;
+		float font_scale;
 		bool health;
 		float boneWidth;
 
