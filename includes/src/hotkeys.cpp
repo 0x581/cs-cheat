@@ -173,7 +173,7 @@ static const std::string get_localized_key_name(const int vkCode)
 
 
 
-bool HotkeyEdit(const char* label, int* key_value)
+bool HotkeyEdit(const char* label, int* key_value, bool* toggled)
 {
 	static int last_frame_value = -1;
 
@@ -188,12 +188,15 @@ bool HotkeyEdit(const char* label, int* key_value)
 
 	const auto key_text_str = get_localized_key_name(*key_value);
 
+	// Calculate toggle button width
+	const float toggle_width = toggled != nullptr ? style.FramePadding.x * 2 + ImGui::CalcTextSize("Toggle").x : 0;
+
 	// Calculate button size (square)
 	const float width = style.FramePadding.x * 2 + ImGui::CalcTextSize(key_text_str.c_str()).x;
 
 	ImGui::AlignTextToFramePadding();
 	ImGui::Text(label);
-	ImGui::SameLine(ImGui::GetContentRegionAvail().x - width + style.WindowPadding.x);
+	ImGui::SameLine(style.WindowPadding.x + ImGui::GetContentRegionAvail().x - width - (toggle_width ? toggle_width + style.ItemSpacing.x : 0));
 
 
 	// Draw the button with the key
@@ -232,6 +235,24 @@ bool HotkeyEdit(const char* label, int* key_value)
 		last_frame_value = *last_pressed_key;
 
 		ImGui::EndPopup();
+	}
+
+	// Draw the toggle button if toggled is not null
+	if (toggled != nullptr)
+	{
+		ImGui::SameLine();
+
+		if (!*toggled)
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.5f, 0.5f, 0.5f, 1.0f));
+
+		if (ImGui::Button("Toggle"))
+			value_changed = true;
+
+		if (!*toggled)
+			ImGui::PopStyleColor();
+
+		if (value_changed)
+			*toggled = !*toggled;
 	}
 
 	ImGui::PopID();
