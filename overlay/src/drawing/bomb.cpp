@@ -19,12 +19,12 @@ void c_overlay::draw_bomb()
 		| ImGuiWindowFlags_NoSavedSettings
 		| ImGuiWindowFlags_NoScrollbar
 		| ImGuiWindowFlags_NoScrollWithMouse
-		| (show_menu ? 0 : ImGuiWindowFlags_NoBackground)
+		//| (show_menu ? 0 : ImGuiWindowFlags_NoBackground)
 	);
 
 	persistentConfig.bombWindow.position = ImGui::GetWindowPos();
 
-	ImGui::PushFont(bombFont1);
+	ImGui::PushFont(bomb_font);
 
 	std::vector<std::string> lines;
 
@@ -33,21 +33,24 @@ void c_overlay::draw_bomb()
 		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
 		lines.push_back(std::string("Bomb is not planted."));
 	}
-	if (bombData.planted && bombData.timeRemaining < 0.f)
+	if (bombData.planted)
 	{
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-		lines.push_back(std::string("Bum"));
-	}
-	if (bombData.planted && bombData.defused)
-	{
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
-		lines.push_back(std::string("Bomb has been defused."));
-	}
-	if (bombData.planted && !bombData.defused)
-	{
-		ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-		lines.push_back(std::string("Bomb has been planted on ") + (bombData.site ? "B.\n" : "A.\n"));
-		lines.push_back(std::format("%.2f seconds remaining.", bombData.timeRemaining));
+		if (bombData.defused)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
+			lines.push_back(std::string("Bomb has been defused."));
+		}
+		else if (bombData.timeRemaining < 0.f)
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+			lines.push_back(std::string("Bum"));
+		}
+		else
+		{
+			ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
+			lines.push_back(std::string("Bomb has been planted on ") + (bombData.site ? "B." : "A."));
+			lines.push_back(std::format("{:.2f} seconds remaining.", bombData.timeRemaining));
+		}
 	}
 
 	const auto start_cursor_pos = ImGui::GetCursorPos();

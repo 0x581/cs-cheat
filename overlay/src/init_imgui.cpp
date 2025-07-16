@@ -96,6 +96,8 @@ VOID c_overlay::update_style()
 	const auto menu_scale = persistentConfig.mainWindow.scale;
 	const auto bomb_scale = persistentConfig.bombWindow.scale;
 
+	const auto esp_scale = persistentConfig.esp_font_scale;
+
 	auto& style = ImGui::GetStyle();
 	auto& imgui_io = ImGui::GetIO();
 
@@ -128,12 +130,14 @@ VOID c_overlay::update_style()
 
 	// --- Font Laden (dein Code) ---
 	font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f * menu_scale);
-	titleFont = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 20.0f * menu_scale);
-	bombFont1 = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 25.0f * bomb_scale);
-	bombFont2 = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 18.0f * bomb_scale);
+	title_font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 20.0f * menu_scale);
+	esp_font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 14.0f * esp_scale);
+	bomb_font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 25.0f * bomb_scale);
 
 	ImGui_ImplDX11_InvalidateDeviceObjects();
 	ImGui_ImplDX11_CreateDeviceObjects();
+
+	std::cout << "Reloaded ImGui style and fonts." << std::endl;
 }
 
 
@@ -163,6 +167,9 @@ VOID c_overlay::dest_imgui()
 	ImGui::DestroyContext(imguiContext);
 
 	imguiContext = nullptr;
+
+	title_font = nullptr;
 	font = nullptr;
-	titleFont = nullptr;
+	esp_font = nullptr;
+	bomb_font = nullptr;
 }

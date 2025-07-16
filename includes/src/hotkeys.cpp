@@ -5,6 +5,7 @@
 #include <string>
 #include <keyboard.h>
 #include <strings.h>
+#include <config.h>
 
 bool editing_hotkey = false;
 
@@ -173,7 +174,7 @@ static const std::string get_localized_key_name(const int vkCode)
 
 
 
-bool HotkeyEdit(const char* label, int* key_value)
+static bool HotkeyEdit(const char* label, int* key_value, bool* is_toggle, bool* keybindChanged)
 {
 	static int last_frame_value = -1;
 
@@ -182,18 +183,22 @@ bool HotkeyEdit(const char* label, int* key_value)
 	int* last_pressed_key = &mostRecentKey;
 
 	bool value_changed = false;
+	bool toggle_changed = false;
 
 	// Create a unique ID for this widget
 	ImGui::PushID(label);
 
 	const auto key_text_str = get_localized_key_name(*key_value);
 
+	// Calculate toggle button width
+	const float toggle_width = is_toggle != nullptr ? style.FramePadding.x * 2 + ImGui::CalcTextSize("Toggle").x : 0;
+
 	// Calculate button size (square)
 	const float width = style.FramePadding.x * 2 + ImGui::CalcTextSize(key_text_str.c_str()).x;
 
 	ImGui::AlignTextToFramePadding();
 	ImGui::Text(label);
-	ImGui::SameLine(ImGui::GetContentRegionAvail().x - width + style.WindowPadding.x);
+	ImGui::SameLine(style.WindowPadding.x + ImGui::GetContentRegionAvail().x - width - (toggle_width ? toggle_width + style.ItemSpacing.x : 0));
 
 
 	// Draw the button with the key
@@ -234,6 +239,33 @@ bool HotkeyEdit(const char* label, int* key_value)
 		ImGui::EndPopup();
 	}
 
+	// Draw the toggle button if is_toggle is not null
+	if (is_toggle != nullptr)
+	{
+		ImGui::SameLine();
+
+		if (ImGui::Button(*is_toggle ? "Toggle" : "Hold", ImVec2(toggle_width, 0)))
+			toggle_changed = true;
+
+		if (toggle_changed)
+			*is_toggle = !*is_toggle;
+	}
+
 	ImGui::PopID();
-	return value_changed;
+
+	if (keybindChanged)
+		*keybindChanged |= value_changed || toggle_changed;
+
+	return value_changed || toggle_changed;
+}
+
+
+bool HotkeyEdit(const char* label, int* key_value)
+{
+	return HotkeyEdit(label, key_value, nullptr, nullptr);
+}
+
+bool HotkeyEdit(const char* label, ToggleableKeybind& keybind)
+{
+	return HotkeyEdit(label, &keybind.key, &keybind.isToggle, &keybind.keybindChanged);
 }

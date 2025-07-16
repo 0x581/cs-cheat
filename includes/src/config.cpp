@@ -37,7 +37,7 @@ static constexpr const ConfigData default_config{
 		.bone = false,
 		.name = false,
 		.health = false,
-		.boneWidth = 1.0,
+		.boneWidth = 1.0f,
 		.colorEnemyVisible = {1.0f, 0.0f, 0.0f, 1.0f},
 		.colorEnemyHidden = {1.0f, 0.5f, 0.0f, 1.0f},
 		.colorTeamVisible = {0.0f, 1.0f, 0.0f, 1.0f},
@@ -64,10 +64,11 @@ static constexpr const ConfigData default_config{
 	.keybinds {
 		.showMenu = VK_PRIOR,
 		.quickExit = VK_NEXT,
-		.bunnyHop = VK_SPACE,
-		.triggerBot = VK_RBUTTON,
-		.aimBot = VK_RBUTTON,
-		.rageBot = VK_RBUTTON,
+
+		.bunnyHop = {VK_SPACE},
+		.triggerBot = {VK_RBUTTON},
+		.aimBot = {VK_RBUTTON},
+		.rageBot = {VK_RBUTTON},
 	},
 };
 
@@ -84,6 +85,7 @@ static constexpr const PersistentConfigData default_persistent_config{
 	.targetFPS = 0,
 	.showFPS = false,
 	.selectedConfig{0},
+	.esp_font_scale{1.0f},
 };
 
 
@@ -131,6 +133,23 @@ static json imvec2_to_json(const ImVec2& vec)
 	return json::array({ vec.x, vec.y });
 }
 
+static ToggleableKeybind json_to_toggleablekeybind(const json& j, const ToggleableKeybind& default_value)
+{
+	return ToggleableKeybind{
+		.key = j.value("key", default_value.key),
+		.isToggle = j.value("toggle", default_value.isToggle),
+		.toggleState = j.value("hold", default_value.toggleState),
+	};
+}
+
+static json toggleablekeybind_to_json(const ToggleableKeybind& keybind)
+{
+	return json{
+		{"key", keybind.key},
+		{"toggle", keybind.isToggle},
+		{"hold", keybind.toggleState}
+	};
+}
 
 static void from_json(PersistentConfigData& buffer, const json j, const bool verbose)
 {
@@ -164,6 +183,8 @@ static void from_json(PersistentConfigData& buffer, const json j, const bool ver
 
 		buffer.targetFPS = j.value("targetFPS", 0);
 		buffer.showFPS = j.value("showFPS", false);
+
+		buffer.esp_font_scale = j.value("espFontScale", default_persistent_config.esp_font_scale);
 
 		const auto selectedConfig_str = j.value("selectedConfig", std::string());
 
@@ -204,6 +225,8 @@ static json to_json(const PersistentConfigData& buffer)
 	j["showFPS"] = buffer.showFPS;
 
 	j["selectedConfig"] = std::string(selectedConfig);
+
+	j["espFontScale"] = buffer.esp_font_scale;
 
 	return j;
 }
@@ -316,13 +339,15 @@ static void from_json(ConfigData& buffer, const json j, const bool verbose)
 			const auto& kb = j["keybinds"];
 			keybinds.showMenu = kb.value("showMenu", default_config.keybinds.showMenu);
 			keybinds.quickExit = kb.value("quickExit", default_config.keybinds.quickExit);
-			keybinds.bunnyHop = kb.value("bunnyHop", default_config.keybinds.bunnyHop);
-			keybinds.triggerBot = kb.value("triggerBot", default_config.keybinds.triggerBot);
-			keybinds.aimBot = kb.value("aimBot", default_config.keybinds.aimBot);
-			keybinds.rageBot = kb.value("rageBot", default_config.keybinds.rageBot);
+
+			keybinds.bunnyHop = json_to_toggleablekeybind(kb.value("bunnyHop", json()), default_config.keybinds.bunnyHop);
+			keybinds.triggerBot = json_to_toggleablekeybind(kb.value("triggerBot", json()), default_config.keybinds.triggerBot);
+			keybinds.aimBot = json_to_toggleablekeybind(kb.value("aimBot", json()), default_config.keybinds.aimBot);
+			keybinds.rageBot = json_to_toggleablekeybind(kb.value("rageBot", json()), default_config.keybinds.rageBot);
 		}
 		else
 			keybinds = default_config.keybinds;
+
 	}
 	catch (const json::exception& e)
 	{
@@ -408,10 +433,10 @@ static json to_json(const ConfigData& buffer)
 		{"showMenu", keybinds.showMenu},
 		{"quickExit", keybinds.quickExit},
 
-		{"bunnyHop", keybinds.bunnyHop},
-		{"triggerBot", keybinds.triggerBot},
-		{"aimBot", keybinds.aimBot},
-		{"rageBot", keybinds.rageBot}
+		{"bunnyHop", toggleablekeybind_to_json(keybinds.bunnyHop)},
+		{"triggerBot", toggleablekeybind_to_json(keybinds.triggerBot)},
+		{"aimBot", toggleablekeybind_to_json(keybinds.aimBot)},
+		{"rageBot", toggleablekeybind_to_json(keybinds.rageBot)},
 	};
 
 	return j;

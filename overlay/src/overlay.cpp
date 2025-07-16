@@ -54,8 +54,10 @@ c_overlay::c_overlay() :
 	//			   //
 	draw_list(nullptr),
 	imguiContext(nullptr),
+	title_font(nullptr),
 	font(nullptr),
-	titleFont(nullptr),
+	esp_font(nullptr),
+	bomb_font(nullptr),
 	//				//
 	// Flow control //
 	//				//
@@ -65,9 +67,6 @@ c_overlay::c_overlay() :
 {
 	if (!getWindowHandle(&window_handle))
 		throw std::runtime_error("Failed to acquire window handle.");
-
-	if (!init_input_hook())
-		throw std::runtime_error("Failed to create keyboard hook.");
 
 	if (!init_device())
 		throw std::runtime_error("Failed to initialize DX device.");
@@ -89,8 +88,6 @@ c_overlay::~c_overlay()
 
 	dest_imgui();
 	dest_device();
-
-	clear_input_hook();
 
 	timeEndPeriod(1);
 }
@@ -244,10 +241,13 @@ const void c_overlay::render()
 		text({ 5, 5 }, fps_string, rgbColors::off_white, true);
 	}
 
-	draw_cheats();
+	if (isConnected)
+	{
+		draw_cheats();
 
-	if (config.activeCheats.bombTimer)
-		draw_bomb();
+		if (config.activeCheats.bombTimer)
+			draw_bomb();
+	}
 
 	if (show_menu)
 		draw_menu();
@@ -407,6 +407,11 @@ BOOL c_overlay::msg_loop()
 		return msg.message != WM_QUIT;
 	}
 	return false;
+}
+
+VOID c_overlay::run()
+{
+	while (msg_loop() && !ready_to_close);
 }
 
 VOID c_overlay::clear_screen()

@@ -25,10 +25,10 @@ private:
 	ImDrawList* draw_list;
 	ImGuiContext* imguiContext;
 
-	ImFont* titleFont;
+	ImFont* title_font;
 	ImFont* font;
-	ImFont* bombFont1;
-	ImFont* bombFont2;
+	ImFont* esp_font;
+	ImFont* bomb_font;
 
 	bool show_menu;
 
@@ -65,13 +65,11 @@ private:
 	VOID HandleInput();
 
 	VOID init_draw_list();
-public:
-	c_overlay();
-	~c_overlay();
 
 	BOOL msg_loop();
 
 	VOID clear_screen();
+
 	//					 //
 	// Drawing functions //
 	//					 //
@@ -80,8 +78,14 @@ public:
 	VOID line(const ImVec2& point1, const ImVec2 point2, ImU32 color, const FLOAT line_width = 2.f);
 	VOID circle(const ImVec2& point, const FLOAT radius, ImU32 color);
 	VOID text(const ImVec2& pos, const std::string& text, ImU32 color, bool outline = true);
+	VOID esp_text(const std::string& text, const ImVec2& pos, ImU32 color, bool outline = true);
 	VOID radial_gradient(const ImVec2& center, float radius, ImU32 col_in, ImU32 col_out);
 	VOID box_with_glow(const ImVec2& min, const ImVec2& max, ImU32 color, FLOAT line_width, FLOAT glow_size);
 
 	BOOL in_screen(const ImVec2& pos);
+public:
+	c_overlay();
+	~c_overlay();
+
+	VOID run();
 };

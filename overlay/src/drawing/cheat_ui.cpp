@@ -75,9 +75,9 @@ void c_overlay::draw_cheats()
 			if (config.esp.name)
 			{
 				const auto name_text = espRenderData.playerName;
-				// const auto text_size = ImGui::CalcTextSize(name_text); 
-				const auto text_pos = ImVec2{ (max.x + min.x) / 2.f - (ImGui::CalcTextSize(name_text).x / 2.f), max.y };
-				text(text_pos, name_text, currentColorU32);
+				const auto text_size = esp_font->CalcTextSizeA(esp_font->FontSize, FLT_MAX, -1.0f, name_text, NULL, NULL);
+				const auto text_pos = ImVec2{ (max.x + min.x) / 2.f - (text_size.x / 2.f), max.y };
+				esp_text(name_text, text_pos, currentColorU32);
 			}
 
 			if (config.esp.health)
@@ -106,11 +106,13 @@ void c_overlay::draw_cheats()
 				char health_text[16];
 				snprintf(health_text, sizeof(health_text), "%d", health);
 
+				const auto health_text_size = esp_font->CalcTextSizeA(esp_font->FontSize, FLT_MAX, -1.0f, health_text, NULL, NULL);
+
 				const auto health_text_pos = ImVec2{
-						left - ImGui::CalcTextSize(health_text).x - 2.f,
-						top + (height / 15.f) - (ImGui::CalcTextSize(health_text).y / 2.f)
+						left - health_text_size.x - 2.f,
+						top + (height / 15.f) - (health_text_size.y / 2.f)
 				};
-				text(health_text_pos, health_text, health_color);
+				esp_text(health_text, health_text_pos, health_color);
 			}
 
 		}

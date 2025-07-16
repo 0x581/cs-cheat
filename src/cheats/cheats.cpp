@@ -5,7 +5,7 @@
 #include <delays.h>
 #include <entity_system.h>
 
-#include "check_cheat_should_run.cpp"
+#include "check_cheat_should_run.h"
 #include "src/cheat_entries.h"
 
 #include "../memory/memory.h"
@@ -61,22 +61,21 @@ static bool check_connection(Memory& mem)
 			std::cout << "Connection to CS2 established." << std::endl;
 	}
 
+	isConnected = alive;
+
 	return alive;
 }
 
 void run_cheat_loop(bool& terminate)
 {
 	Memory mem;
-	EntityList entity_list{ };
-	CheatData cheat_data{ };
+	auto entity_list = new EntityList();
+	auto cheat_data = new CheatData();
 
 	auto lastTime = std::chrono::high_resolution_clock::now();
 
-	for (size_t iteration = 0;; ++iteration)
+	for (size_t iteration = 0; !terminate; ++iteration)
 	{
-		if (terminate)
-			break;
-
 		if (!check_connection(mem))
 		{
 			std::this_thread::sleep_for(delays::memConnectionWaitTime);
@@ -88,13 +87,18 @@ void run_cheat_loop(bool& terminate)
 
 		std::this_thread::sleep_until(lastTime);
 
-		if (!read_entity_system(mem, entity_list) || !read_cheat_data(mem, entity_list, cheat_data))
+		if (!read_entity_system(mem, *entity_list) || !read_cheat_data(mem, *entity_list, *cheat_data))
 		{
 			espData.isValid = false;
 			continue;
 		}
 
 
-		run_all_cheats(mem, cheat_data, iteration);
+		run_all_cheats(mem, *cheat_data, iteration);
 	}
+
+	delete cheat_data;
+	delete entity_list;
+
+	std::cout << "Cheat thread terminated." << std::endl;
 }

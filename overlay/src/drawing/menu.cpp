@@ -432,15 +432,15 @@ static void draw_keybinds_submenu(const ImGuiStyle& style)
 
 	if (ImGui::CollapsingHeader("Aimbot", ImGuiTreeNodeFlags_DefaultOpen))
 	{
-		HotkeyEdit("Aimbot", &config.keybinds.aimBot);
-		HotkeyEdit("Triggerbot", &config.keybinds.triggerBot);
-		HotkeyEdit("Ragebot", &config.keybinds.rageBot);
+		HotkeyEdit("Aimbot", config.keybinds.aimBot);
+		HotkeyEdit("Triggerbot", config.keybinds.triggerBot);
+		HotkeyEdit("Ragebot", config.keybinds.rageBot);
 	}
 
 	if (config.devSettings.devMode && ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::TextUnformatted("Dev mode is enabled, some features may not work as intended.");
-		HotkeyEdit("BunnyHop", &config.keybinds.bunnyHop);
+		HotkeyEdit("BunnyHop", config.keybinds.bunnyHop);
 	}
 }
 
@@ -448,14 +448,15 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 {
 	static bool menu_value_changed_while_selected = false;
 	static bool bomb_value_changed_while_selected = false;
+	static bool name_value_changed_while_selected = false;
 
-	if (ImGui::CollapsingHeader("Menu Window", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Scaling", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		ImGui::AlignTextToFramePadding();
-		ImGui::TextUnformatted("Scale");
+		ImGui::TextUnformatted("Menu");
 		ImGui::SameLine(slider_indent);
 		ImGui::PushItemWidth(-1);
-		const bool value_changed = ImGui::SliderFloat(
+		bool value_changed = ImGui::SliderFloat(
 			"##MainWindowScale",
 			&persistentConfig.mainWindow.scale,
 			0.5,
@@ -472,16 +473,12 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 			menu_value_changed_while_selected = false;
 			window_scale_changed = true;
 		}
-	}
 
-
-	if (ImGui::CollapsingHeader("Bomb Window", ImGuiTreeNodeFlags_DefaultOpen))
-	{
 		ImGui::AlignTextToFramePadding();
-		ImGui::TextUnformatted("Scale");
+		ImGui::TextUnformatted("Bomb");
 		ImGui::SameLine(slider_indent);
 		ImGui::PushItemWidth(-1);
-		const bool value_changed = ImGui::SliderFloat(
+		value_changed = ImGui::SliderFloat(
 			"##BombWindowScale",
 			&persistentConfig.bombWindow.scale,
 			0.5,
@@ -496,6 +493,28 @@ static void draw_settings_submenu(const ImGuiStyle& style, const float slider_in
 		if (bomb_value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
 		{
 			bomb_value_changed_while_selected = false;
+			window_scale_changed = true;
+		}
+
+		ImGui::AlignTextToFramePadding();
+		ImGui::TextUnformatted("Names");
+		ImGui::SameLine(slider_indent);
+		ImGui::PushItemWidth(-1);
+		value_changed = ImGui::SliderFloat(
+			"##NameFontScale",
+			&persistentConfig.esp_font_scale,
+			0.5f,
+			3.0f,
+			"%.2fx",
+			ImGuiSliderFlags_ClampOnInput
+		);
+		ImGui::PopItemWidth();
+
+		name_value_changed_while_selected |= value_changed;
+
+		if (name_value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
+		{
+			name_value_changed_while_selected = false;
 			window_scale_changed = true;
 		}
 	}
@@ -550,7 +569,7 @@ void c_overlay::draw_menu()
 
 		ImGui::TableNextColumn();
 
-		draw_navbar_submenu(style, titleFont, font);
+		draw_navbar_submenu(style, title_font, font);
 
 
 		ImGui::TableNextColumn();
@@ -559,7 +578,7 @@ void c_overlay::draw_menu()
 		{
 			const auto slider_indent = calc_slider_start(style);
 
-			ImGui::PushFont(titleFont);
+			ImGui::PushFont(title_font);
 			ImGui::TextUnformatted(nav_items.at(current_main_nav_item).second);
 			ImGui::PopFont();
 

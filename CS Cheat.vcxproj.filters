@@ -261,6 +261,7 @@
     <ClInclude Include="lib\json\single_include\nlohmann\json.hpp" />
     <ClInclude Include="lib\json\single_include\nlohmann\json_fwd.hpp" />
     <ClInclude Include="includes\hotkeys.h" />
+    <ClInclude Include="src\cheats\check_cheat_should_run.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="script\fetchOffsets.py">
