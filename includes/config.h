@@ -21,23 +21,23 @@ struct PersistentConfigData
 
 	struct MainWindowSettings
 	{
-		ImVec2 position;
-		ImVec2 size;
-		float scale;
+		ImVec2 position = ImVec2(50, 100);
+		ImVec2 size = ImVec2(650, 500);
+		float scale = 1.f;
 	} mainWindow;
 
 	struct BombSettings
 	{
-		ImVec2 position;
-		float scale;
+		ImVec2 position = ImVec2(50, 50);
+		float scale = 1.f;
 	} bombWindow;
 
-	int targetFPS;
-	bool showFPS;
+	int targetFPS = 0;
+	bool showFPS = false;
 
-	char selectedConfig[CONFIG_NAME_MAX_LENGTH + 1];
+	char selectedConfig[CONFIG_NAME_MAX_LENGTH + 1] = { 0 };
 
-	float esp_font_scale;
+	float esp_font_scale = 1.f;
 };
 
 struct ConfigData
@@ -46,50 +46,50 @@ struct ConfigData
 
 	struct ActiveCheats
 	{
-		bool aimBot;
-		bool antiFlash;
-		bool bombTimer;
-		bool bunnyHop;
-		bool esp;
-		bool fovChanger;
-		bool radar;
-		bool triggerBot;
-		bool rageBot;
+		bool aimBot = false;
+		bool antiFlash = false;
+		bool bombTimer = false;
+		bool bunnyHop = false;
+		bool esp = false;
+		bool fovChanger = false;
+		bool radar = false;
+		bool triggerBot = false;
+		bool rageBot = false;
 	} activeCheats;
 
 	struct EspSettings
 	{
-		bool renderFriendlies;
-		bool boxGlow;
-		bool bone;
-		bool box;
-		bool name;
-		float font_scale;
-		bool health;
-		float boneWidth;
+		bool renderFriendlies = false;
+		bool boxGlow = false;
+		bool bone = false;
+		bool box = false;
+		bool name = false;
+		float font_scale = 1.f;
+		bool health = false;
+		float boneWidth = 1.f;
 
-		ImVec4 colorEnemyVisible;
-		ImVec4 colorEnemyHidden;
-		ImVec4 colorTeamVisible;
-		ImVec4 colorTeamHidden;
-		ImVec4 colorItem;
+		ImVec4 colorEnemyVisible = { 1.0f, 0.0f, 0.0f, 1.0f };
+		ImVec4 colorEnemyHidden = { 1.0f, 0.5f, 0.0f, 1.0f };
+		ImVec4 colorTeamVisible = { 0.0f, 1.0f, 0.0f, 1.0f };
+		ImVec4 colorTeamHidden = { 0.0f, 0.5f, 1.0f, 1.0f };
+		ImVec4 colorItem = { 1.0f, 1.0f, 0.0f, 1.0f };
 	} esp;
 
 	struct AimBotSettings
 	{
-		float pixelRadius;
-		float speedFactor;
-		bool drawFovCircle;
-		bool ignoreTeam;
-		bool checkVisible;
-		ImVec4 fovCircleColor;
-		int hitbox;
+		float pixelRadius = 100.f;
+		float speedFactor = 1.f;
+		bool drawFovCircle = true;
+		bool ignoreTeam = true;
+		bool checkVisible = false;
+		ImVec4 fovCircleColor = { 1.0f, 0.0f, 1.0f, 0.7f };
+		int hitbox = 0;
 		int shotDelay = 30;
 	} aimBot;
 
 	struct FovSettings
 	{
-		int desiredFov;
+		int desiredFov = 90;
 	} fov;
 
 	struct RcsSettings
@@ -101,27 +101,27 @@ struct ConfigData
 
 	struct RageBotSettings
 	{
-		float pixelRadius;
-		float speedFactor;
-		bool visible;
-		int hitbox;
-		int shotDelay;
+		float pixelRadius = 100;
+		float speedFactor = 1.f;
+		bool checkVisible = false;
+		int hitbox = 0;
+		int shotDelay = 30;
 	} rageBot;
 
 	struct DevSettings
 	{
-		bool devMode;
+		bool devMode = false;
 	} devSettings;
 
 	struct KeyBinds
 	{
-		int showMenu;
-		int quickExit;
+		int showMenu = VK_PRIOR;
+		int quickExit = VK_NEXT;
 
-		ToggleableKeybind bunnyHop;
-		ToggleableKeybind triggerBot;
-		ToggleableKeybind aimBot;
-		ToggleableKeybind rageBot;
+		ToggleableKeybind bunnyHop = { VK_SPACE };
+		ToggleableKeybind triggerBot = { VK_RBUTTON };
+		ToggleableKeybind aimBot = { VK_RBUTTON };
+		ToggleableKeybind rageBot = { VK_RBUTTON };
 	} keybinds;
 
 };

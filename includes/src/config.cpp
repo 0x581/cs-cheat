@@ -20,77 +20,8 @@ using std::ofstream;
 using std::string_view;
 
 
-static constexpr const ConfigData default_config{
-	.activeCheats {
-		.aimBot = false,
-		.antiFlash = false,
-		.bombTimer = false,
-		.bunnyHop = false,
-		.esp = false,
-		.fovChanger = false,
-		.radar = false,
-		.triggerBot = false,
-	},
-	.esp {
-		.renderFriendlies = false,
-		.boxGlow = false,
-		.bone = false,
-		.name = false,
-		.health = false,
-		.boneWidth = 1.0f,
-		.colorEnemyVisible = {1.0f, 0.0f, 0.0f, 1.0f},
-		.colorEnemyHidden = {1.0f, 0.5f, 0.0f, 1.0f},
-		.colorTeamVisible = {0.0f, 1.0f, 0.0f, 1.0f},
-		.colorTeamHidden = {0.0f, 0.5f, 1.0f, 1.0f},
-		.colorItem = {1.0f, 1.0f, 0.0f, 1.0f}
-	},
-	.aimBot {
-		.pixelRadius = 100.f,
-		.speedFactor = 0.7f,
-		.drawFovCircle = false,
-		.fovCircleColor = {1.0f, 0.0f, 1.0f, 0.7f}
-	},
-	.fov {
-		.desiredFov = 90
-	},
-	.rageBot{
-		.pixelRadius = 120.f,
-		.speedFactor = 1.0f,
-		.visible = false,
-		.hitbox = 0,
-		.shotDelay = 30,
-	},
-
-	.keybinds {
-		.showMenu = VK_PRIOR,
-		.quickExit = VK_NEXT,
-
-		.bunnyHop = {VK_SPACE},
-		.triggerBot = {VK_RBUTTON},
-		.aimBot = {VK_RBUTTON},
-		.rageBot = {VK_RBUTTON},
-	},
-};
-
-static constexpr const PersistentConfigData default_persistent_config{
-	.mainWindow {
-		.position = ImVec2(50, 100),
-		.size = ImVec2(650, 500),
-		.scale = 1.0,
-	},
-	.bombWindow {
-		.position = ImVec2(50, 50),
-		.scale = 1.0,
-	},
-	.targetFPS = 0,
-	.showFPS = false,
-	.selectedConfig{0},
-	.esp_font_scale{1.0f},
-};
-
-
-ConfigData config = default_config;
-PersistentConfigData persistentConfig = default_persistent_config;
+ConfigData config = ConfigData();
+PersistentConfigData persistentConfig = PersistentConfigData();
 
 std::vector<std::string> configs{};
 
@@ -153,6 +84,8 @@ static json toggleablekeybind_to_json(const ToggleableKeybind& keybind)
 
 static void from_json(PersistentConfigData& buffer, const json j, const bool verbose)
 {
+	PersistentConfigData default_persistent_config = PersistentConfigData();
+
 	try
 	{
 		auto& mainWindow = buffer.mainWindow;
@@ -234,6 +167,8 @@ static json to_json(const PersistentConfigData& buffer)
 
 static void from_json(ConfigData& buffer, const json j, const bool verbose)
 {
+	ConfigData default_config = ConfigData();
+
 	try
 	{
 		auto& activeCheats = buffer.activeCheats;
@@ -319,7 +254,7 @@ static void from_json(ConfigData& buffer, const json j, const bool verbose)
 
 			rageBot.pixelRadius = rageJson.value("pixelRadius", default_config.rageBot.pixelRadius);
 			rageBot.speedFactor = rageJson.value("speedFactor", default_config.rageBot.speedFactor);
-			rageBot.visible = rageJson.value("visible", default_config.rageBot.visible);
+			rageBot.checkVisible = rageJson.value("visible", default_config.rageBot.checkVisible);
 			rageBot.hitbox = rageJson.value("hitbox", default_config.rageBot.hitbox);
 			rageBot.shotDelay = rageJson.value("shotDelay", default_config.rageBot.shotDelay);
 		}
@@ -420,7 +355,7 @@ static json to_json(const ConfigData& buffer)
 	j["rageBot"] = {
 		{"pixelRadius", rageBot.pixelRadius},
 		{"speedFactor", rageBot.speedFactor},
-		{"visible", rageBot.visible},
+		{"visible", rageBot.checkVisible},
 		{"hitbox", rageBot.hitbox},
 		{"shotDelay", rageBot.shotDelay}
 	};
@@ -651,7 +586,7 @@ void set_selected_config(const string_view config_name)
 
 static void load_default_config_data()
 {
-	memcpy(&config, &default_config, sizeof(ConfigData));
+	config = ConfigData();
 	set_selected_config(files::defaultConfig);
 
 	std::cout << "Default config loaded from memory." << std::endl;

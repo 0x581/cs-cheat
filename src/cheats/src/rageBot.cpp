@@ -67,7 +67,7 @@ void runRageAimbot(const CheatData& cheatData) {
 		bool isVisible = (spottedByMask & (1ULL << localPawnIndex)) != 0;
 
 		// Rage: Optional, Sichtbarkeitsprüfung kann ignoriert werden!
-		if (config.rageBot.visible && !isVisible)
+		if (config.rageBot.checkVisible && !isVisible)
 			continue;
 
 		double distance = std::pow(targetScreen.x - screenCenter.x, 2) + std::pow(targetScreen.y - screenCenter.y, 2);
