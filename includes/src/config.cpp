@@ -448,13 +448,13 @@ static bool get_expanded_path(const string_view folder, path& expandedPath)
 {
 	const auto wstring_folder = string_to_wstring(folder);
 
-	const auto required_size = ExpandEnvironmentStrings(wstring_folder.c_str(), nullptr, 0);
+	const auto required_size = ExpandEnvironmentStringsW(wstring_folder.c_str(), nullptr, 0);
 
 	if (required_size == 0)
 		return false;
 
 	wchar_t* folder_expanded = new wchar_t[required_size];
-	const auto parsed_length = ExpandEnvironmentStrings(wstring_folder.c_str(), folder_expanded, required_size);
+	const auto parsed_length = ExpandEnvironmentStringsW(wstring_folder.c_str(), folder_expanded, required_size);
 
 	if (parsed_length != required_size)
 	{
