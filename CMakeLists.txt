@@ -136,7 +136,8 @@ target_link_libraries(CS_Cheat PUBLIC
 
 # Compiler definitions
 target_compile_definitions(CS_Cheat PRIVATE
-    _MBCS  # Use multibyte character set (ANSI) instead of Unicode
+    UNICODE  # Use Unicode!!!
+    _UNICODE  # Use Unicode!!!
 )
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")
