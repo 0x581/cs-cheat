@@ -162,7 +162,7 @@ static const std::string get_localized_key_name(const int vkCode)
 	}
 
 	wchar_t keyNameBuffer[256];
-	int result = GetKeyNameText(lParam, keyNameBuffer, sizeof(keyNameBuffer) / sizeof(keyNameBuffer[0]));
+	int result = ::GetKeyNameTextW(lParam, keyNameBuffer, sizeof(keyNameBuffer) / sizeof(keyNameBuffer[0]));
 
 	if (result > 0)
 	{

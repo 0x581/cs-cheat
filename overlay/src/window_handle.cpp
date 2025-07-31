@@ -48,7 +48,7 @@ BOOL update_wnd_proc(HWND handle)
 
 static ATOM get_window_class()
 {
-	WNDCLASSEX wc = {
+	WNDCLASSEXW wc = {
 		.cbSize = sizeof(wc),
 		.style = CS_CLASSDC,
 		.lpfnWndProc = DefWindowProc,
@@ -63,7 +63,7 @@ static ATOM get_window_class()
 		.hIconSm = NULL,
 	};
 
-	return RegisterClassEx(&wc);
+	return RegisterClassExW(&wc);
 }
 
 
@@ -118,7 +118,7 @@ BOOL use_uiaccess(HWND* pHandle)
 
 	std::cout << "Process has UI Access." << std::endl;
 
-	const auto user32_dll = LoadLibrary(L"user32.dll");
+	const auto user32_dll = LoadLibraryW(L"user32.dll");
 	if (user32_dll == 0)
 	{
 		std::cerr << "Failed to load user32.dll: " << GetLastError() << std::endl;
@@ -141,7 +141,7 @@ BOOL use_uiaccess(HWND* pHandle)
 
 	HWND handle = pCreateWindowInBand(
 		0,
-		MAKEINTATOM(atom),
+		(LPCWSTR)MAKEINTATOM(atom),
 		WINDOW_NAME,
 		WS_POPUP,
 		0, 0,
@@ -170,7 +170,7 @@ BOOL use_uiaccess(HWND* pHandle)
 
 BOOL hook_nvidia(HWND* pHandle)
 {
-	HWND nvidia_handle = FindWindow(L"CEF-OSC-WIDGET", L"NVIDIA GeForce Overlay");
+	HWND nvidia_handle = FindWindowW(L"CEF-OSC-WIDGET", L"NVIDIA GeForce Overlay");
 
 	if (!nvidia_handle)
 	{
@@ -185,9 +185,9 @@ BOOL hook_nvidia(HWND* pHandle)
 		return FALSE;
 	}
 
-	HWND handle = CreateWindowEx(
+	HWND handle = CreateWindowExW(
 		0,
-		MAKEINTATOM(atom),
+		(LPCWSTR)MAKEINTATOM(atom),
 		WINDOW_NAME,
 		WS_POPUP,
 		0, 0,
@@ -224,9 +224,9 @@ BOOL new_window(HWND* pHandle)
 	}
 
 
-	HWND handle = CreateWindowEx(
+	HWND handle = CreateWindowExW(
 		0,
-		MAKEINTATOM(atom),
+		(LPCWSTR)MAKEINTATOM(atom),
 		WINDOW_NAME,
 		WS_POPUP,
 		0, 0,

@@ -14,13 +14,13 @@ using fs::path;
 static bool get_expanded_path(const std::string_view folder, path& expandedPath) {
 	const auto wstring_folder = string_to_wstring(folder);
 
-	const auto required_size = ExpandEnvironmentStrings(wstring_folder.c_str(), nullptr, 0);
+	const auto required_size = ::ExpandEnvironmentStringsW(wstring_folder.c_str(), nullptr, 0);
 
 	if (required_size == 0)
 		return false;
 
 	wchar_t* folder_expanded = new wchar_t[required_size];
-	const auto parsed_length = ExpandEnvironmentStrings(wstring_folder.c_str(), folder_expanded, required_size);
+	const auto parsed_length = ::ExpandEnvironmentStringsW(wstring_folder.c_str(), folder_expanded, required_size);
 
 	if (parsed_length != required_size)
 	{
@@ -76,7 +76,7 @@ void map_driver() {
 	std::wstring kdmapper_ws = kdmapper.wstring();
 	std::wstring driver_ws = L"\"" + driver.wstring() + L"\""; // Quote if path might have spaces
 
-	SHELLEXECUTEINFO sei = { sizeof(sei) };
+	SHELLEXECUTEINFOW sei = { sizeof(sei) };
 	sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_FLAG_NO_UI;
 	sei.hwnd = NULL;
 	sei.lpVerb = L"runas";
@@ -87,7 +87,7 @@ void map_driver() {
 
 	std::wcout << "Executing command: " << kdmapper_ws << L" " << driver_ws << std::endl;
 
-	auto success = ShellExecuteEx(&sei);
+	auto success = ::ShellExecuteExW(&sei);
 
 	success &= sei.hProcess != NULL;
 
