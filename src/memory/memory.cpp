@@ -20,154 +20,162 @@
 
 constexpr auto BYTES_PER_ROW = 32;
 
+bool Memory::loadModuleMap()
+{
+    size_t tries = 0;
 
-bool Memory::loadModuleMap() {
-	size_t tries = 0;
+    for (auto &[module_id, module_name] : requiredModules)
+    {
+        uintptr_t address = 0;
 
-	for (auto& [module_id, module_name] : requiredModules)
-	{
-		uintptr_t address = 0;
+        do
+        {
+            address = apd::get_module_base(driver_handle, module_name);
 
-		do
-		{
-			address = apd::get_module_base(driver_handle, module_name);
+            if (address == 0)
+            {
+                std::this_thread::sleep_for(delays::memory::moduleFetchWaitTime);
+                ++tries;
+            }
 
-			if (address == 0)
-			{
-				std::this_thread::sleep_for(delays::memory::moduleFetchWaitTime);
-				++tries;
-			}
+        } while (address == 0 && tries < 10);
 
-		} while (address == 0 && tries < 10);
+        if (tries >= 10)
+        {
+            // 10 attempts to get the modules failed, clear process
+            std::cout << "Failed to fetch required Modules." << std::endl;
 
-		if (tries >= 10)
-		{
-			// 10 attempts to get the modules failed, clear process
-			std::cout << "Failed to fetch required Modules." << std::endl;
+            clearModuleMap();
 
-			clearModuleMap();
+            return false;
+        }
 
-			return false;
-		}
+        this->modules[module_id] = address;
+    }
 
-		this->modules[module_id] = address;
-	}
-
-	return true;
+    return true;
 }
 
-void Memory::clearModuleMap() {
-	this->modules.clear();
+void Memory::clearModuleMap()
+{
+    this->modules.clear();
 }
 
-const bool Memory::isProcessAlive() {
-	this->is_valid = this->is_valid && apd::is_process_alive(driver_handle);
+const bool Memory::isProcessAlive()
+{
+    this->is_valid = this->is_valid && apd::is_process_alive(driver_handle);
 
-	return this->is_valid;
+    return this->is_valid;
 }
 
-Memory::Memory() : pid{ 0 } {
+Memory::Memory() : pid{0}
+{
 
-	driver_handle = apd::open_driver();
+    driver_handle = apd::open_driver();
 
-	if (driver_handle == INVALID_HANDLE_VALUE)
-	{
-		map_driver();
-		driver_handle = apd::open_driver();
-	}
+    if (driver_handle == INVALID_HANDLE_VALUE)
+    {
+        map_driver();
+        driver_handle = apd::open_driver();
+    }
 
-	if (driver_handle == INVALID_HANDLE_VALUE)
-	{
-		const auto error = GetLastError();
+    if (driver_handle == INVALID_HANDLE_VALUE)
+    {
+        const auto error = GetLastError();
 
-		std::cout << "Failed to create our driver handle: " << error << std::endl;
+        std::cout << "Failed to create our driver handle: " << error << std::endl;
 
-		throw std::runtime_error("Failed to create driver handle");
-	}
+        throw std::runtime_error("Failed to create driver handle");
+    }
 
-	const auto old_debug_level = apd::set_debug_flags(driver_handle, 0);
+    const auto old_debug_level = apd::set_debug_flags(driver_handle, 0);
 }
 
-Memory::~Memory() {
-	apd::detach_from_process(driver_handle);
+Memory::~Memory()
+{
+    apd::detach_from_process(driver_handle);
 
-	apd::close_driver(driver_handle);
+    apd::close_driver(driver_handle);
 
-	clearModuleMap();
+    clearModuleMap();
 }
 
-const bool Memory::connectToProcess(const wchar_t* processName) {
+const bool Memory::connectToProcess(const wchar_t *processName)
+{
 
-	// Clean up previous connection if exists
-	assert(!this->is_valid && "Cannot connect to process while already connected.");
+    // Clean up previous connection if exists
+    assert(!this->is_valid && "Cannot connect to process while already connected.");
 
-	clearModuleMap();
+    clearModuleMap();
 
-	if (apd::attach_to_process(driver_handle, processName, &pid))
-		std::cout << "Attachment successful.\n";
-	else
-		return false;
+    if (apd::attach_to_process(driver_handle, processName, &pid))
+        std::cout << "Attachment successful.\n";
+    else
+        return false;
 
-	// Initialize the module hashmap
-	if (!this->loadModuleMap())
-	{
-		std::cout << "Failed to load module map." << std::endl;
-		return false;
-	}
+    // Initialize the module hashmap
+    if (!this->loadModuleMap())
+    {
+        std::cout << "Failed to load module map." << std::endl;
+        return false;
+    }
 
-	this->is_valid = true;
+    this->is_valid = true;
 
-	return true;
+    return true;
 }
-
 
 // Normal functions for access & Co.
 
-const uintptr_t Memory::GetModuleAddress(const ModuleID moduleName) const {
-	return modules.at(moduleName);
+const uintptr_t Memory::GetModuleAddress(const ModuleID moduleName) const
+{
+    return modules.at(moduleName);
 }
 
 // Returns number of bytes read
-size_t Memory::ReadBytes(uintptr_t address, byte* buffer, size_t nBytes) const {
-	return apd::read_memory(driver_handle, address, buffer, nBytes);
+size_t Memory::ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
+{
+    return apd::read_memory(driver_handle, address, buffer, nBytes);
 }
 
-void Memory::Inspect(uintptr_t address, size_t nBytes) const {
-	byte* buffer = new byte[nBytes];
+void Memory::Inspect(uintptr_t address, size_t nBytes) const
+{
+    byte *buffer = new byte[nBytes];
 
-	size_t nBytesRead = this->ReadBytes(address, buffer, nBytes);
+    size_t nBytesRead = this->ReadBytes(address, buffer, nBytes);
 
-	if (!nBytesRead)
-	{
-		std::cout << "Inspect " << nBytes << " bytes at 0x" << std::hex << address << std::dec << " failed." << std::endl;
+    if (!nBytesRead)
+    {
+        std::cout << "Inspect " << nBytes << " bytes at 0x" << std::hex << address << std::dec << " failed." << std::endl;
 
-		delete[] buffer;
-		return;
-	}
+        delete[] buffer;
+        return;
+    }
 
-	std::ostringstream byteString{};
+    std::ostringstream byteString{};
 
-	byteString << std::hex;
+    byteString << std::hex;
 
-	for (size_t i = 0; i < nBytesRead && i < nBytes; i++)
-	{
-		if (i % 8 == 0 && i % BYTES_PER_ROW != 0)
-			byteString << " ";
+    for (size_t i = 0; i < nBytesRead && i < nBytes; i++)
+    {
+        if (i % 8 == 0 && i % BYTES_PER_ROW != 0)
+            byteString << " ";
 
-		if (i % BYTES_PER_ROW == 0 && i != 0)
-			byteString << std::endl << std::hex;
+        if (i % BYTES_PER_ROW == 0 && i != 0)
+            byteString << std::endl
+                       << std::hex;
 
-		byteString << std::setw(2) << std::setfill('0') << buffer[i];
-	}
+        byteString << std::setw(2) << std::setfill('0') << buffer[i];
+    }
 
-	byteString << std::dec;
+    byteString << std::dec;
 
-	if (nBytesRead != nBytes)
-	{
-		byteString << "Inspect read " << nBytesRead << "/" << nBytes << " bytes." << std::endl;
-	}
+    if (nBytesRead != nBytes)
+    {
+        byteString << "Inspect read " << nBytesRead << "/" << nBytes << " bytes." << std::endl;
+    }
 
-	std::cout << byteString.str();
+    std::cout << byteString.str();
 
-	delete[] buffer;
+    delete[] buffer;
 }

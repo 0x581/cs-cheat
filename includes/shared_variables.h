@@ -9,34 +9,34 @@
 
 struct EspRenderData
 {
-	bool isValid{ false };
-	bool isVisible{ false };
-	bool isFriendly{ false };
-	int maxHealth{ 0 };
-	int health{ 0 };
-	float distance{ 0.f };
-	char playerName[PLAYER_NAME_LENGTH]{ 0 };
-	Vector2 min{ 0, 0 };
-	Vector2 max{ 0, 0 };
-	BoneData bones{};
+    bool isValid{false};
+    bool isVisible{false};
+    bool isFriendly{false};
+    int maxHealth{0};
+    int health{0};
+    float distance{0.f};
+    char playerName[PLAYER_NAME_LENGTH]{0};
+    Vector2 min{0, 0};
+    Vector2 max{0, 0};
+    BoneData bones{};
 };
 
 struct ESPData
 {
-	bool isValid{ false };
-	std::chrono::steady_clock::time_point capture_time{ };
-	EspRenderData data[64]{};
+    bool isValid{false};
+    std::chrono::steady_clock::time_point capture_time{};
+    EspRenderData data[64]{};
 };
 
 struct BombData
 {
-	bool planted{ false };
-	float timeRemaining{ 0.f };
-	bool localPlayerCanDefuse{ false };
-	bool beingDefused{ false };
-	bool defused{ false };
-	CEntityIndex defuser{ 0 };
-	uint32_t site{ 0 };
+    bool planted{false};
+    float timeRemaining{0.f};
+    bool localPlayerCanDefuse{false};
+    bool beingDefused{false};
+    bool defused{false};
+    CEntityIndex defuser{0};
+    uint32_t site{0};
 };
 
 extern bool isConnected;

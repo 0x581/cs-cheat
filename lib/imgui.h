@@ -1,11 +1,10 @@
 #pragma once
 
-
 #define M_PI 3.1415926535
 
-#pragma comment(lib,"d3d11.lib")
-#pragma comment(lib,"dwmapi.lib")
-#pragma comment(lib,"d3dcompiler")
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dwmapi.lib")
+#pragma comment(lib, "d3dcompiler")
 
 #include <windows.h>
 #include <tchar.h>
@@ -22,4 +21,4 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_dx11.h"
 #include "imgui/imgui_impl_win32.h"
-#include "imgui/imgui_internal.h"	// gradient
+#include "imgui/imgui_internal.h" // gradient
