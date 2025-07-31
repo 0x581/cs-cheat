@@ -1,0 +1,29 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch CS Cheat (Debug)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/output/Debug/cs-cheat.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/output/Debug",
+            "environment": [],
+            "externalConsole": true,
+            "preLaunchTask": "cmake-build-debug"
+        },
+        {
+            "name": "Launch CS Cheat (Release)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/output/Release/cs-cheat.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/output/Release",
+            "environment": [],
+            "externalConsole": true,
+            "preLaunchTask": "cmake-build-release"
+        }
+    ]
+}
