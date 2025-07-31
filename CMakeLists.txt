@@ -107,11 +107,7 @@ if (WIN32)
         $<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>
         $<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS>
     )
-endif()
-
-# UAC Execution Level (Windows-specific)
-if (WIN32)
-    target_link_options(CS_Cheat PRIVATE "/MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
+    SET_TARGET_PROPERTIES(CS_Cheat PROPERTIES LINK_FLAGS "/MANIFEST:EMBED /MANIFESTINPUT:\"${CMAKE_CURRENT_SOURCE_DIR}/lib/dpiaware.manifest\" /MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
 endif()
 
 
