@@ -104,7 +104,7 @@ BOOL use_uiaccess(HWND *pHandle)
 
     const DWORD dwErr = PrepareForUIAccess();
     if (dwErr != ERROR_SUCCESS)
-        return dwErr;
+        return FALSE;
 
     std::cout << "Process has UI Access." << std::endl;
 
