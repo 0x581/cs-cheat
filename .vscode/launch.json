@@ -22,7 +22,6 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/output/Release",
             "environment": [],
-            "externalConsole": true,
             "preLaunchTask": "cmake-build-release"
         }
     ]

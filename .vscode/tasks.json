@@ -2,6 +2,22 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "create-build-dir",
+            "type": "shell",
+            "command": "mkdir \"${workspaceFolder}/build/output/Release\" \"${workspaceFolder}/build/output/Debug\" || echo 0",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "detail": "Creates the build directory if it does not exist",
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "never",
+                "close": true
+            }
+        },
+        {
             "label": "cmake-build-debug",
             "type": "shell",
             "command": "cmake --build \"${workspaceFolder}/build\" --config Debug",
@@ -10,7 +26,8 @@
                 "isDefault": true
             },
             "problemMatcher": "$msCompile",
-            "detail": "Builds the project with CMake for Debug configuration"
+            "detail": "Builds the project with CMake for Debug configuration",
+            "dependsOn": "create-build-dir"
         },
         {
             "label": "cmake-build-release",
@@ -21,7 +38,8 @@
                 "isDefault": true
             },
             "problemMatcher": "$msCompile",
-            "detail": "Builds the project with CMake for Release configuration"
+            "detail": "Builds the project with CMake for Release configuration",
+            "dependsOn": "create-build-dir"
         },
         {
             "label": "Clean Build",
