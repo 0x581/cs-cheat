@@ -1,5 +1,3 @@
-# C:/Users/581/source/repos/0x581/cs-cheat/CMakeLists.txt
-
 cmake_minimum_required(VERSION 3.16)
 project(CS_Cheat_Project CXX)
 
@@ -9,9 +7,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Define common build directories (relative to the build directory created by CMake Tools)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output/${CMAKE_BUILD_TYPE}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output/${CMAKE_BUILD_TYPE}")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output/${CMAKE_BUILD_TYPE}")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output")
 
 # Define the SOURCE files (those that compile to .obj)
 file(GLOB_RECURSE CHEAT_SOURCES CONFIGURE_DEPENDS "src/cheats/*.cpp")
@@ -58,8 +56,8 @@ target_sources(CS_Cheat PRIVATE ${PROJECT_HEADERS})
 # Paths within cs-cheat are now relative to cs-cheat/ (CMAKE_CURRENT_SOURCE_DIR)
 target_include_directories(CS_Cheat PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/includes
-    ${CMAKE_CURRENT_SOURCE_DIR}/lib
     ${CMAKE_CURRENT_SOURCE_DIR}/../ioctldriver/apd_api
+    ${CMAKE_CURRENT_SOURCE_DIR}/lib
 )
 
 # Add library directories for apd_api.lib
@@ -91,14 +89,11 @@ target_compile_definitions(CS_Cheat PRIVATE
     _UNICODE  # Use Unicode!!!
 )
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-elseif (CMAKE_BUILD_TYPE STREQUAL "Release")
-endif()
-
 # Set compiler options
 target_compile_options(CS_Cheat PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/W3>
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra>
+    $<$<CXX_COMPILER_ID:MSVC>:/permissive->         # MSVC: Enforce strict C++ compliance
+    $<$<CXX_COMPILER_ID:MSVC>:/W3>                  # MSVC: Warning level 3
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra> # Non-MSVC: Enable all warnings
 )
 
 # Linker flags for the executable
@@ -112,9 +107,17 @@ endif()
 
 
 # Set the target type (explicitly for GUI in Release)
-if (CMAKE_BUILD_TYPE STREQUAL "Release")
-    set_property(TARGET CS_Cheat PROPERTY WIN32_EXECUTABLE TRUE)
-endif()
+set_property(TARGET CS_Cheat PROPERTY WIN32_EXECUTABLE "$<CONFIG:Release>:TRUE>")
+
+# Set Whole Program Optimization (LTCG) for Release builds
+set_property(TARGET CS_Cheat PROPERTY CMAKE_INTERPROCEDURAL_OPTIMIZATION "$<$<CONFIG:Release>:TRUE>")
+
+# Apply /NODEFAULTLIB:LIBCMT for Release builds (if needed)
+# and /OPT:NOREF for Debug builds
+target_link_options(CS_Cheat PRIVATE 
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/NODEFAULTLIB:LIBCMT>
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:/OPT:NOREF>
+)
 
 # Set the output name for the executable
 set_target_properties(CS_Cheat PROPERTIES OUTPUT_NAME "cs-cheat")
