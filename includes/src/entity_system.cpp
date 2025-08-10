@@ -64,7 +64,7 @@ uintptr_t EntityList::getCurrentLookatPlayerPawn(const Memory &mem, const uintpt
     if (!pawnPtr)
         return 0;
 
-    const auto index = mem.Read<CEntityIndex>(pawnPtr + offsets::IDEntIndex);
+    const auto index = mem.Read<CEntityIndex>(pawnPtr + offsets::idEntIndex);
 
     return getAddressFromIndex(mem, index);
 }

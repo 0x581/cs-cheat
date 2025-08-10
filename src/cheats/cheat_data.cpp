@@ -46,14 +46,14 @@ bool read_player_data(const Memory &mem, const EntityList &entityList, const uin
     playerData.team = mem.Read<PlayerTeam_t>(playerPawnPtr + offsets::teamNum);
     playerData.health = mem.Read<CHealth>(playerPawnPtr + offsets::health);
     playerData.maxHealth = mem.Read<CHealth>(playerPawnPtr + offsets::maxHealth);
-    playerData.lookAtEntityIndex = mem.Read<CEntityIndex>(playerPawnPtr + offsets::IDEntIndex);
+    playerData.lookAtEntityIndex = mem.Read<CEntityIndex>(playerPawnPtr + offsets::idEntIndex);
 
     memset(playerData.name, 0, PLAYER_NAME_LENGTH);
     mem.ReadBytes(controllerPtr + offsets::playerName, (byte *)playerData.name, PLAYER_NAME_LENGTH);
 
     cleanString(playerData.name, playerData.name, PLAYER_NAME_LENGTH);
 
-    playerData.oldOrigin = mem.Read<Vector3>(playerPawnPtr + offsets::OldOrigin);
+    playerData.oldOrigin = mem.Read<Vector3>(playerPawnPtr + offsets::oldOrigin);
 
     const auto skeletonInstance = mem.Read<uintptr_t>(playerPawnPtr + offsets::gameSceneNode);
     const auto boneArrayPtr = mem.Read<uintptr_t>(skeletonInstance + offsets::modelState + 0x80);
@@ -67,9 +67,9 @@ bool read_player_data(const Memory &mem, const EntityList &entityList, const uin
     const auto itemServices = mem.Read<uintptr_t>(playerPawnPtr + offsets::itemServices);
     playerData.hasDefuser = mem.Read<bool>(itemServices + offsets::hasDefuser);
 
-    playerData.isScoped = mem.Read<bool>(playerPawnPtr + offsets::IsScoped);
+    playerData.isScoped = mem.Read<bool>(playerPawnPtr + offsets::isScoped);
 
-    playerData.cameraServicesPtr = mem.Read<uintptr_t>(playerPawnPtr + offsets::CameraServices);
+    playerData.cameraServicesPtr = mem.Read<uintptr_t>(playerPawnPtr + offsets::cameraServices);
 
     return true;
 }
@@ -115,7 +115,7 @@ bool read_cheat_data(const Memory &mem, const EntityList &entityList, CheatData 
     const auto globalVarsPtr = mem.Read<uintptr_t>(client + offsets::globalVars);
     cheatData.globalVars = mem.Read<CGlobalVarsBase>(globalVarsPtr);
 
-    cheatData.viewMatrix = mem.Read<ViewMatrix_t>(client + offsets::ViewMatrix);
+    cheatData.viewMatrix = mem.Read<ViewMatrix_t>(client + offsets::viewMatrix);
 
     return true;
 }

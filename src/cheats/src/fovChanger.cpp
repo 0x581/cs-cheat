@@ -12,5 +12,5 @@ void runFovChanger(const Memory &mem, const CheatData &cheatData)
 
     auto cameraservices = cheatData.localPlayer.cameraServicesPtr;
 
-    mem.Write<uint32_t>(cameraservices + offsets::FOV, config.fov.desiredFov);
+    mem.Write<uint32_t>(cameraservices + offsets::fov, config.fov.desiredFov);
 }
