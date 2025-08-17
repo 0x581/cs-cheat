@@ -132,12 +132,6 @@ const uintptr_t Memory::GetModuleAddress(const ModuleID moduleName) const
     return modules.at(moduleName);
 }
 
-// Returns number of bytes read
-size_t Memory::ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
-{
-    return apd::read_memory(driver_handle, address, buffer, nBytes);
-}
-
 void Memory::Inspect(uintptr_t address, size_t nBytes) const
 {
     byte *buffer = new byte[nBytes];

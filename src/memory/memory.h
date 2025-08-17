@@ -40,14 +40,26 @@ public:
         return success ? value : T{};
     }
 
+    // THIS FUNCTION IS FOR DEBUGGING PURPOSES ONLY!!! DOES NOT CHECK VALIDITY AND DOES NOT CLEAN UP THE HEAP
+    uint8_t *ReadDbg(uintptr_t address, size_t nBytes) const
+    {
+        auto *buffer = new uint8_t[nBytes];
+        const size_t bytes_read = apd::read_memory(driver_handle, address, buffer, nBytes);
+
+        return buffer;
+    }
+
+    // Returns number of bytes read
+    size_t ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const
+    {
+        return apd::read_memory(driver_handle, address, buffer, nBytes);
+    }
+
     template <typename T>
     size_t Write(uintptr_t address, T value) const
     {
         return apd::write_memory(driver_handle, address, &value, sizeof(T));
     }
-
-    // Returns number of bytes read
-    size_t ReadBytes(uintptr_t address, byte *buffer, size_t nBytes) const;
 
     void Inspect(uintptr_t address, size_t nBytes) const;
 };

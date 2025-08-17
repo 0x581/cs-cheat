@@ -64,6 +64,8 @@ int main()
 
 #ifndef DISABLE_INPUT_HOOK
     std::thread input_hook{run_input_hook, std::ref(terminate)};
+#else
+    std::cout << "Input hook is disabled." << std::endl;
 #endif
 
     std::thread cheats_thread{run_cheat_loop, std::ref(terminate)};
