@@ -11,7 +11,8 @@
             "cwd": "${workspaceFolder}/build/output/Debug",
             "environment": [],
             "externalConsole": true,
-            "preLaunchTask": "cmake-build-debug"
+            "preLaunchTask": "cmake-build-debug",
+            "autoAttachChildProcess": true
         },
         {
             "name": "Launch CS Cheat (Release)",
@@ -22,7 +23,8 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/output/Release",
             "environment": [],
-            "preLaunchTask": "cmake-build-release"
+            "preLaunchTask": "cmake-build-release",
+            "autoAttachChildProcess": true
         }
     ]
 }
