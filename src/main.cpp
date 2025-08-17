@@ -58,11 +58,12 @@ int main()
 
     load_all_config_data(files::folder);
 
+    overlay = new c_overlay();
+
     bool terminate = false;
     std::thread input_hook{run_input_hook, std::ref(terminate)};
     std::thread cheats_thread{run_cheat_loop, std::ref(terminate)};
 
-    overlay = new c_overlay();
     overlay->run();
     terminate = true;
 
