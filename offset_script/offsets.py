@@ -30,6 +30,7 @@ OFFSETS: list[Offset] = [
     Offset("plantedC4", "dwPlantedC4", "C_PlantedC4 **", "offsets.hpp"),
     Offset("attack", "attack", "", "buttons.hpp"),
     Offset("jump", "jump", "", "buttons.hpp"),
+    Offset("entityIdentity", "m_pEntity"),
     Offset("gameSceneNode", "m_pGameSceneNode", "(CSkeletonInstance*)"),
     Offset("maxHealth", "m_iMaxHealth"),
     Offset("health", "m_iHealth"),
@@ -60,4 +61,10 @@ OFFSETS: list[Offset] = [
     Offset("c4BeingDefused", "m_bBeingDefused"),
     Offset("c4Defused", "m_bBombDefused"),
     Offset("c4Defuser", "m_hBombDefuser"),
+    #
+    # CEntityIdentity
+    Offset("nameStringableIndex", "CEntityIdentity::m_nameStringableIndex"),
+    Offset("entityIdentityName", "CEntityIdentity::m_name"),
+    Offset("entityIdentityDesignerName", "CEntityIdentity::m_designerName"),
+    Offset("entityIdentityFlags", "CEntityIdentity::m_flags"),
 ]
