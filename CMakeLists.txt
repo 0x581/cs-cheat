@@ -115,22 +115,26 @@ target_compile_options(CS_Cheat PRIVATE
     $<${IS_DEBUG_LIKE_CONFIG}:/Od>   # Disable optimization
     $<${IS_DEBUG_LIKE_CONFIG}:/RTC1> # Enable runtime checks
     $<${IS_DEBUG_LIKE_CONFIG}:/MDd>  # Link to debug DLL runtime (Multithreaded Debug DLL)
+    # $<${IS_DEBUG_LIKE_CONFIG}:/JMC>  # Enable Just My Code debugging
+    $<${IS_DEBUG_LIKE_CONFIG}:/GF->  # Disable Eliminate Duplicate Strings
+    $<${IS_DEBUG_LIKE_CONFIG}:/Gy->  # Disable Enable Function-Level Linking
+    $<${IS_DEBUG_LIKE_CONFIG}:/Gm->  # Disable Minimal Rebuild
 )
 
 # Linker flags for the executable
 target_link_options(CS_Cheat PRIVATE
-    $<${IS_DEBUG_LIKE_CONFIG}:/SUBSYSTEM:CONSOLE>
     $<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS>
+    # Apply /NODEFAULTLIB:LIBCMT for Release builds (if needed)
+    $<$<CONFIG:Release>:/NODEFAULTLIB:LIBCMT>
+
+    $<${IS_DEBUG_LIKE_CONFIG}:/SUBSYSTEM:CONSOLE>
 
     # Explicitly set debug linker options for both Debug and DebugNoInputHook
     $<${IS_DEBUG_LIKE_CONFIG}:/DEBUG>      # Generate debug info
     $<${IS_DEBUG_LIKE_CONFIG}:/INCREMENTAL> # Enable incremental linking
+    $<${IS_DEBUG_LIKE_CONFIG}:/OPT:NOREF>
     # $<${IS_DEBUG_LIKE_CONFIG}:/PDB:"$<TARGET_FILE_DIR:CS_Cheat>/$<TARGET_FILE_NAME:CS_Cheat>.pdb"> # Specify PDB path
 
-    # Apply /NODEFAULTLIB:LIBCMT for Release builds (if needed)
-    $<$<CONFIG:Release>:/NODEFAULTLIB:LIBCMT>
-    # and /OPT:NOREF for Debug builds
-    $<${IS_DEBUG_LIKE_CONFIG}:/OPT:NOREF>
 )   
 SET_TARGET_PROPERTIES(CS_Cheat PROPERTIES LINK_FLAGS "/MANIFEST:EMBED /MANIFESTINPUT:\"${CMAKE_CURRENT_SOURCE_DIR}/lib/dpiaware.manifest\" /MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
 
