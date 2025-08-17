@@ -6,22 +6,19 @@ set(CMAKE_CONFIGURATION_TYPES "Release;Debug;DebugNoInputHook" CACHE STRING "Sup
 
 project(CS_Cheat_Project CXX)
 
+# *** BUILD-TIME COMPILER CHECK ***
+if (NOT CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    message(FATAL_ERROR "This project requires the MSVC compiler. Detected compiler: ${CMAKE_CXX_COMPILER_ID}")
+endif()
+# ********************************
+
+set(IS_DEBUG_LIKE_CONFIG "$<OR:$<CONFIG:Debug>,$<CONFIG:DebugNoInputHook>>")
+
 # Set the C++ standard to C++20
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-# 2. Set compiler and linker flags for DebugNoInputHook to mimic Debug
-# These variables define default flags per configuration.
-# For multi-config generators (like Visual Studio), these are defaults
-# and are often overridden by target-specific options.
-# For single-config generators (like Makefiles), they are directly used.
-# Ensure DebugNoInputHook behaves like Debug
-set(CMAKE_CXX_FLAGS_DEBUGNOINPUT "${CMAKE_CXX_FLAGS_DEBUG}")
-set(CMAKE_C_FLAGS_DEBUGNOINPUT "${CMAKE_C_FLAGS_DEBUG}")
-set(CMAKE_EXE_LINKER_FLAGS_DEBUGNOINPUT "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
-set(CMAKE_SHARED_LINKER_FLAGS_DEBUGNOINPUT "${CMAKE_SHARED_LINKER_FLAGS_DEBUG}")
-set(CMAKE_MODULE_LINKER_FLAGS_DEBUGNOINPUT "${CMAKE_MODULE_LINKER_FLAGS_DEBUG}")
 
 # Define common build directories (relative to the build directory created by CMake Tools)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output")
@@ -110,36 +107,44 @@ target_compile_definitions(CS_Cheat PRIVATE
 
 # Set compiler options
 target_compile_options(CS_Cheat PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/permissive->         # MSVC: Enforce strict C++ compliance
-    $<$<CXX_COMPILER_ID:MSVC>:/W3>                  # MSVC: Warning level 3
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra> # Non-MSVC: Enable all warnings
+    /permissive-         # MSVC: Enforce strict C++ compliance
+    /W3                 # MSVC: Warning level 3
+
+    # Explicitly set debug compiler options for both Debug and DebugNoInputHook
+    $<${IS_DEBUG_LIKE_CONFIG}:/Zi>   # Generate Program Database debug information
+    $<${IS_DEBUG_LIKE_CONFIG}:/Od>   # Disable optimization
+    $<${IS_DEBUG_LIKE_CONFIG}:/RTC1> # Enable runtime checks
+    $<${IS_DEBUG_LIKE_CONFIG}:/MDd>  # Link to debug DLL runtime (Multithreaded Debug DLL)
 )
 
 # Linker flags for the executable
-if (WIN32)
-    target_link_options(CS_Cheat PRIVATE
-        $<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugNoInputHook>>:/SUBSYSTEM:CONSOLE>
-        $<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS>
-    )
-    SET_TARGET_PROPERTIES(CS_Cheat PROPERTIES LINK_FLAGS "/MANIFEST:EMBED /MANIFESTINPUT:\"${CMAKE_CURRENT_SOURCE_DIR}/lib/dpiaware.manifest\" /MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
-endif()
+target_link_options(CS_Cheat PRIVATE
+    $<${IS_DEBUG_LIKE_CONFIG}:/SUBSYSTEM:CONSOLE>
+    $<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS>
+
+    # Explicitly set debug linker options for both Debug and DebugNoInputHook
+    $<${IS_DEBUG_LIKE_CONFIG}:/DEBUG>      # Generate debug info
+    $<${IS_DEBUG_LIKE_CONFIG}:/INCREMENTAL> # Enable incremental linking
+    # $<${IS_DEBUG_LIKE_CONFIG}:/PDB:"$<TARGET_FILE_DIR:CS_Cheat>/$<TARGET_FILE_NAME:CS_Cheat>.pdb"> # Specify PDB path
+
+    # Apply /NODEFAULTLIB:LIBCMT for Release builds (if needed)
+    $<$<CONFIG:Release>:/NODEFAULTLIB:LIBCMT>
+    # and /OPT:NOREF for Debug builds
+    $<${IS_DEBUG_LIKE_CONFIG}:/OPT:NOREF>
+)   
+SET_TARGET_PROPERTIES(CS_Cheat PROPERTIES LINK_FLAGS "/MANIFEST:EMBED /MANIFESTINPUT:\"${CMAKE_CURRENT_SOURCE_DIR}/lib/dpiaware.manifest\" /MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
 
 
 # Set the target type (explicitly for GUI in Release)
-# Win32_EXECUTABLE is true for Windows GUI applications. Console for Debug.
+# WIN32_EXECUTABLE is true for Windows GUI applications. Console for Debug/DebugNoInputHook.
 set_property(TARGET CS_Cheat PROPERTY WIN32_EXECUTABLE "$<$<CONFIG:Release>:TRUE>")
-set_property(TARGET CS_Cheat PROPERTY WIN32_EXECUTABLE "$<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugNoInputHook>>:FALSE>")
+set_property(TARGET CS_Cheat PROPERTY WIN32_EXECUTABLE "$<${IS_DEBUG_LIKE_CONFIG}:FALSE>")
 
 
 # Set Whole Program Optimization (LTCG) for Release builds
 set_property(TARGET CS_Cheat PROPERTY CMAKE_INTERPROCEDURAL_OPTIMIZATION "$<$<CONFIG:Release>:TRUE>")
 
-# Apply /NODEFAULTLIB:LIBCMT for Release builds (if needed)
-# and /OPT:NOREF for Debug builds
-target_link_options(CS_Cheat PRIVATE
-    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/NODEFAULTLIB:LIBCMT>
-    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Debug>,$<CONFIG:DebugNoInputHook>>>:/OPT:NOREF>
-)
+
 
 # Set the output name for the executable
 set_target_properties(CS_Cheat PROPERTIES OUTPUT_NAME "cs-cheat")
