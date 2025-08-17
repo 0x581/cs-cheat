@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 # 1. Define the new configuration type BEFORE project()
 # Add "DebugNoInputHook" to the list of supported configurations
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release;MinSizeRel;RelWithDebInfo;DebugNoInputHook" CACHE STRING "Supported build configurations" FORCE)
+set(CMAKE_CONFIGURATION_TYPES "Release;Debug;DebugNoInputHook" CACHE STRING "Supported build configurations" FORCE)
 
 project(CS_Cheat_Project CXX)
 
