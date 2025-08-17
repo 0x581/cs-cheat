@@ -5,6 +5,7 @@
 #include <cs_defines.h>
 
 #include "../src/memory/memory.h"
+#include <bitset>
 
 // Source: https://gist.github.com/a2x/6eb033d3c7b9a97fb7e10d2763de0f9f
 
@@ -13,8 +14,11 @@ static constexpr uint32_t MAX_ENTITIES_IN_LIST_BITS = 9;
 static constexpr uint32_t MAX_ENTITY_LISTS = 64;
 static constexpr uint32_t MAX_TOTAL_ENTITIES = MAX_ENTITIES_IN_LIST * MAX_ENTITY_LISTS;
 
+typedef uintptr_t CEntityIdentityPtr;
+typedef uintptr_t CSCharPtr;
+
 // Size: 0x78 (120 bytes)
-class EntityIdentity
+class CEntityIdentity
 {
 public:
     FORCEINLINE int32_t get_entity_index() const noexcept
@@ -23,31 +27,58 @@ public:
     }
 
 public:
-    uintptr_t instance; // 0x0000
+    uintptr_t instance;
+
 private:
-    uint8_t pad_0008[0x8]; // 0x0008
+    uint8_t pad_0008[0x8];
+
 public:
-    CHandle handle; // 0x0010
+    CHandle handle;
+
 private:
-    uint8_t pad_0014[0x64]; // 0x0014
+    int32_t m_nameStringableIndex;
+    CSCharPtr m_name;
+    CSCharPtr m_designerName;
+    uint8_t pad_0028[0x8];
+    uint32_t m_flags;
+    uint32_t m_worldGroupId;
+    uint32_t m_fDataObjectTypes;
+    uint8_t pad_0040[0x18];
+    CEntityIdentityPtr m_pPrev;
+    CEntityIdentityPtr m_pNext;
+    CEntityIdentityPtr m_pPrevByClass;
+    CEntityIdentityPtr m_pNextByClass;
 };
 
-class EntityList
+static_assert(sizeof(CEntityIdentity) == 0x78, "CEntityIdentity size mismatch");
+
+struct EntityLinkedList
+{
+    CEntityIdentity *head;
+    CEntityIdentity *tail;
+    uint8_t pad_0010[0x8];
+};
+
+class EntityData
 {
 public:
-    uintptr_t getAddressFromIndex(const Memory &mem, const CEntityIndex index) const;
-    uintptr_t getAddressFromHandle(const Memory &mem, const CHandle handle) const;
+    uintptr_t getAddressFromIndex(const CEntityIndex index) const;
+    inline uintptr_t getAddressFromHandle(const CHandle handle) const;
 
-    uintptr_t getPlayerControllerPtr(const Memory &mem, const CEntityIndex index) const;
+    uintptr_t getPlayerControllerPtr(const CEntityIndex index) const;
 
     uintptr_t getPawnPtrFromControllerPtr(const Memory &mem, const uintptr_t controllerPtr) const;
     uintptr_t getControllerPtrFromPawnPtr(const Memory &mem, const uintptr_t pawnPtr) const;
 
     uintptr_t getCurrentLookatPlayerPawn(const Memory &mem, const uintptr_t pawnPtr) const;
 
-private:
-    uint8_t pad_0000[0x10];
-    EntityIdentity *identity_chunks[MAX_ENTITY_LISTS];
+    std::bitset<MAX_ENTITY_LISTS> identity_chunks_used;
+    CEntityIdentity identity_chunks[MAX_ENTITY_LISTS][MAX_ENTITIES_IN_LIST];
+
+    CEntityIdentity *first_active_entity;
+    EntityLinkedList used_list;
+
+    uint32_t max_players;
 };
 
-bool read_entity_system(const Memory &mem, EntityList &entityList);
+bool read_entity_data(const Memory &mem, EntityData &entityData);

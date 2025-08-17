@@ -68,7 +68,7 @@ static bool check_connection(Memory &mem)
 void run_cheat_loop(bool &terminate)
 {
     Memory mem;
-    auto entity_list = new EntityList();
+    auto entity_list = new EntityData();
     auto cheat_data = new CheatData();
 
     auto lastTime = std::chrono::high_resolution_clock::now();
@@ -86,7 +86,7 @@ void run_cheat_loop(bool &terminate)
 
         std::this_thread::sleep_until(lastTime);
 
-        if (!read_entity_system(mem, *entity_list) || !read_cheat_data(mem, *entity_list, *cheat_data))
+        if (!read_entity_data(mem, *entity_list) || !read_cheat_data(mem, *entity_list, *cheat_data))
         {
             espData.isValid = false;
             continue;

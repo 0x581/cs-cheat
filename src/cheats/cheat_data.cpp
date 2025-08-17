@@ -6,7 +6,7 @@
 #include <strings.h>
 #include <vector_math.h>
 
-void read_c4_data(const Memory &mem, const EntityList &entityList, C4Data &c4Data)
+void read_c4_data(const Memory &mem, const EntityData &entityData, C4Data &c4Data)
 {
     const auto client = mem.GetModuleAddress(modules::client);
 
@@ -28,17 +28,17 @@ void read_c4_data(const Memory &mem, const EntityList &entityList, C4Data &c4Dat
 
     const auto defuserHandle = mem.Read<CHandle>(plantedC4Ptr + offsets::c4Defuser);
 
-    const auto defuserPawn = entityList.getAddressFromHandle(mem, defuserHandle);
+    const auto defuserPawn = entityData.getAddressFromHandle(defuserHandle);
 }
 
-bool read_player_data(const Memory &mem, const EntityList &entityList, const uintptr_t playerPawnPtr, PlayerData &playerData)
+bool read_player_data(const Memory &mem, const EntityData &entityData, const uintptr_t playerPawnPtr, PlayerData &playerData)
 {
     if (!playerPawnPtr)
         return false;
 
     playerData.pawnPtr = playerPawnPtr;
 
-    const auto controllerPtr = entityList.getControllerPtrFromPawnPtr(mem, playerPawnPtr);
+    const auto controllerPtr = entityData.getControllerPtrFromPawnPtr(mem, playerPawnPtr);
     if (!controllerPtr)
         return false;
 
@@ -74,7 +74,7 @@ bool read_player_data(const Memory &mem, const EntityList &entityList, const uin
     return true;
 }
 
-bool read_cheat_data(const Memory &mem, const EntityList &entityList, CheatData &cheatData)
+bool read_cheat_data(const Memory &mem, const EntityData &entityData, CheatData &cheatData)
 {
     memset(&cheatData, 0, sizeof(CheatData));
 
@@ -88,18 +88,18 @@ bool read_cheat_data(const Memory &mem, const EntityList &entityList, CheatData 
     if (!local_player_pawn)
         return false;
 
-    if (!read_player_data(mem, entityList, local_player_pawn, cheatData.localPlayer))
+    if (!read_player_data(mem, entityData, local_player_pawn, cheatData.localPlayer))
         return false;
 
     cheatData.lookAtEntityIndex = -1;
-    const auto lookat_pawn = entityList.getCurrentLookatPlayerPawn(mem, local_player_pawn);
+    const auto lookat_pawn = entityData.getCurrentLookatPlayerPawn(mem, local_player_pawn);
 
     for (CEntityIndex i = 0; i < 64; i++)
     {
-        const auto entity_player_controller = entityList.getPlayerControllerPtr(mem, i);
-        const auto entity_player_pawn = entityList.getPawnPtrFromControllerPtr(mem, entity_player_controller);
+        const auto entity_player_controller = entityData.getPlayerControllerPtr(i);
+        const auto entity_player_pawn = entityData.getPawnPtrFromControllerPtr(mem, entity_player_controller);
 
-        const auto success = read_player_data(mem, entityList, entity_player_pawn, cheatData.playerEntities[i]);
+        const auto success = read_player_data(mem, entityData, entity_player_pawn, cheatData.playerEntities[i]);
 
         cheatData.playerEntities[i].isValid = success;
     }
@@ -110,7 +110,7 @@ bool read_cheat_data(const Memory &mem, const EntityList &entityList, CheatData 
             cheatData.lookAtEntityIndex = i;
     }
 
-    read_c4_data(mem, entityList, cheatData.bombData);
+    read_c4_data(mem, entityData, cheatData.bombData);
 
     const auto globalVarsPtr = mem.Read<uintptr_t>(client + offsets::globalVars);
     cheatData.globalVars = mem.Read<CGlobalVarsBase>(globalVarsPtr);
