@@ -39,9 +39,14 @@ uintptr_t EntityData::getAddressFromIndex(const CEntityIndex index) const
 
     const auto ent_ident = identity_chunks[chunk_idx][list_idx];
 
-    if (ent_ident.get_entity_index() != index)
+    const auto ent_index = ent_ident.get_entity_index();
+
+    if (ent_index == -1)
+        return 0; // Entity was simply not valid
+
+    if (ent_index != index)
     {
-        std::cout << "Entity index mismatch: Expected " << index << ", got " << ent_ident.get_entity_index() << "\n";
+        std::cout << "Entity index mismatch: Expected " << index << ", got " << ent_index << "\n";
         return 0;
     }
 
