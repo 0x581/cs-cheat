@@ -43,5 +43,3 @@ extern bool isConnected;
 
 extern ESPData espData;
 extern BombData bombData;
-
-extern HANDLE consoleOutput;
