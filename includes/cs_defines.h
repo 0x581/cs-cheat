@@ -3,6 +3,8 @@
 #include "vector_math.h"
 
 static constexpr const auto PLAYER_NAME_LENGTH = 128;
+static constexpr const auto ENTITY_NAME_LENGTH = 32;
+static constexpr const auto ENTITY_DESIGNER_NAME_LENGTH = 32;
 
 typedef unsigned long CEntityIndex;
 typedef int CHealth;
@@ -96,6 +98,7 @@ class CHandle
 {
 public:
     static constexpr uint32_t INVALID_EHANDLE_INDEX = 0xFFFFFFFF;
+    static constexpr uint32_t INVALID_ENTRY_INDEX = (1 << 15) - 1;
 
     FORCEINLINE int32_t get_entry_index() const noexcept
     {
@@ -104,7 +107,8 @@ public:
 
     FORCEINLINE bool is_valid() const noexcept
     {
-        return index != INVALID_EHANDLE_INDEX;
+        // return index != INVALID_EHANDLE_INDEX;
+        return parts.entity_index != INVALID_ENTRY_INDEX;
     }
 
     FORCEINLINE bool operator==(const CHandle &other) const noexcept
