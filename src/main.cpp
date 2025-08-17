@@ -61,13 +61,20 @@ int main()
     overlay = new c_overlay();
 
     bool terminate = false;
+
+#ifndef DISABLE_INPUT_HOOK
     std::thread input_hook{run_input_hook, std::ref(terminate)};
+#endif
+
     std::thread cheats_thread{run_cheat_loop, std::ref(terminate)};
 
     overlay->run();
     terminate = true;
 
+#ifndef DISABLE_INPUT_HOOK
     input_hook.join();
+#endif
+
     cheats_thread.join();
 
     cleanUp();

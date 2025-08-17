@@ -1,10 +1,27 @@
 cmake_minimum_required(VERSION 3.16)
+
+# 1. Define the new configuration type BEFORE project()
+# Add "DebugNoInputHook" to the list of supported configurations
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release;MinSizeRel;RelWithDebInfo;DebugNoInputHook" CACHE STRING "Supported build configurations" FORCE)
+
 project(CS_Cheat_Project CXX)
 
 # Set the C++ standard to C++20
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# 2. Set compiler and linker flags for DebugNoInputHook to mimic Debug
+# These variables define default flags per configuration.
+# For multi-config generators (like Visual Studio), these are defaults
+# and are often overridden by target-specific options.
+# For single-config generators (like Makefiles), they are directly used.
+# Ensure DebugNoInputHook behaves like Debug
+set(CMAKE_CXX_FLAGS_DEBUGNOINPUT "${CMAKE_CXX_FLAGS_DEBUG}")
+set(CMAKE_C_FLAGS_DEBUGNOINPUT "${CMAKE_C_FLAGS_DEBUG}")
+set(CMAKE_EXE_LINKER_FLAGS_DEBUGNOINPUT "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
+set(CMAKE_SHARED_LINKER_FLAGS_DEBUGNOINPUT "${CMAKE_SHARED_LINKER_FLAGS_DEBUG}")
+set(CMAKE_MODULE_LINKER_FLAGS_DEBUGNOINPUT "${CMAKE_MODULE_LINKER_FLAGS_DEBUG}")
 
 # Define common build directories (relative to the build directory created by CMake Tools)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output")
@@ -87,6 +104,8 @@ target_link_libraries(CS_Cheat PUBLIC
 target_compile_definitions(CS_Cheat PRIVATE
     UNICODE  # Use Unicode!!!
     _UNICODE  # Use Unicode!!!
+    # Disable input hook for this config
+    $<$<CONFIG:DebugNoInputHook>:DISABLE_INPUT_HOOK>
 )
 
 # Set compiler options
@@ -99,7 +118,7 @@ target_compile_options(CS_Cheat PRIVATE
 # Linker flags for the executable
 if (WIN32)
     target_link_options(CS_Cheat PRIVATE
-        $<$<CONFIG:Debug>:/SUBSYSTEM:CONSOLE>
+        $<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugNoInputHook>>:/SUBSYSTEM:CONSOLE>
         $<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS>
     )
     SET_TARGET_PROPERTIES(CS_Cheat PROPERTIES LINK_FLAGS "/MANIFEST:EMBED /MANIFESTINPUT:\"${CMAKE_CURRENT_SOURCE_DIR}/lib/dpiaware.manifest\" /MANIFESTUAC:\"level='requireAdministrator' uiAccess='false'\"")
@@ -107,16 +126,19 @@ endif()
 
 
 # Set the target type (explicitly for GUI in Release)
-set_property(TARGET CS_Cheat PROPERTY WIN32_EXECUTABLE "$<CONFIG:Release>:TRUE>")
+# Win32_EXECUTABLE is true for Windows GUI applications. Console for Debug.
+set_property(TARGET CS_Cheat PROPERTY WIN32_EXECUTABLE "$<$<CONFIG:Release>:TRUE>")
+set_property(TARGET CS_Cheat PROPERTY WIN32_EXECUTABLE "$<$<OR:$<CONFIG:Debug>,$<CONFIG:DebugNoInputHook>>:FALSE>")
+
 
 # Set Whole Program Optimization (LTCG) for Release builds
 set_property(TARGET CS_Cheat PROPERTY CMAKE_INTERPROCEDURAL_OPTIMIZATION "$<$<CONFIG:Release>:TRUE>")
 
 # Apply /NODEFAULTLIB:LIBCMT for Release builds (if needed)
 # and /OPT:NOREF for Debug builds
-target_link_options(CS_Cheat PRIVATE 
+target_link_options(CS_Cheat PRIVATE
     $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Release>>:/NODEFAULTLIB:LIBCMT>
-    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<CONFIG:Debug>>:/OPT:NOREF>
+    $<$<AND:$<CXX_COMPILER_ID:MSVC>,$<OR:$<CONFIG:Debug>,$<CONFIG:DebugNoInputHook>>>:/OPT:NOREF>
 )
 
 # Set the output name for the executable

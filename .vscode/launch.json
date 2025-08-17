@@ -10,8 +10,21 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build/output/Debug",
             "environment": [],
-            "externalConsole": true,
+            "console": "integratedTerminal",
             "preLaunchTask": "cmake-build-debug",
+            "autoAttachChildProcess": true
+        },
+        {
+            "name": "Launch CS Cheat (Debug without Input Hook)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/output/DebugNoInputHook/cs-cheat.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build/output/DebugNoInputHook",
+            "environment": [],
+            "console": "integratedTerminal",
+            "preLaunchTask": "cmake-build-debug-no-input-hook",
             "autoAttachChildProcess": true
         },
         {
