@@ -35,7 +35,7 @@ struct PersistentConfigData
     int targetFPS = 0;
     bool showFPS = false;
 
-    char selectedConfig[CONFIG_NAME_MAX_LENGTH + 1] = {0};
+    std::string selectedConfig = "";
 
     float esp_font_scale = 1.f;
 };

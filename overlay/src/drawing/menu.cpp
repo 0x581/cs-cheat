@@ -269,7 +269,7 @@ static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
     static bool first = true;
     if (first)
     {
-        memcpy(configNameBuffer, persistentConfig.selectedConfig, CONFIG_NAME_MAX_LENGTH);
+        strncpy_s(configNameBuffer, sizeof(configNameBuffer), persistentConfig.selectedConfig.c_str(), _TRUNCATE);
         first = false;
     }
 

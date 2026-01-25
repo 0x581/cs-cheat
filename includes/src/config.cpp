@@ -23,342 +23,21 @@ PersistentConfigData persistentConfig = PersistentConfigData();
 
 std::vector<std::string> configs{};
 
-static ImVec4 json_to_imvec4(const json &j, const ImVec4 &default_value)
-{
-    if (j.is_array() && j.size() == 4)
-    {
-        return ImVec4(
-            j[0].get<float>(),
-            j[1].get<float>(),
-            j[2].get<float>(),
-            j[3].get<float>());
-    }
-
-    return default_value;
-}
-
-static json imvec4_to_json(const ImVec4 &vec)
-{
-    return json::array({vec.x, vec.y, vec.z, vec.w});
-}
-
-static ImVec2 json_to_imvec2(const json &j, const ImVec2 &default_value)
-{
-    if (j.is_array() && j.size() == 2)
-    {
-        return ImVec2(
-            j[0].get<float>(),
-            j[1].get<float>());
-    }
-    return default_value;
-}
-
-static json imvec2_to_json(const ImVec2 &vec)
-{
-    return json::array({vec.x, vec.y});
-}
-
-static ToggleableKeybind json_to_toggleablekeybind(const json &j, const ToggleableKeybind &default_value)
-{
-    return ToggleableKeybind{
-        .key = j.value("key", default_value.key),
-        .isToggle = j.value("toggle", default_value.isToggle),
-        .toggleState = j.value("hold", default_value.toggleState),
-    };
-}
-
-static json toggleablekeybind_to_json(const ToggleableKeybind &keybind)
-{
-    return json{
-        {"key", keybind.key},
-        {"toggle", keybind.isToggle},
-        {"hold", keybind.toggleState}};
-}
-
-static void from_json(PersistentConfigData &buffer, const json j, const bool verbose)
-{
-    PersistentConfigData default_persistent_config = PersistentConfigData();
-
-    try
-    {
-        auto &mainWindow = buffer.mainWindow;
-        auto &bombWindow = buffer.bombWindow;
-        auto &selectedConfig = buffer.selectedConfig;
-
-        if (j.contains("mainWindow"))
-        {
-            const auto &mw = j["mainWindow"];
-
-            mainWindow.position = json_to_imvec2(mw.value("position", json()), mainWindow.position);
-            mainWindow.size = json_to_imvec2(mw.value("size", json()), mainWindow.size);
-            mainWindow.scale = mw.value("scale", default_persistent_config.mainWindow.scale);
-        }
-        else
-            mainWindow = default_persistent_config.mainWindow;
-
-        if (j.contains("bombWindow"))
-        {
-            const auto &bw = j["bombWindow"];
-
-            bombWindow.position = json_to_imvec2(bw.value("position", json()), bombWindow.position);
-            bombWindow.scale = bw.value("scale", default_persistent_config.bombWindow.scale);
-        }
-        else
-            bombWindow = default_persistent_config.bombWindow;
-
-        buffer.targetFPS = j.value("targetFPS", 0);
-        buffer.showFPS = j.value("showFPS", false);
-
-        buffer.esp_font_scale = j.value("espFontScale", default_persistent_config.esp_font_scale);
-
-        const auto selectedConfig_str = j.value("selectedConfig", std::string());
-
-        const auto length = min(selectedConfig_str.length(), CONFIG_NAME_MAX_LENGTH);
-
-        memset(selectedConfig, 0, CONFIG_NAME_MAX_LENGTH);
-        memcpy(selectedConfig, selectedConfig_str.data(), length);
-    }
-    catch (const json::exception &e)
-    {
-        if (verbose)
-            std::cerr << "Error: Failed to parse persistent config JSON: " << e.what() << std::endl;
-
-        buffer = default_persistent_config;
-    }
-}
-
-static json to_json(const PersistentConfigData &buffer)
-{
-    auto &mainWindow = buffer.mainWindow;
-    auto &bombWindow = buffer.bombWindow;
-    auto &selectedConfig = buffer.selectedConfig;
-
-    json j;
-
-    j["mainWindow"] = {
-        {"position", imvec2_to_json(mainWindow.position)},
-        {"size", imvec2_to_json(mainWindow.size)},
-        {"scale", mainWindow.scale}};
-
-    j["bombWindow"] = {
-        {"position", imvec2_to_json(bombWindow.position)},
-        {"scale", bombWindow.scale}};
-
-    j["targetFPS"] = buffer.targetFPS;
-    j["showFPS"] = buffer.showFPS;
-
-    j["selectedConfig"] = std::string(selectedConfig);
-
-    j["espFontScale"] = buffer.esp_font_scale;
-
-    return j;
-}
-
-static void from_json(ConfigData &buffer, const json j, const bool verbose)
-{
-    ConfigData default_config = ConfigData();
-
-    try
-    {
-        auto &activeCheats = buffer.activeCheats;
-        auto &esp = buffer.esp;
-        auto &aimBot = buffer.aimBot;
-        auto &fov = buffer.fov;
-        auto &rageBot = buffer.rageBot;
-        auto &devSettings = buffer.devSettings;
-        auto &keybinds = buffer.keybinds;
-
-        // Active Cheats
-        if (j.contains("activeCheats"))
-        {
-            const auto &ac = j["activeCheats"];
-
-            activeCheats.aimBot = ac.value("aimBot", default_config.activeCheats.aimBot);
-            activeCheats.antiFlash = ac.value("antiFlash", default_config.activeCheats.antiFlash);
-            activeCheats.bombTimer = ac.value("bombTimer", default_config.activeCheats.bombTimer);
-            activeCheats.bunnyHop = ac.value("bunnyHop", default_config.activeCheats.bunnyHop);
-            activeCheats.esp = ac.value("esp", default_config.activeCheats.esp);
-            activeCheats.fovChanger = ac.value("fovChanger", default_config.activeCheats.fovChanger);
-            activeCheats.radar = ac.value("radar", default_config.activeCheats.radar);
-            activeCheats.triggerBot = ac.value("triggerBot", default_config.activeCheats.triggerBot);
-            activeCheats.rageBot = ac.value("rageBot", default_config.activeCheats.rageBot);
-        }
-        else
-            activeCheats = default_config.activeCheats;
-
-        // ESP Settings
-        if (j.contains("esp"))
-        {
-            const auto &espJson = j["esp"];
-
-            esp.renderFriendlies = espJson.value("renderFriendlies", default_config.esp.renderFriendlies);
-            esp.boxGlow = espJson.value("boxGlow", default_config.esp.boxGlow);
-            esp.bone = espJson.value("bone", default_config.esp.bone);
-            esp.box = espJson.value("box", default_config.esp.box);
-            esp.name = espJson.value("name", default_config.esp.name);
-            esp.health = espJson.value("health", default_config.esp.health);
-            esp.boneWidth = espJson.value("boneWidth", default_config.esp.boneWidth);
-
-            esp.colorEnemyVisible = json_to_imvec4(espJson.value("colorEnemyVisible", json()), esp.colorEnemyVisible);
-            esp.colorEnemyHidden = json_to_imvec4(espJson.value("colorEnemyHidden", json()), esp.colorEnemyHidden);
-            esp.colorTeamVisible = json_to_imvec4(espJson.value("colorTeamVisible", json()), esp.colorTeamVisible);
-            esp.colorTeamHidden = json_to_imvec4(espJson.value("colorTeamHidden", json()), esp.colorTeamHidden);
-            esp.colorItem = json_to_imvec4(espJson.value("colorItem", json()), esp.colorItem);
-        }
-        else
-            esp = default_config.esp;
-
-        // AimBot Settings
-        if (j.contains("aimBot"))
-        {
-            const auto &aimJson = j["aimBot"];
-
-            aimBot.pixelRadius = aimJson.value("pixelRadius", default_config.aimBot.pixelRadius);
-            aimBot.speedFactor = aimJson.value("speedFactor", default_config.aimBot.speedFactor);
-            aimBot.drawFovCircle = aimJson.value("drawFovCircle", default_config.aimBot.drawFovCircle);
-            aimBot.ignoreTeam = aimJson.value("ignoreTeam", default_config.aimBot.ignoreTeam);
-            aimBot.checkVisible = aimJson.value("checkVisible", default_config.aimBot.checkVisible);
-            aimBot.hitbox = aimJson.value("hitbox", default_config.aimBot.hitbox);
-            aimBot.shotDelay = aimJson.value("shotDelay", default_config.aimBot.shotDelay);
-
-            aimBot.fovCircleColor = json_to_imvec4(aimJson.value("fovCircleColor", json()), aimBot.fovCircleColor);
-        }
-        else
-            aimBot = default_config.aimBot;
-
-        // FOV Settings
-        if (j.contains("fov"))
-        {
-            const auto &fovJson = j["fov"];
-
-            fov.desiredFov = fovJson.value("desiredFov", default_config.fov.desiredFov);
-        }
-        else
-            fov = default_config.fov;
-
-        // RageBot Settings
-        if (j.contains("rageBot"))
-        {
-            const auto &rageJson = j["rageBot"];
-
-            rageBot.pixelRadius = rageJson.value("pixelRadius", default_config.rageBot.pixelRadius);
-            rageBot.speedFactor = rageJson.value("speedFactor", default_config.rageBot.speedFactor);
-            rageBot.checkVisible = rageJson.value("visible", default_config.rageBot.checkVisible);
-            rageBot.hitbox = rageJson.value("hitbox", default_config.rageBot.hitbox);
-            rageBot.shotDelay = rageJson.value("shotDelay", default_config.rageBot.shotDelay);
-        }
-        else
-            rageBot = default_config.rageBot;
-
-        if (j.contains("devSettings"))
-        {
-            const auto &devJson = j["devSettings"];
-            devSettings.devMode = devJson.value("devMode", default_config.devSettings.devMode);
-        }
-        else
-            devSettings = default_config.devSettings;
-
-        if (j.contains("keybinds"))
-        {
-            const auto &kb = j["keybinds"];
-            keybinds.showMenu = kb.value("showMenu", default_config.keybinds.showMenu);
-            keybinds.quickExit = kb.value("quickExit", default_config.keybinds.quickExit);
-
-            keybinds.bunnyHop = json_to_toggleablekeybind(kb.value("bunnyHop", json()), default_config.keybinds.bunnyHop);
-            keybinds.triggerBot = json_to_toggleablekeybind(kb.value("triggerBot", json()), default_config.keybinds.triggerBot);
-            keybinds.aimBot = json_to_toggleablekeybind(kb.value("aimBot", json()), default_config.keybinds.aimBot);
-            keybinds.rageBot = json_to_toggleablekeybind(kb.value("rageBot", json()), default_config.keybinds.rageBot);
-        }
-        else
-            keybinds = default_config.keybinds;
-    }
-    catch (const json::exception &e)
-    {
-        if (verbose)
-            std::cerr << "Error: Failed to parse config JSON: " << e.what() << std::endl;
-
-        buffer = default_config;
-    }
-}
-
-static json to_json(const ConfigData &buffer)
-{
-    auto &activeCheats = buffer.activeCheats;
-    auto &esp = buffer.esp;
-    auto &aimBot = buffer.aimBot;
-    auto &fov = buffer.fov;
-    auto &rageBot = buffer.rageBot;
-    auto &devSettings = buffer.devSettings;
-    auto &keybinds = buffer.keybinds;
-
-    json j;
-
-    // Active Cheats
-    j["activeCheats"] = {
-        {"aimBot", activeCheats.aimBot},
-        {"antiFlash", activeCheats.antiFlash},
-        {"bombTimer", activeCheats.bombTimer},
-        {"bunnyHop", activeCheats.bunnyHop},
-        {"esp", activeCheats.esp},
-        {"fovChanger", activeCheats.fovChanger},
-        {"radar", activeCheats.radar},
-        {"triggerBot", activeCheats.triggerBot},
-        {"rageBot", activeCheats.rageBot}};
-
-    // ESP Settings
-    j["esp"] = {
-        {"renderFriendlies", esp.renderFriendlies},
-        {"boxGlow", esp.boxGlow},
-        {"bone", esp.bone},
-        {"box", esp.box},
-        {"name", esp.name},
-        {"health", esp.health},
-        {"boneWidth", esp.boneWidth},
-        {"colorEnemyVisible", imvec4_to_json(esp.colorEnemyVisible)},
-        {"colorEnemyHidden", imvec4_to_json(esp.colorEnemyHidden)},
-        {"colorTeamVisible", imvec4_to_json(esp.colorTeamVisible)},
-        {"colorTeamHidden", imvec4_to_json(esp.colorTeamHidden)},
-        {"colorItem", imvec4_to_json(esp.colorItem)}};
-
-    // AimBot Settings
-    j["aimBot"] = {
-        {"pixelRadius", aimBot.pixelRadius},
-        {"speedFactor", aimBot.speedFactor},
-        {"drawFovCircle", aimBot.drawFovCircle},
-        {"ignoreTeam", aimBot.ignoreTeam},
-        {"checkVisible", aimBot.checkVisible},
-        {"fovCircleColor", imvec4_to_json(aimBot.fovCircleColor)},
-        {"hitbox", aimBot.hitbox},
-        {"shotDelay", aimBot.shotDelay}};
-
-    // FOV Settings
-    j["fov"] = {
-        {"desiredFov", fov.desiredFov}};
-
-    // RageBot Settings
-    j["rageBot"] = {
-        {"pixelRadius", rageBot.pixelRadius},
-        {"speedFactor", rageBot.speedFactor},
-        {"visible", rageBot.checkVisible},
-        {"hitbox", rageBot.hitbox},
-        {"shotDelay", rageBot.shotDelay}};
-
-    j["devSettings"] = {
-        {"devMode", devSettings.devMode},
-    };
-
-    j["keybinds"] = {
-        {"showMenu", keybinds.showMenu},
-        {"quickExit", keybinds.quickExit},
-
-        {"bunnyHop", toggleablekeybind_to_json(keybinds.bunnyHop)},
-        {"triggerBot", toggleablekeybind_to_json(keybinds.triggerBot)},
-        {"aimBot", toggleablekeybind_to_json(keybinds.aimBot)},
-        {"rageBot", toggleablekeybind_to_json(keybinds.rageBot)},
-    };
-
-    return j;
-}
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ImVec2, x, y)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ImVec4, x, y, z, w)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ToggleableKeybind, key, isToggle, toggleState)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData::MainWindowSettings, position, size, scale)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData::BombSettings, position, scale)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData, mainWindow, bombWindow, targetFPS, showFPS, selectedConfig, esp_font_scale)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::ActiveCheats, aimBot, antiFlash, bombTimer, bunnyHop, esp, fovChanger, radar, triggerBot, rageBot)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::EspSettings, renderFriendlies, boxGlow, bone, box, name, font_scale, health, boneWidth, colorEnemyVisible, colorEnemyHidden, colorTeamVisible, colorTeamHidden, colorItem)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::AimBotSettings, pixelRadius, speedFactor, drawFovCircle, ignoreTeam, checkVisible, fovCircleColor, hitbox, shotDelay)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::FovSettings, desiredFov)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::RcsSettings, Rcs, OldPunchAngleX, OldPunchAngleY)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::RageBotSettings, pixelRadius, speedFactor, checkVisible, hitbox, shotDelay)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::DevSettings, devMode)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::KeyBinds, showMenu, quickExit, bunnyHop, triggerBot, aimBot, rageBot)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData, activeCheats, esp, aimBot, fov, rcs, rageBot, devSettings, keybinds)
 
 static bool get_expanded_path(const string_view folder, path &expandedPath)
 {
@@ -480,7 +159,16 @@ static bool load_config_data(T &buffer, const string_view folder, const string_v
 
     i_file.close();
 
-    from_json(buffer, j, verbose);
+    try
+    {
+        buffer = j.get<T>();
+    }
+    catch (const json::exception &e)
+    {
+        if (verbose)
+            std::cerr << "Error: Failed to convert JSON to config data: " << e.what() << std::endl;
+        return false;
+    }
 
     return true;
 }
@@ -511,7 +199,7 @@ static bool store_config_data(const T &data, const string_view folder, const str
         return false;
     }
 
-    o_file << T::MAGIC_BYTES << to_json(data).dump(4);
+    o_file << T::MAGIC_BYTES << nlohmann::json(data).dump(4);
 
     o_file.flush();
     o_file.close();
@@ -558,8 +246,7 @@ void set_selected_config(const string_view config_name)
     const auto length = config_name.length();
     const auto remaining_length = CONFIG_NAME_MAX_LENGTH - length;
 
-    memcpy(persistentConfig.selectedConfig, config_name.data(), length);
-    memset(persistentConfig.selectedConfig + length, 0, remaining_length);
+    persistentConfig.selectedConfig = config_name;
 }
 
 static void load_default_config_data()
