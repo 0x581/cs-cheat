@@ -3,9 +3,6 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
-constexpr float menu_width = 650.f;
-constexpr float menu_height = 500.f;
-
 constexpr float bomb_width = 300;
 constexpr float bomb_height = 100;
 
