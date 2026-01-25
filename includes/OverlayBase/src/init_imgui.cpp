@@ -1,14 +1,12 @@
-#include "../overlay.h"
+#include "../overlay_base.hpp"
 
 #include <imgui.h>
 
-#include <config.h>
+#include "../window_handle.hpp"
 
-#include "../window_handle.h"
-
-static void set_style_colors()
+static void set_style_colors(ImGuiStyle &style)
 {
-    auto colors = ImGui::GetStyle().Colors;
+    auto colors = style.Colors;
 
     // --- Theme Colors with Purple Accent ---
     constexpr ImVec4 almostBlack = ImVec4(0.06f, 0.06f, 0.07f, 0.95f);
@@ -90,20 +88,8 @@ static void set_style_colors()
     colors[ImGuiCol_ModalWindowDimBg] = ImVec4(0.04f, 0.04f, 0.05f, 0.65f);
 }
 
-VOID c_overlay::update_style()
+static void set_style_sizes(ImGuiStyle &style, float scale)
 {
-    const auto menu_scale = persistentConfig.mainWindow.scale;
-    const auto bomb_scale = persistentConfig.bombWindow.scale;
-
-    const auto esp_scale = persistentConfig.esp_font_scale;
-
-    auto &style = ImGui::GetStyle();
-    auto &imgui_io = ImGui::GetIO();
-
-    style = ImGuiStyle();
-
-    set_style_colors();
-
     // --- General Style Variables ---
     style.WindowPadding = ImVec2(15, 15);
     style.WindowRounding = 5.0f;
@@ -123,15 +109,25 @@ VOID c_overlay::update_style()
     style.FrameBorderSize = 0.0f;
     style.TabBorderSize = 0.0f;
 
-    style.ScaleAllSizes(menu_scale);
+    if (scale != 1.0f)
+        style.ScaleAllSizes(scale);
+}
+
+void OverlayBase::reset_style()
+{
+    auto &style = ImGui::GetStyle();
+    auto &imgui_io = ImGui::GetIO();
+
+    style = ImGuiStyle();
+
+    set_style_colors(style);
+    set_style_sizes(style, get_style_scale());
 
     imgui_io.Fonts->ClearFonts();
 
-    // --- Font Laden (dein Code) ---
-    font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f * menu_scale);
-    title_font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 20.0f * menu_scale);
-    esp_font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 14.0f * esp_scale);
-    bomb_font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 25.0f * bomb_scale);
+    load_fonts(imgui_io);
+
+    info_font = imgui_io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Tahoma.ttf", 16.0f);
 
     ImGui_ImplDX11_InvalidateDeviceObjects();
     ImGui_ImplDX11_CreateDeviceObjects();
@@ -139,7 +135,7 @@ VOID c_overlay::update_style()
     std::cout << "Reloaded ImGui style and fonts." << std::endl;
 }
 
-VOID c_overlay::init_imgui()
+void OverlayBase::init_imgui()
 {
     IMGUI_CHECKVERSION();
 
@@ -153,11 +149,9 @@ VOID c_overlay::init_imgui()
 
     ImGui_ImplWin32_Init(window_handle);
     ImGui_ImplDX11_Init(d3d_device, device_context);
-
-    update_style();
 }
 
-VOID c_overlay::dest_imgui()
+void OverlayBase::dest_imgui()
 {
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
@@ -165,9 +159,4 @@ VOID c_overlay::dest_imgui()
     ImGui::DestroyContext(imguiContext);
 
     imguiContext = nullptr;
-
-    title_font = nullptr;
-    font = nullptr;
-    esp_font = nullptr;
-    bomb_font = nullptr;
 }

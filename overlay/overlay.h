@@ -3,86 +3,35 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
+#include "OverlayBase/overlay_base.hpp"
+
 constexpr float bomb_width = 300;
 constexpr float bomb_height = 100;
 
-class c_overlay
+class c_overlay : public OverlayBase
 {
 private:
-    HWND window_handle;
-    FLOAT window_width, window_height;
-    bool window_scale_changed;
     ImVec2 bombScale;
-
-    ID3D11Device *d3d_device;
-    ID3D11DeviceContext *device_context;
-    IDXGISwapChain *swap_chain;
-    ID3D11RenderTargetView *render_target_view;
-
-    ImDrawList *draw_list;
-    ImGuiContext *imguiContext;
 
     ImFont *title_font;
     ImFont *font;
     ImFont *esp_font;
     ImFont *bomb_font;
 
-    bool show_menu;
+    bool mouse_over_window(const ImVec2 &mouse_pos);
+    bool should_show_fps();
+    int get_target_fps();
+    int get_quick_exit_key();
+    int get_menu_toggle_key();
+    float get_style_scale();
+    void load_fonts(ImGuiIO &imgui_io);
+    void render();
 
-public:
-    bool exit;
-    bool ready_to_close;
-
-private:
-    template <typename T>
-    inline VOID safe_release(T *&p);
-
-    BOOL init_device();
-    VOID dest_device();
-
-    VOID update_style();
-
-    VOID init_imgui();
-    VOID dest_imgui();
-
-    VOID init_render_target();
-    VOID dest_render_target();
-
-    VOID update_on_resolution_change();
-
-    VOID state_handler();
-
-    const VOID render();
-
-    VOID draw_menu();
-    VOID draw_bomb();
-    VOID draw_cheats();
-
-    VOID HandleInput();
-
-    VOID init_draw_list();
-
-    BOOL msg_loop();
-
-    VOID clear_screen();
-
-    //					 //
-    // Drawing functions //
-    //					 //
-    VOID rect(const ImVec2 &min, const ImVec2 &max, ImU32 color, const FLOAT line_width = 2.f);
-    VOID rect_filled(const ImVec2 &min, const ImVec2 &max, ImU32 color);
-    VOID line(const ImVec2 &point1, const ImVec2 point2, ImU32 color, const FLOAT line_width = 2.f);
-    VOID circle(const ImVec2 &point, const FLOAT radius, ImU32 color);
-    VOID text(const ImVec2 &pos, const std::string &text, ImU32 color, bool outline = true);
-    VOID esp_text(const std::string &text, const ImVec2 &pos, ImU32 color, bool outline = true);
-    VOID radial_gradient(const ImVec2 &center, float radius, ImU32 col_in, ImU32 col_out);
-    VOID box_with_glow(const ImVec2 &min, const ImVec2 &max, ImU32 color, FLOAT line_width, FLOAT glow_size);
-
-    BOOL in_screen(const ImVec2 &pos);
+    void draw_menu();
+    void draw_bomb();
+    void draw_cheats();
 
 public:
     c_overlay();
-    ~c_overlay();
-
-    VOID run();
+    ~c_overlay() = default;
 };

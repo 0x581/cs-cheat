@@ -401,12 +401,8 @@ static void draw_keybinds_submenu(const ImGuiStyle &style)
     }
 }
 
-static void draw_settings_submenu(const ImGuiStyle &style, const float slider_indent, bool &window_scale_changed)
+static void draw_settings_submenu(const ImGuiStyle &style, const float slider_indent, c_overlay &overlay)
 {
-    static bool menu_value_changed_while_selected = false;
-    static bool bomb_value_changed_while_selected = false;
-    static bool name_value_changed_while_selected = false;
-
     if (ImGui::CollapsingHeader("Scaling", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::AlignTextToFramePadding();
@@ -422,13 +418,8 @@ static void draw_settings_submenu(const ImGuiStyle &style, const float slider_in
             ImGuiSliderFlags_ClampOnInput);
         ImGui::PopItemWidth();
 
-        menu_value_changed_while_selected |= value_changed;
-
-        if (menu_value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
-        {
-            menu_value_changed_while_selected = false;
-            window_scale_changed = true;
-        }
+        if (ImGui::IsItemDeactivatedAfterEdit())
+            overlay.reload_window();
 
         ImGui::AlignTextToFramePadding();
         ImGui::TextUnformatted("Bomb");
@@ -443,13 +434,8 @@ static void draw_settings_submenu(const ImGuiStyle &style, const float slider_in
             ImGuiSliderFlags_ClampOnInput);
         ImGui::PopItemWidth();
 
-        bomb_value_changed_while_selected |= value_changed;
-
-        if (bomb_value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
-        {
-            bomb_value_changed_while_selected = false;
-            window_scale_changed = true;
-        }
+        if (ImGui::IsItemDeactivatedAfterEdit())
+            overlay.reload_window();
 
         ImGui::AlignTextToFramePadding();
         ImGui::TextUnformatted("Names");
@@ -464,13 +450,8 @@ static void draw_settings_submenu(const ImGuiStyle &style, const float slider_in
             ImGuiSliderFlags_ClampOnInput);
         ImGui::PopItemWidth();
 
-        name_value_changed_while_selected |= value_changed;
-
-        if (name_value_changed_while_selected && ImGui::IsItemDeactivatedAfterEdit())
-        {
-            name_value_changed_while_selected = false;
-            window_scale_changed = true;
-        }
+        if (ImGui::IsItemDeactivatedAfterEdit())
+            overlay.reload_window();
     }
 
     if (ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
@@ -557,7 +538,7 @@ void c_overlay::draw_menu()
                 break;
 
             case MenuOrder::SETTINGS:
-                draw_settings_submenu(style, slider_indent, window_scale_changed);
+                draw_settings_submenu(style, slider_indent, *this);
                 break;
             }
         }
