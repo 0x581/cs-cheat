@@ -16,25 +16,24 @@ void OverlayBase::rect_filled(const ImRect &rect, ImU32 color, float rounding)
 
 void OverlayBase::rect_with_glow(const ImRect &rect, ImU32 color, float glow_size, float rounding)
 {
-    constexpr float glow_intensity = 1.f;
-    constexpr float step_size = 2.5f;
+    constexpr float step_size = 1.5f;
 
     const auto &min = rect.Min;
     const auto &max = rect.Max;
 
     const ImVec4 color_vec = ImGui::ColorConvertU32ToFloat4(color);
 
-    for (float i = glow_size; i >= 0.0f; i -= step_size)
+    for (float i = 0.f; i <= glow_size; i += step_size)
     {
         float t = i / glow_size;
-        float glow_alpha = color_vec.w * glow_intensity * (1.0f - t) * (1.0f - t);
+        float glow_alpha = color_vec.w * (1.0f - t) * (1.0f - t);
         ImU32 glow_color = ImGui::ColorConvertFloat4ToU32(ImVec4(color_vec.x, color_vec.y, color_vec.z, glow_alpha));
 
-        // const auto curr_rounding = rounding + i;
+        const auto curr_rounding = rounding + i;
         // const auto curr_rounding = rounding + i / 2.f;
-        const auto curr_rounding = rounding * (1 + i / glow_size);
+        // const auto curr_rounding = rounding * (1 + i / glow_size);
 
-        draw_list->AddRect(min - ImVec2(i, i), max + ImVec2(i, i), glow_color, curr_rounding, ImDrawFlags_RoundCornersAll, step_size);
+        draw_list->AddRect(min - ImVec2(i, i), max + ImVec2(i, i), glow_color, curr_rounding, 0, step_size);
     }
 }
 

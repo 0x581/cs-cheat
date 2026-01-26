@@ -34,11 +34,11 @@ void c_overlay::draw_cheats()
             if (!(in_screen(min) || in_screen(max)))
                 continue;
 
+            const auto line_width = 1 / (espRenderData.distance) * 200 * config.esp.boneWidth;
+
             if (config.esp.bone)
             {
                 const BoneData &bones = espRenderData.bones;
-
-                const auto line_width = 1 / (espRenderData.distance) * 200 * config.esp.boneWidth;
 
                 line(bones.head, bones.neck, currentColorU32, line_width);
                 line(bones.neck, bones.spine4, currentColorU32, line_width);
@@ -64,10 +64,12 @@ void c_overlay::draw_cheats()
 
             if (config.esp.box)
             {
+                const auto bounding_rect = ImRect(min, max);
+
                 if (config.esp.boxGlow)
-                    rect_with_glow(ImRect(min, max), currentColorU32, dynamicGlowSize);
+                    rect_with_glow(bounding_rect, currentColorU32, dynamicGlowSize * line_width, bounding_rect.GetHeight() / 8.f);
                 else
-                    rect(ImRect(min, max), currentColorU32, 2.0f);
+                    rect(bounding_rect, currentColorU32, 2.0f);
             }
 
             if (config.esp.name)
