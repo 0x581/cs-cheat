@@ -39,18 +39,19 @@ private:
     int32_t m_nameStringableIndex;
     CSCharPtr m_name;
     CSCharPtr m_designerName;
-    uint8_t pad_0028[0x8];
-    uint32_t m_flags;
-    uint32_t m_worldGroupId;
-    uint32_t m_fDataObjectTypes;
-    uint8_t pad_0040[0x18];
-    CEntityIdentityPtr m_pPrev;
-    CEntityIdentityPtr m_pNext;
-    CEntityIdentityPtr m_pPrevByClass;
-    CEntityIdentityPtr m_pNextByClass;
+    // uint8_t pad_0028[0x8];
+    // uint32_t m_flags;
+    // uint32_t m_worldGroupId;
+    // uint32_t m_fDataObjectTypes;
+    // uint8_t pad_0040[0x18];
+    // CEntityIdentityPtr m_pPrev;
+    // CEntityIdentityPtr m_pNext;
+    // CEntityIdentityPtr m_pPrevByClass;
+    // CEntityIdentityPtr m_pNextByClass;
+    uint8_t pad_0028[0x44];
 };
 
-static_assert(sizeof(CEntityIdentity) == 0x78, "CEntityIdentity size mismatch");
+static_assert(sizeof(CEntityIdentity) == 0x70, "CEntityIdentity size mismatch");
 
 struct EntityLinkedList
 {
