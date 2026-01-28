@@ -1,4 +1,4 @@
-#include "../shared_variables.h"
+#include "../shared_variables.hpp"
 
 bool isConnected{false};
 

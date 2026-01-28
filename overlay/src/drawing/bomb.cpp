@@ -1,12 +1,12 @@
-#include "../../overlay.h"
+#include "../../overlay.hpp"
 
-#include <config.h>
-#include <shared_variables.h>
+#include "config.hpp"
+#include "shared_variables.hpp"
 
 void c_overlay::draw_bomb()
 {
     ImGui::SetNextWindowPos(persistentConfig.bombWindow.position, ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(bombScale);
+    ImGui::SetNextWindowSize(bombWindowSize);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
 

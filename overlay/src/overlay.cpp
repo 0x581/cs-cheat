@@ -1,14 +1,15 @@
-#include "../overlay.h"
+#include "../overlay.hpp"
 
-#include <colors.h>
-#include <config.h>
-#include <shared_variables.h>
+#include "CheatBase/colors.hpp"
+
+#include "config.hpp"
+#include "shared_variables.hpp"
 
 c_overlay::c_overlay() : OverlayBase(),
                          //		  //
                          // Window //
                          //		  //
-                         bombScale(bomb_width * persistentConfig.bombWindow.scale, bomb_height * persistentConfig.bombWindow.scale),
+                         bombWindowSize(-1.f, -1.f),
 
                          //			   //
                          // ImGui stuff //
@@ -26,7 +27,7 @@ bool c_overlay::mouse_over_window(const ImVec2 &mouse_pos)
     ImVec2 menu_br = menu_tl + persistentConfig.mainWindow.size;
 
     ImVec2 bomb_tl = persistentConfig.bombWindow.position;
-    ImVec2 bomb_br = bomb_tl + bombScale;
+    ImVec2 bomb_br = bomb_tl + bombWindowSize;
 
     const ImRect menu_rect = ImRect(menu_tl, menu_br);
     const ImRect bomb_rect = ImRect(bomb_tl, bomb_br);
@@ -60,7 +61,7 @@ void c_overlay::render()
         draw_menu();
 }
 
-void c_overlay::load_fonts(ImGuiIO &imgui_io)
+void c_overlay::on_reload(ImGuiIO &imgui_io)
 {
     const auto font_path = "C:\\Windows\\Fonts\\Tahoma.ttf";
 
@@ -74,4 +75,6 @@ void c_overlay::load_fonts(ImGuiIO &imgui_io)
     title_font = Fonts->AddFontFromFileTTF(font_path, 20.0f * menu_scale);
     esp_font = Fonts->AddFontFromFileTTF(font_path, 14.0f * esp_scale);
     bomb_font = Fonts->AddFontFromFileTTF(font_path, 25.0f * bomb_scale);
+
+    bombWindowSize = ImVec2(bomb_width, bomb_height) * bomb_scale;
 }

@@ -1,8 +1,9 @@
-#include "../../overlay.h"
+#include "../../overlay.hpp"
 
-#include <config.h>
-#include <shared_variables.h>
-#include <colors.h>
+#include "CheatBase/colors.hpp"
+
+#include "config.hpp"
+#include "shared_variables.hpp"
 
 void c_overlay::draw_cheats()
 {

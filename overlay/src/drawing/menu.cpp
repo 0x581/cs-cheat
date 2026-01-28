@@ -1,8 +1,9 @@
-#include "../../overlay.h"
+#include "../../overlay.hpp"
 
-#include <config.h>
-#include <files.h>
-#include <hotkeys.h>
+#include "CheatBase/hotkey_edit.hpp"
+
+#include "config.hpp"
+#include "files.hpp"
 
 static int filter_chars(ImGuiInputTextCallbackData *data)
 {
@@ -265,7 +266,7 @@ static void draw_misc_submenu(const ImGuiStyle &style, const float slider_indent
 
 static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
 {
-    static char configNameBuffer[CONFIG_NAME_MAX_LENGTH + 1] = "";
+    static char configNameBuffer[configManager.MAX_CONFIG_NAME_LENGTH + 1] = "";
     static bool first = true;
     if (first)
     {
@@ -289,7 +290,7 @@ static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
 
             if (ImGui::BeginListBox("##ConfigList", ImVec2(-1, -1)))
             {
-                for (const auto &config : configs)
+                for (const auto &config : configManager.configs)
                     if (ImGui::Selectable(config.c_str()))
                         strncpy_s(configNameBuffer, sizeof(configNameBuffer), config.c_str(), _TRUNCATE);
 
@@ -308,19 +309,19 @@ static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
             {
                 if (configNameBuffer[0] != '\0')
                 {
-                    set_selected_config(configNameBuffer);
-                    store_all_config_data(files::folder);
+                    if (configManager.set_config_name(configNameBuffer))
+                        configManager.store_all_config_data();
                 }
             }
             if (ImGui::Button("Load", ImVec2(-1, 0)))
             {
                 if (configNameBuffer[0] != '\0')
-                    load_cheat_config_data(files::folder, std::string_view(configNameBuffer));
+                    configManager.load_cheat_config(configNameBuffer);
             }
             if (ImGui::Button("Delete", ImVec2(-1, 0)))
             {
                 if (configNameBuffer[0] != '\0')
-                    delete_config(files::folder, std::string_view(configNameBuffer));
+                    configManager.delete_config(configNameBuffer);
             }
             ImGui::EndChild();
 

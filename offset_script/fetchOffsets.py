@@ -69,7 +69,7 @@ def get_all_offsets() -> str:
 
 if __name__ == "__main__":
     output_path = os.path.join(
-        os.path.dirname(os.path.abspath(__file__)), os.pardir, "includes", "offsets.h"
+        os.path.dirname(os.path.abspath(__file__)), os.pardir, "includes", "offsets.hpp"
     )
     with open(output_path, "w") as file:
         file.write(get_all_offsets())

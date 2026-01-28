@@ -1,0 +1,19 @@
+#include "cheat_entries.hpp"
+
+#include "shared_variables.hpp"
+
+void runBombTimer(const CheatData &cheatData)
+{
+    const auto timeRemaining = cheatData.bombData.explosionTime - cheatData.globalVars.currentTime;
+
+    const auto localPlayerDefuseTime = cheatData.localPlayer.hasDefuser ? 5.0 : 10.0;
+
+    bombData = {
+        .planted = cheatData.bombData.planted,
+        .timeRemaining = timeRemaining,
+        .localPlayerCanDefuse = timeRemaining > localPlayerDefuseTime,
+        .beingDefused = cheatData.bombData.beingDefused,
+        .defused = cheatData.bombData.defused,
+        .defuser = cheatData.bombData.defuser,
+        .site = cheatData.bombData.site};
+}
