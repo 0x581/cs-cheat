@@ -69,7 +69,7 @@ void c_overlay::on_reload(ImGuiIO &imgui_io)
 
     const auto menu_scale = persistentConfig.mainWindow.scale;
     const auto bomb_scale = persistentConfig.bombWindow.scale;
-    const auto esp_scale = persistentConfig.esp_font_scale;
+    const auto esp_scale = persistentConfig.espFontScale;
 
     font = Fonts->AddFontFromFileTTF(font_path, 16.0f * menu_scale);
     title_font = Fonts->AddFontFromFileTTF(font_path, 20.0f * menu_scale);

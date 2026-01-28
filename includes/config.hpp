@@ -9,8 +9,6 @@
 
 struct PersistentConfigData
 {
-    static constexpr auto MAGIC_BYTES = std::string_view("Merkur CS2 Persistent Config\n");
-
     struct MainWindowSettings
     {
         ImVec2 position = ImVec2(50, 100);
@@ -27,15 +25,11 @@ struct PersistentConfigData
     int targetFPS = 0;
     bool showFPS = false;
 
-    std::string selectedConfig = "";
-
-    float esp_font_scale = 1.f;
+    float espFontScale = 1.f;
 };
 
 struct ConfigData
 {
-    static constexpr auto MAGIC_BYTES = std::string_view("Merkur CS2 Cheat Config\n");
-
     struct ActiveCheats
     {
         bool aimBot = false;
@@ -119,7 +113,7 @@ struct ConfigData
 
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData::MainWindowSettings, position, size, scale)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData::BombSettings, position, scale)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData, mainWindow, bombWindow, targetFPS, showFPS, selectedConfig, esp_font_scale)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData, mainWindow, bombWindow, targetFPS, showFPS, espFontScale)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::ActiveCheats, aimBot, antiFlash, bombTimer, bunnyHop, esp, fovChanger, radar, triggerBot, rageBot)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::EspSettings, renderFriendlies, boxGlow, bone, box, name, font_scale, health, boneWidth, colorEnemyVisible, colorEnemyHidden, colorTeamVisible, colorTeamHidden, colorItem)
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::AimBotSettings, pixelRadius, speedFactor, drawFovCircle, ignoreTeam, checkVisible, fovCircleColor, hitbox, shotDelay)

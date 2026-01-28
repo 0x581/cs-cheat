@@ -444,7 +444,7 @@ static void draw_settings_submenu(const ImGuiStyle &style, const float slider_in
         ImGui::PushItemWidth(-1);
         value_changed = ImGui::SliderFloat(
             "##NameFontScale",
-            &persistentConfig.esp_font_scale,
+            &persistentConfig.espFontScale,
             0.5f,
             3.0f,
             "%.2fx",
