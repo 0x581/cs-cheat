@@ -4,7 +4,11 @@
         {
             "label": "create-build-dir",
             "type": "shell",
-            "command": "mkdir \"${workspaceFolder}/build/output/Release\" \"${workspaceFolder}/build/output/Debug\" \"${workspaceFolder}/build/output/DebugNoInputHook\" || echo 0",
+            "command": [
+                "mkdir \"${workspaceFolder}/build/output/Release\" \"${workspaceFolder}/build/output/Debug\" \"${workspaceFolder}/build/output/DebugNoInputHook\"",
+                " || (cd \"${workspaceFolder}/build\" && cmake ..)",
+                // " || echo 0",
+            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
