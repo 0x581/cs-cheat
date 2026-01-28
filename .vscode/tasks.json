@@ -72,6 +72,22 @@
                 "revealProblems": "never",
                 "close": true
             }
+        },
+        {
+            "label": "Pull CheatBase subtree",
+            "type": "shell",
+            "command": "git subtree pull --prefix=CheatBase git@github.com:0x581/cheat-base.git main --squash",
+            "group": {
+                "kind": "none",
+                "isDefault": false
+            },
+            "problemMatcher": [],
+            "detail": "Pulls the latest changes from the CheatBase repository into the CheatBase folder",
+            "presentation": {
+                "reveal": "always",
+                "revealProblems": "onProblem",
+                "close": false
+            }
         }
     ]
 }
