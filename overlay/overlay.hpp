@@ -1,12 +1,11 @@
 #pragma once
 
+#include "CheatBase/overlay_base.hpp"
+
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
-#include "CheatBase/overlay_base.hpp"
-
-constexpr float bomb_width = 300;
-constexpr float bomb_height = 100;
+constexpr ImVec2 defaultBombWindowSize = ImVec2(300, 100);
 
 class c_overlay : public OverlayBase
 {

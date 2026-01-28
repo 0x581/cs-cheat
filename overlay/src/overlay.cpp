@@ -1,7 +1,5 @@
 #include "../overlay.hpp"
 
-#include "CheatBase/colors.hpp"
-
 #include "config.hpp"
 #include "shared_variables.hpp"
 
@@ -32,11 +30,8 @@ bool c_overlay::mouse_over_window(const ImVec2 &mouse_pos)
     const ImRect menu_rect = ImRect(menu_tl, menu_br);
     const ImRect bomb_rect = ImRect(bomb_tl, bomb_br);
 
-    POINT p{};
-    GetCursorPos(&p);
-
-    const bool mouse_over_menu = menu_rect.Contains(ImVec2((float)p.x, (float)p.y));
-    const bool mouse_over_bomb = (config.activeCheats.bombTimer && bomb_rect.Contains(ImVec2((float)p.x, (float)p.y)));
+    const bool mouse_over_menu = menu_rect.Contains(mouse_pos);
+    const bool mouse_over_bomb = (config.activeCheats.bombTimer && bomb_rect.Contains(mouse_pos));
 
     return mouse_over_menu || mouse_over_bomb;
 }
@@ -76,5 +71,5 @@ void c_overlay::on_reload(ImGuiIO &imgui_io)
     esp_font = Fonts->AddFontFromFileTTF(font_path, 14.0f * esp_scale);
     bomb_font = Fonts->AddFontFromFileTTF(font_path, 25.0f * bomb_scale);
 
-    bombWindowSize = ImVec2(bomb_width, bomb_height) * bomb_scale;
+    bombWindowSize = defaultBombWindowSize * bomb_scale;
 }
