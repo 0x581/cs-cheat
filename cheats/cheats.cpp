@@ -44,8 +44,10 @@ static void run_all_cheats(const Memory &mem, const CheatData &cheat_data, const
 
 void run_cheat_loop(bool &terminate)
 {
-    memory.setRequiredModulesList(requiredModules);
-    memory.connectToProcess(L"cs2.exe");
+    Memory mem{};
+
+    mem.setRequiredModulesList(requiredModules);
+    mem.connectToProcess(L"cs2.exe");
 
     auto entity_list = new EntityData();
     auto cheat_data = new CheatData();
@@ -54,7 +56,7 @@ void run_cheat_loop(bool &terminate)
 
     for (size_t iteration = 0; !terminate; ++iteration)
     {
-        if (!memory.reconnectIfNeeded())
+        if (!mem.reconnectIfNeeded())
         {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             lastTime = std::chrono::high_resolution_clock::now();
@@ -65,13 +67,13 @@ void run_cheat_loop(bool &terminate)
 
         std::this_thread::sleep_until(lastTime);
 
-        if (!read_entity_data(memory, *entity_list) || !read_cheat_data(memory, *entity_list, *cheat_data))
+        if (!read_entity_data(mem, *entity_list) || !read_cheat_data(mem, *entity_list, *cheat_data))
         {
             renderData.isValid = false;
             continue;
         }
 
-        run_all_cheats(memory, *cheat_data, iteration);
+        run_all_cheats(mem, *cheat_data, iteration);
 
         renderData.lastCaptureTime = lastTime;
         renderData.isValid = true;
