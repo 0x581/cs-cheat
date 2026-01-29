@@ -1,7 +1,7 @@
 #include "cheat_entries.hpp"
 
 #include "CheatBase/vector_math.hpp"
-#include "shared_variables.hpp"
+#include "render_data.hpp"
 
 #include "imgui.h"
 

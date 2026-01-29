@@ -1,7 +1,7 @@
 #include "../overlay.hpp"
 
 #include "config.hpp"
-#include "shared_variables.hpp"
+#include "render_data.hpp"
 
 c_overlay::c_overlay() : OverlayBase(),
                          //		  //

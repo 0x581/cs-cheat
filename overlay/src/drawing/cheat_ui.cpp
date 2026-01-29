@@ -3,7 +3,7 @@
 #include "CheatBase/colors.hpp"
 
 #include "config.hpp"
-#include "shared_variables.hpp"
+#include "render_data.hpp"
 
 void c_overlay::draw_cheats()
 {

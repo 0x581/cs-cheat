@@ -7,7 +7,7 @@
 #include "modules.hpp"
 #include "delays.hpp"
 #include "entity_system.hpp"
-#include "shared_variables.hpp"
+#include "render_data.hpp"
 
 #include "check_cheat_should_run.hpp"
 #include "src/cheat_entries.hpp"

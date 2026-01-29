@@ -1,6 +1,6 @@
 #include "cheat_entries.hpp"
 
-#include "shared_variables.hpp"
+#include "render_data.hpp"
 
 void runBombTimer(const CheatData &cheatData)
 {

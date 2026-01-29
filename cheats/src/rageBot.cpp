@@ -6,7 +6,7 @@
 #include "config.hpp"
 #include "cs_defines.hpp"
 #include "CheatBase/vector_math.hpp"
-#include "shared_variables.hpp"
+#include "render_data.hpp"
 
 static void releaseRageShot()
 {
