@@ -76,5 +76,3 @@ public:
 
     void Inspect(uintptr_t address, size_t nBytes) const;
 };
-
-extern Memory memory;

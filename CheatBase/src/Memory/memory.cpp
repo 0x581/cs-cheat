@@ -13,8 +13,6 @@
 
 constexpr auto BYTES_PER_ROW = 32;
 
-Memory memory;
-
 Memory::Memory() : driver_handle{INVALID_HANDLE_VALUE}, pid{0}, process_name{}, required_modules{}, modules{}, connected{false}
 {
     driver_handle = apd::open_driver();
