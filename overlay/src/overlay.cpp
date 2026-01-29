@@ -3,8 +3,6 @@
 #include "config.hpp"
 #include "shared_variables.hpp"
 
-#include "CheatBase/memory.hpp"
-
 c_overlay::c_overlay() : OverlayBase(),
                          //		  //
                          // Window //

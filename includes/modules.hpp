@@ -1,7 +1,5 @@
 #pragma once
 
-#include "CheatBase/memory.hpp"
-
 #include <array>
 
 namespace modules
