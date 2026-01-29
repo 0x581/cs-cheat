@@ -46,7 +46,7 @@ float c_overlay::get_style_scale() { return persistentConfig.mainWindow.scale; }
 
 void c_overlay::render()
 {
-    if (memory.connected)
+    if (renderData.isValid)
     {
         draw_cheats();
 

@@ -14,11 +14,11 @@ void runEsp(const CheatData &cheatData)
 
     const auto view_matrix = cheatData.viewMatrix;
 
-    espData.capture_time = std::chrono::high_resolution_clock::now();
-
     for (int i = 0; i < 64; i++)
     {
-        espData.data[i].isValid = false;
+        auto &espDataEntry = renderData.esp.data[i];
+
+        espDataEntry.isValid = false;
 
         const auto &playerEntity = cheatData.playerEntities[i];
 
@@ -30,19 +30,19 @@ void runEsp(const CheatData &cheatData)
 
         const auto playerTeam = playerEntity.team;
 
-        espData.data[i].isFriendly = localPlayerTeam == playerTeam;
+        espDataEntry.isFriendly = localPlayerTeam == playerTeam;
 
         const auto health = playerEntity.health;
 
-        espData.data[i].maxHealth = playerEntity.maxHealth;
-        espData.data[i].health = health;
+        espDataEntry.maxHealth = playerEntity.maxHealth;
+        espDataEntry.health = health;
 
         if (health <= 0 || health > 100)
             continue;
 
-        memcpy(espData.data[i].playerName, playerEntity.name, PLAYER_NAME_LENGTH);
+        memcpy(espDataEntry.playerName, playerEntity.name, PLAYER_NAME_LENGTH);
 
-        espData.data[i].bones = BoneData::fromVector(playerEntity.bones, view_matrix);
+        espDataEntry.bones = BoneData::fromVector(playerEntity.bones, view_matrix);
 
         // Esp box
         const auto crouchAmount = playerEntity.crouchAmount;
@@ -63,12 +63,10 @@ void runEsp(const CheatData &cheatData)
             screenHeadPos = worldToScreen(headPos, view_matrix);
         }
 
-        espData.data[i].min = {screenHeadPos.x - width / 2, screenHeadPos.y};
-        espData.data[i].max = {screenHeadPos.x + width / 2, screenFootPos.y};
-        espData.data[i].distance = distance;
+        espDataEntry.min = {screenHeadPos.x - width / 2, screenHeadPos.y};
+        espDataEntry.max = {screenHeadPos.x + width / 2, screenFootPos.y};
+        espDataEntry.distance = distance;
 
-        espData.data[i].isValid = true;
+        espDataEntry.isValid = true;
     }
-
-    espData.isValid = true;
 }

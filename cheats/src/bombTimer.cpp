@@ -8,7 +8,7 @@ void runBombTimer(const CheatData &cheatData)
 
     const auto localPlayerDefuseTime = cheatData.localPlayer.hasDefuser ? 5.0 : 10.0;
 
-    bombData = {
+    renderData.bomb = {
         .planted = cheatData.bombData.planted,
         .timeRemaining = timeRemaining,
         .localPlayerCanDefuse = timeRemaining > localPlayerDefuseTime,

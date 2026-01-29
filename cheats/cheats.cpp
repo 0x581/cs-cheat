@@ -67,11 +67,14 @@ void run_cheat_loop(bool &terminate)
 
         if (!read_entity_data(memory, *entity_list) || !read_cheat_data(memory, *entity_list, *cheat_data))
         {
-            espData.isValid = false;
+            renderData.isValid = false;
             continue;
         }
 
         run_all_cheats(memory, *cheat_data, iteration);
+
+        renderData.lastCaptureTime = lastTime;
+        renderData.isValid = true;
     }
 
     delete cheat_data;

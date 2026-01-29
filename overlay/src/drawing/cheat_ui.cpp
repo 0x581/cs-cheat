@@ -7,7 +7,7 @@
 
 void c_overlay::draw_cheats()
 {
-    if (config.activeCheats.esp && espData.isValid)
+    if (config.activeCheats.esp)
     {
         float dynamicGlowSize = 0.0f;
         if (config.esp.boxGlow)
@@ -18,7 +18,7 @@ void c_overlay::draw_cheats()
         const ImU32 enemyColorU32 = ImGui::ColorConvertFloat4ToU32(config.esp.colorEnemyVisible);
         const ImU32 teamColorU32 = ImGui::ColorConvertFloat4ToU32(config.esp.colorTeamVisible);
 
-        for (const auto &espRenderData : espData.data)
+        for (const auto &espRenderData : renderData.esp.data)
         {
             if (!espRenderData.isValid)
                 continue;

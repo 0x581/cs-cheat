@@ -42,19 +42,21 @@ void runRageAimbot(const CheatData &cheatData)
 
         ImVec2 targetScreen = {0, 0};
 
+        const auto &espBoneData = renderData.esp.data[i].bones;
+
         switch (config.aimBot.hitbox)
         {
         case 0:
-            targetScreen = espData.data[i].bones.head;
+            targetScreen = espBoneData.head;
             break;
         case 1:
-            targetScreen = espData.data[i].bones.neck;
+            targetScreen = espBoneData.neck;
             break;
         case 2:
-            targetScreen = espData.data[i].bones.spine1;
+            targetScreen = espBoneData.spine1;
             break;
         default:
-            targetScreen = espData.data[i].bones.head;
+            targetScreen = espBoneData.head;
             break;
         }
 

@@ -23,19 +23,21 @@ void c_overlay::draw_bomb()
 
     std::vector<std::string> lines;
 
-    if (!bombData.planted)
+    const auto &bomb = renderData.bomb;
+
+    if (!bomb.planted)
     {
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.0f, 1.0f, 0.0f, 1.0f));
         lines.push_back(std::string("Bomb is not planted."));
     }
-    if (bombData.planted)
+    if (bomb.planted)
     {
-        if (bombData.defused)
+        if (bomb.defused)
         {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 0.0f, 1.0f));
             lines.push_back(std::string("Bomb has been defused."));
         }
-        else if (bombData.timeRemaining < 0.f)
+        else if (bomb.timeRemaining < 0.f)
         {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
             lines.push_back(std::string("Bum"));
@@ -43,8 +45,8 @@ void c_overlay::draw_bomb()
         else
         {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
-            lines.push_back(std::string("Bomb has been planted on ") + (bombData.site ? "B." : "A."));
-            lines.push_back(std::format("{:.2f} seconds remaining.", bombData.timeRemaining));
+            lines.push_back(std::string("Bomb has been planted on ") + (bomb.site ? "B." : "A."));
+            lines.push_back(std::format("{:.2f} seconds remaining.", bomb.timeRemaining));
         }
     }
 
@@ -67,9 +69,9 @@ void c_overlay::draw_bomb()
         current_height += font_size;
     }
 
-    // line1_text += std::string("\nLocal Player Can Defuse: ") + (bombData.localPlayerCanDefuse ? "Yes" : "No");
-    // line1_text += std::string("\nBeing Defused: ") + (bombData.beingDefused ? "Yes" : "No");
-    // line1_text += std::string("\nDefuser: ") + (bombData.defuser ? std::to_string(bombData.defuser) : "None");
+    // line1_text += std::string("\nLocal Player Can Defuse: ") + (bomb.localPlayerCanDefuse ? "Yes" : "No");
+    // line1_text += std::string("\nBeing Defused: ") + (bomb.beingDefused ? "Yes" : "No");
+    // line1_text += std::string("\nDefuser: ") + (bomb.defuser ? std::to_string(bomb.defuser) : "None");
 
     ImGui::PopStyleColor();
 
