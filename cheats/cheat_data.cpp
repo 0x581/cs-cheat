@@ -72,6 +72,8 @@ bool read_player_data(const Memory &mem, const EntityData &entityData, const uin
 
     playerData.cameraServicesPtr = mem.Read<uintptr_t>(playerPawnPtr + offsets::cameraServices);
 
+    playerData.fov = mem.Read<uint32_t>(playerData.cameraServicesPtr + offsets::fov);
+
     return true;
 }
 

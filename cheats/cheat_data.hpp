@@ -21,6 +21,7 @@ struct PlayerData
     uintptr_t pawnPtr{0};
     uintptr_t controllerPtr{0};
     uintptr_t cameraServicesPtr{0};
+    uint32_t fov{0};
     PlayerTeam_t team{0};
     CHealth maxHealth{0};
     CHealth health{0};
