@@ -1,8 +1,10 @@
 #pragma once
 
-#include <span>
-#include <unordered_map>
+#include <array>
 #include <cstdint>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "asspiledriver.h"
 
@@ -19,6 +21,8 @@ private:
     HANDLE driver_handle;
     HANDLE pid;
 
+    std::wstring process_name;
+
     std::vector<ModuleEntry> required_modules;
 
     std::unordered_map<int, uintptr_t> modules{};
@@ -27,19 +31,25 @@ private:
     void clearModuleMap();
 
 public:
-    bool is_valid{false};
+    bool connected{false};
 
-    Memory(std::vector<ModuleEntry> modules);
-    template <std::size_t N>
-    Memory(const std::array<ModuleEntry, N> &arr) : Memory(std::vector(arr.begin(), arr.end())) {}
+    Memory();
     Memory(Memory &&) = delete;
     Memory(const Memory &) = delete;
     ~Memory();
 
-    const bool connectToProcess(const wchar_t *processName);
-    const uintptr_t GetModuleAddress(const int moduleID) const;
+    void setRequiredModulesList(std::vector<ModuleEntry> modules);
+    template <size_t N>
+    void setRequiredModulesList(const std::array<ModuleEntry, N> modules)
+    {
+        this->setRequiredModulesList(std::vector<ModuleEntry>(modules.begin(), modules.end()));
+    }
 
-    const bool isProcessAlive();
+    uintptr_t GetModuleAddress(const int moduleID) const;
+
+    bool connectToProcess(const wchar_t *processName);
+    bool isProcessAlive();
+    bool reconnectIfNeeded();
 
     // Normal functions for access & Co.
 
@@ -50,15 +60,6 @@ public:
         const bool success = apd::read_memory(driver_handle, address, &value, sizeof(T));
 
         return success ? value : T{};
-    }
-
-    // THIS FUNCTION IS FOR DEBUGGING PURPOSES ONLY!!! DOES NOT CHECK VALIDITY AND DOES NOT CLEAN UP THE HEAP
-    uint8_t *ReadDbg(uintptr_t address, size_t nBytes) const
-    {
-        auto *buffer = new uint8_t[nBytes];
-        const size_t bytes_read = apd::read_memory(driver_handle, address, buffer, nBytes);
-
-        return buffer;
     }
 
     // Returns number of bytes read
@@ -75,3 +76,5 @@ public:
 
     void Inspect(uintptr_t address, size_t nBytes) const;
 };
+
+extern Memory memory;
