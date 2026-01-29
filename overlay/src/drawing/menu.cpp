@@ -260,7 +260,7 @@ static void draw_misc_submenu(const ImGuiStyle &style, const float slider_indent
             }
         }
 
-        ImGui::Checkbox("Bomb Info Panel�", &config.activeCheats.bombTimer);
+        ImGui::Checkbox("Bomb Info Panel", &config.activeCheats.bombTimer);
     }
 }
 

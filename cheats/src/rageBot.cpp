@@ -63,14 +63,14 @@ void runRageAimbot(const CheatData &cheatData)
         if (targetScreen.x == 0.f && targetScreen.y == 0.f)
             continue;
 
-        // Sichtbarkeitspr�fung (wie im legit)
+        // Sichtbarkeitsprüfung (wie im legit)
         const auto spottedByMask = playerEntity.spottedByMask;
 
         const auto localPawnIndex = cheatData.localPlayer.lookAtEntityIndex;
 
         bool isVisible = (spottedByMask & (1ULL << localPawnIndex)) != 0;
 
-        // Rage: Optional, Sichtbarkeitspr�fung kann ignoriert werden!
+        // Rage: Optional, Sichtbarkeitsprüfung kann ignoriert werden!
         if (config.rageBot.checkVisible && !isVisible)
             continue;
 
@@ -103,7 +103,7 @@ void runRageAimbot(const CheatData &cheatData)
     long new_x = static_cast<long>(diff_x * speedFactor);
     long new_y = static_cast<long>(diff_y * speedFactor);
 
-    // Aggressiv: Sofort schie�en, wenn Fadenkreuz auf Ziel
+    // Aggressiv: Sofort schießen, wenn Fadenkreuz auf Ziel
     if (std::abs(diff_x) < 2 && std::abs(diff_y) < 2)
     {
         mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
