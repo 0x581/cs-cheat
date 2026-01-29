@@ -3,6 +3,8 @@
 #include "config.hpp"
 #include "shared_variables.hpp"
 
+#include "CheatBase/memory.hpp"
+
 c_overlay::c_overlay() : OverlayBase(),
                          //		  //
                          // Window //
@@ -44,7 +46,7 @@ float c_overlay::get_style_scale() { return persistentConfig.mainWindow.scale; }
 
 void c_overlay::render()
 {
-    if (isConnected)
+    if (memory.connected)
     {
         draw_cheats();
 

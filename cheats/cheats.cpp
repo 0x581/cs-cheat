@@ -42,33 +42,11 @@ static void run_all_cheats(const Memory &mem, const CheatData &cheat_data, const
         runRageAimbot(cheat_data);
 }
 
-static bool check_connection(Memory &mem)
-{
-    const auto previous = mem.is_valid;
-    auto alive = mem.isProcessAlive();
-
-    if (previous && !alive)
-    {
-        std::cout << "Connection to CS2 lost." << std::endl;
-        return false;
-    }
-
-    if (!alive)
-    {
-        alive = mem.connectToProcess(L"cs2.exe");
-
-        if (alive)
-            std::cout << "Connection to CS2 established." << std::endl;
-    }
-
-    isConnected = alive;
-
-    return alive;
-}
-
 void run_cheat_loop(bool &terminate)
 {
-    Memory mem = Memory(requiredModules);
+    memory.setRequiredModulesList(requiredModules);
+    memory.connectToProcess(L"cs2.exe");
+
     auto entity_list = new EntityData();
     auto cheat_data = new CheatData();
 
@@ -76,7 +54,7 @@ void run_cheat_loop(bool &terminate)
 
     for (size_t iteration = 0; !terminate; ++iteration)
     {
-        if (!check_connection(mem))
+        if (!memory.reconnectIfNeeded())
         {
             std::this_thread::sleep_for(delays::memConnectionWaitTime);
             lastTime = std::chrono::high_resolution_clock::now();
@@ -87,13 +65,13 @@ void run_cheat_loop(bool &terminate)
 
         std::this_thread::sleep_until(lastTime);
 
-        if (!read_entity_data(mem, *entity_list) || !read_cheat_data(mem, *entity_list, *cheat_data))
+        if (!read_entity_data(memory, *entity_list) || !read_cheat_data(memory, *entity_list, *cheat_data))
         {
             espData.isValid = false;
             continue;
         }
 
-        run_all_cheats(mem, *cheat_data, iteration);
+        run_all_cheats(memory, *cheat_data, iteration);
     }
 
     delete cheat_data;
