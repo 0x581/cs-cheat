@@ -1,6 +1,7 @@
 #include "memory.hpp"
 
 #include <cassert>
+#include <format>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -12,15 +13,9 @@
 
 constexpr auto BYTES_PER_ROW = 32;
 
-namespace delays
-{
-    namespace memory
-    {
-        constexpr auto moduleFetchWaitTime = std::chrono::seconds(1);
-    }
-}
+Memory memory;
 
-Memory::Memory(std::vector<ModuleEntry> required_modules) : pid{0}, required_modules{required_modules}
+Memory::Memory() : driver_handle{INVALID_HANDLE_VALUE}, pid{0}, process_name{}, required_modules{}, modules{}, connected{false}
 {
     driver_handle = apd::open_driver();
 
@@ -39,7 +34,7 @@ Memory::Memory(std::vector<ModuleEntry> required_modules) : pid{0}, required_mod
         throw std::runtime_error("Failed to create driver handle");
     }
 
-    const auto old_debug_level = apd::set_debug_flags(driver_handle, 0);
+    apd::set_debug_flags(driver_handle, 0);
 }
 
 Memory::~Memory()
@@ -51,59 +46,13 @@ Memory::~Memory()
     clearModuleMap();
 }
 
-bool Memory::loadModuleMap()
-{
-    size_t tries = 0;
-
-    for (auto &[module_id, module_name] : required_modules)
-    {
-        uintptr_t address = 0;
-
-        do
-        {
-            address = apd::get_module_base(driver_handle, module_name);
-
-            if (address == 0)
-            {
-                std::this_thread::sleep_for(delays::memory::moduleFetchWaitTime);
-                ++tries;
-            }
-
-        } while (address == 0 && tries < 10);
-
-        if (tries >= 10)
-        {
-            // 10 attempts to get the modules failed, clear process
-            std::cout << "Failed to fetch required Modules." << std::endl;
-
-            clearModuleMap();
-
-            return false;
-        }
-
-        this->modules[module_id] = address;
-    }
-
-    return true;
-}
-
-void Memory::clearModuleMap()
-{
-    this->modules.clear();
-}
-
-const bool Memory::isProcessAlive()
-{
-    this->is_valid = this->is_valid && apd::is_process_alive(driver_handle);
-
-    return this->is_valid;
-}
-
-const bool Memory::connectToProcess(const wchar_t *processName)
+bool Memory::connectToProcess(const wchar_t *processName)
 {
 
     // Clean up previous connection if exists
-    assert(!this->is_valid && "Cannot connect to process while already connected.");
+    assert(!this->connected && "Cannot connect to process while already connected.");
+
+    this->process_name = processName;
 
     clearModuleMap();
 
@@ -119,17 +68,38 @@ const bool Memory::connectToProcess(const wchar_t *processName)
         return false;
     }
 
-    this->is_valid = true;
+    this->connected = true;
 
     return true;
 }
 
-// Normal functions for access & Co.
-
-const uintptr_t Memory::GetModuleAddress(const int moduleID) const
+bool Memory::reconnectIfNeeded()
 {
-    return modules.at(moduleID);
+    const auto previous = this->connected;
+    auto alive = this->isProcessAlive();
+
+    if (previous && !alive)
+        std::wcout << std::format(L"Connection to {} lost.", this->process_name) << std::endl;
+
+    if (!alive)
+    {
+        alive = this->connectToProcess(this->process_name.c_str());
+
+        if (alive)
+            std::wcout << std::format(L"Connection to {} established.", this->process_name) << std::endl;
+    }
+
+    return alive;
 }
+
+bool Memory::isProcessAlive()
+{
+    this->connected = this->connected && apd::is_process_alive(driver_handle);
+
+    return this->connected;
+}
+
+// Normal functions for access & Co.
 
 void Memory::Inspect(uintptr_t address, size_t nBytes) const
 {

@@ -10,137 +10,186 @@
 
 bool editing_hotkey = false;
 
+static std::array<const char *, 166> key_name_list = {
+    0,              // 0x00
+    "LMB",          // 0x01
+    "RMB",          // 0x02
+    0,              // 0x03
+    "MMB",          // 0x04
+    "MB 4",         // 0x05
+    "MB 5",         // 0x06
+    0,              // 0x07
+    "Backspace",    // 0x08
+    "Tab",          // 0x09
+    0,              // 0x0A
+    0,              // 0x0B
+    "Clear",        // 0x0C
+    "Enter",        // 0x0D
+    0,              // 0x0E
+    0,              // 0x0F
+    "Shift",        // 0x10
+    "Ctrl",         // 0x11
+    "Alt",          // 0x12
+    "Pause",        // 0x13
+    "Caps Lock",    // 0x14
+    0,              // 0x15
+    0,              // 0x16
+    0,              // 0x17
+    0,              // 0x18
+    0,              // 0x19
+    0,              // 0x1A
+    "Esc",          // 0x1B
+    0,              // 0x1C
+    0,              // 0x1D
+    0,              // 0x1E
+    0,              // 0x1F
+    "Space",        // 0x20
+    "Page Up",      // 0x21
+    "Page Down",    // 0x22
+    "End",          // 0x23
+    "Home",         // 0x24
+    "Left",         // 0x25
+    "Up",           // 0x26
+    "Right",        // 0x27
+    "Down",         // 0x28
+    "Select",       // 0x29
+    "Print",        // 0x2A
+    "Exec",         // 0x2B
+    "Print Screen", // 0x2C
+    "Insert",       // 0x2D
+    "Delete",       // 0x2E
+    "Help",         // 0x2F
+    "0",            // 0x30
+    "1",            // 0x31
+    "2",            // 0x32
+    "3",            // 0x33
+    "4",            // 0x34
+    "5",            // 0x35
+    "6",            // 0x36
+    "7",            // 0x37
+    "8",            // 0x38
+    "9",            // 0x39
+    0,              // 0x3A
+    0,              // 0x3B
+    0,              // 0x3C
+    0,              // 0x3D
+    0,              // 0x3E
+    0,              // 0x3F
+    0,              // 0x40
+    "A",            // 0x41
+    "B",            // 0x42
+    "C",            // 0x43
+    "D",            // 0x44
+    "E",            // 0x45
+    "F",            // 0x46
+    "G",            // 0x47
+    "H",            // 0x48
+    "I",            // 0x49
+    "J",            // 0x4A
+    "K",            // 0x4B
+    "L",            // 0x4C
+    "M",            // 0x4D
+    "N",            // 0x4E
+    "O",            // 0x4F
+    "P",            // 0x50
+    "Q",            // 0x51
+    "R",            // 0x52
+    "S",            // 0x53
+    "T",            // 0x54
+    "U",            // 0x55
+    "V",            // 0x56
+    "W",            // 0x57
+    "X",            // 0x58
+    "Y",            // 0x59
+    "Z",            // 0x5A
+    0,              // 0x5B
+    0,              // 0x5C
+    0,              // 0x5D
+    0,              // 0x5E
+    0,              // 0x5F
+    "Num 0",        // 0x60
+    "Num 1",        // 0x61
+    "Num 2",        // 0x62
+    "Num 3",        // 0x63
+    "Num 4",        // 0x64
+    "Num 5",        // 0x65
+    "Num 6",        // 0x66
+    "Num 7",        // 0x67
+    "Num 8",        // 0x68
+    "Num 9",        // 0x69
+    "Num *",        // 0x6A
+    "Num +",        // 0x6B
+    "Num Enter",    // 0x6C
+    "Num -",        // 0x6D
+    "Num .",        // 0x6E
+    "Num /",        // 0x6F
+    "F1",           // 0x70
+    "F2",           // 0x71
+    "F3",           // 0x72
+    "F4",           // 0x73
+    "F5",           // 0x74
+    "F6",           // 0x75
+    "F7",           // 0x76
+    "F8",           // 0x77
+    "F9",           // 0x78
+    "F10",          // 0x79
+    "F11",          // 0x7A
+    "F12",          // 0x7B
+    "F13",          // 0x7C
+    "F14",          // 0x7D
+    "F15",          // 0x7E
+    "F16",          // 0x7F
+    "F17",          // 0x80
+    "F18",          // 0x81
+    "F19",          // 0x82
+    "F20",          // 0x83
+    "F21",          // 0x84
+    "F22",          // 0x85
+    "F23",          // 0x86
+    "F24",          // 0x87
+    0,              // 0x88
+    0,              // 0x89
+    0,              // 0x8A
+    0,              // 0x8B
+    0,              // 0x8C
+    0,              // 0x8D
+    0,              // 0x8E
+    0,              // 0x8F
+    "Num Lk",       // 0x90
+    "Scrl Lk",      // 0x91
+    0,              // 0x92
+    0,              // 0x93
+    0,              // 0x94
+    0,              // 0x95
+    0,              // 0x96
+    0,              // 0x97
+    0,              // 0x98
+    0,              // 0x99
+    0,              // 0x9A
+    0,              // 0x9B
+    0,              // 0x9C
+    0,              // 0x9D
+    0,              // 0x9E
+    0,              // 0x9F
+    "L Shift",      // 0xA0
+    "R Shift",      // 0xA1
+    "L Ctrl",       // 0xA2
+    "R Ctrl",       // 0xA3
+    "L Alt",        // 0xA4
+    "R Alt",        // 0xA5
+};
+
 static const char *get_key_name(const int key)
 {
-#define NAME_CASE(id, key_name) \
-    case id:                    \
-        return key_name;
+    if (key == -1)
+        return "None";
 
-    switch (key)
+    if (key >= 0 && key < static_cast<int>(key_name_list.size()))
     {
-        NAME_CASE(-1, "None");
-        NAME_CASE(VK_LBUTTON, "LMB");
-        NAME_CASE(VK_RBUTTON, "RMB");
-        NAME_CASE(VK_MBUTTON, "MMB");
-        NAME_CASE(VK_XBUTTON1, "MB 4");
-        NAME_CASE(VK_XBUTTON2, "MB 5");
-        NAME_CASE(VK_BACK, "Backspace");
-        NAME_CASE(VK_TAB, "Tab");
-        NAME_CASE(VK_CLEAR, "Clear");
-        NAME_CASE(VK_RETURN, "Enter");
-        NAME_CASE(VK_SHIFT, "Shift");
-        NAME_CASE(VK_CONTROL, "Ctrl");
-        NAME_CASE(VK_MENU, "Alt");
-        NAME_CASE(VK_PAUSE, "Pause");
-        NAME_CASE(VK_CAPITAL, "Caps Lock");
+        const char *name = key_name_list[key];
 
-        NAME_CASE(VK_SPACE, "Space");
-        NAME_CASE(VK_PRIOR, "Page Up");
-        NAME_CASE(VK_NEXT, "Page Down");
-        NAME_CASE(VK_END, "End");
-        NAME_CASE(VK_HOME, "Home");
-        NAME_CASE(VK_LEFT, "Left");
-        NAME_CASE(VK_UP, "Up");
-        NAME_CASE(VK_RIGHT, "Right");
-        NAME_CASE(VK_DOWN, "Down");
-        NAME_CASE(VK_SELECT, "Select");
-        NAME_CASE(VK_PRINT, "Print");
-        NAME_CASE(VK_EXECUTE, "Exec");
-        NAME_CASE(VK_SNAPSHOT, "Print Screen");
-        NAME_CASE(VK_INSERT, "Insert");
-        NAME_CASE(VK_DELETE, "Delete");
-        NAME_CASE(VK_HELP, "Help");
-
-        NAME_CASE('0', "0");
-        NAME_CASE('1', "1");
-        NAME_CASE('2', "2");
-        NAME_CASE('3', "3");
-        NAME_CASE('4', "4");
-        NAME_CASE('5', "5");
-        NAME_CASE('6', "6");
-        NAME_CASE('7', "7");
-        NAME_CASE('8', "8");
-        NAME_CASE('9', "9");
-
-        NAME_CASE('A', "A");
-        NAME_CASE('B', "B");
-        NAME_CASE('C', "C");
-        NAME_CASE('D', "D");
-        NAME_CASE('E', "E");
-        NAME_CASE('F', "F");
-        NAME_CASE('G', "G");
-        NAME_CASE('H', "H");
-        NAME_CASE('I', "I");
-        NAME_CASE('J', "J");
-        NAME_CASE('K', "K");
-        NAME_CASE('L', "L");
-        NAME_CASE('M', "M");
-        NAME_CASE('N', "N");
-        NAME_CASE('O', "O");
-        NAME_CASE('P', "P");
-        NAME_CASE('Q', "Q");
-        NAME_CASE('R', "R");
-        NAME_CASE('S', "S");
-        NAME_CASE('T', "T");
-        NAME_CASE('U', "U");
-        NAME_CASE('V', "V");
-        NAME_CASE('W', "W");
-        NAME_CASE('X', "X");
-        NAME_CASE('Y', "Y");
-        NAME_CASE('Z', "Z");
-
-        NAME_CASE(VK_NUMPAD0, "Num 0");
-        NAME_CASE(VK_NUMPAD1, "Num 1");
-        NAME_CASE(VK_NUMPAD2, "Num 2");
-        NAME_CASE(VK_NUMPAD3, "Num 3");
-        NAME_CASE(VK_NUMPAD4, "Num 4");
-        NAME_CASE(VK_NUMPAD5, "Num 5");
-        NAME_CASE(VK_NUMPAD6, "Num 6");
-        NAME_CASE(VK_NUMPAD7, "Num 7");
-        NAME_CASE(VK_NUMPAD8, "Num 8");
-        NAME_CASE(VK_NUMPAD9, "Num 9");
-
-        NAME_CASE(VK_MULTIPLY, "Num *");
-        NAME_CASE(VK_ADD, "Num +");
-        NAME_CASE(VK_SEPARATOR, "Num Enter");
-        NAME_CASE(VK_SUBTRACT, "Num -");
-        NAME_CASE(VK_DECIMAL, "Num .");
-        NAME_CASE(VK_DIVIDE, "Num /");
-
-        NAME_CASE(VK_F1, "F1");
-        NAME_CASE(VK_F2, "F2");
-        NAME_CASE(VK_F3, "F3");
-        NAME_CASE(VK_F4, "F4");
-        NAME_CASE(VK_F5, "F5");
-        NAME_CASE(VK_F6, "F6");
-        NAME_CASE(VK_F7, "F7");
-        NAME_CASE(VK_F8, "F8");
-        NAME_CASE(VK_F9, "F9");
-        NAME_CASE(VK_F10, "F10");
-        NAME_CASE(VK_F11, "F11");
-        NAME_CASE(VK_F12, "F12");
-        NAME_CASE(VK_F13, "F13");
-        NAME_CASE(VK_F14, "F14");
-        NAME_CASE(VK_F15, "F15");
-        NAME_CASE(VK_F16, "F16");
-        NAME_CASE(VK_F17, "F17");
-        NAME_CASE(VK_F18, "F18");
-        NAME_CASE(VK_F19, "F19");
-        NAME_CASE(VK_F20, "F20");
-        NAME_CASE(VK_F21, "F21");
-        NAME_CASE(VK_F22, "F22");
-        NAME_CASE(VK_F23, "F23");
-        NAME_CASE(VK_F24, "F24");
-
-        NAME_CASE(VK_NUMLOCK, "Num Lk");
-        NAME_CASE(VK_SCROLL, "Scrl Lk");
-
-        NAME_CASE(VK_LSHIFT, "L Shift");
-        NAME_CASE(VK_RSHIFT, "R Shift");
-        NAME_CASE(VK_LCONTROL, "L Ctrl");
-        NAME_CASE(VK_RCONTROL, "R Ctrl");
-        NAME_CASE(VK_LMENU, "L Alt");
-        NAME_CASE(VK_RMENU, "R Alt");
+        if (name != nullptr)
+            return name;
     }
 
     return nullptr;
