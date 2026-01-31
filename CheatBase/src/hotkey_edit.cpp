@@ -222,7 +222,7 @@ static const std::string get_localized_key_name(const int vkCode)
     return "INVALID";
 }
 
-static bool HotkeyEdit(const char *label, int *key_value, bool *is_toggle, bool *keybindChanged)
+static bool HotkeyEdit(const char *label, int *key_value, bool *is_toggle, bool *editing)
 {
     static int last_frame_value = -1;
 
@@ -261,6 +261,9 @@ static bool HotkeyEdit(const char *label, int *key_value, bool *is_toggle, bool 
     // Hotkey selection popup
     if (ImGui::BeginPopup("hotkey_popup"))
     {
+        if (editing)
+            *editing = true;
+
         editing_hotkey = true;
 
         ImGui::Text("Press a key...");
@@ -285,6 +288,8 @@ static bool HotkeyEdit(const char *label, int *key_value, bool *is_toggle, bool 
 
         ImGui::EndPopup();
     }
+    else if (editing)
+        *editing = false;
 
     // Draw the toggle button if is_toggle is not null
     if (is_toggle != nullptr)
@@ -300,9 +305,6 @@ static bool HotkeyEdit(const char *label, int *key_value, bool *is_toggle, bool 
 
     ImGui::PopID();
 
-    if (keybindChanged)
-        *keybindChanged |= value_changed || toggle_changed;
-
     return value_changed || toggle_changed;
 }
 
@@ -313,5 +315,8 @@ bool HotkeyEdit(const char *label, int *key_value)
 
 bool HotkeyEdit(const char *label, ToggleableKeybind &keybind)
 {
-    return HotkeyEdit(label, &keybind.key, &keybind.isToggle, &keybind.keybindChanged);
+    bool edited = false;
+    const auto ret = HotkeyEdit(label, &keybind.key, &keybind.isToggle, &edited);
+    keybind.setEditing(edited);
+    return ret;
 }

@@ -92,6 +92,8 @@ bool OverlayBase::msg_loop()
     handle_focus();
     handle_keybinds();
 
+    update_keybinds();
+
     MSG msg{0};
 
     while (::PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))

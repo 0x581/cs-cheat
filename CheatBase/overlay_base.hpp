@@ -14,14 +14,24 @@ public:
     void reload_window() { style_reload_required = true; }
 
 protected:
-    // Functions that the derived class must implement
+    // This function should return true if you want the overlay to capture focus (I.e. mouse is over the window).
     virtual bool mouse_over_window(const ImVec2 &mouse_pos) { return false; }
+    // This function should return true if the overlay should display the fps.
     virtual bool should_show_fps() { return true; }
+    // In this function, you should update all your keybinds. It gets called once per frame.
+    virtual void update_keybinds() {};
+    // In this function, you should return the Overlay target fps. Use 0 to disable the limit.
     virtual int get_target_fps() { return 0; }
+    // This function should return the key used to quick exit.
     virtual int get_quick_exit_key() { return VK_END; }
+    // This function should return the key used to toggle the overlay.
     virtual int get_menu_toggle_key() { return VK_INSERT; }
+    // This function should return the scale that should be applied to the ImGui style. Called only when updating the window.
     virtual float get_style_scale() { return 1.0f; }
+    // This function should contain all the code that needs to run when reloading the window.
+    // This includes scaling the window sizes and loading fonts.
     virtual void on_reload(ImGuiIO &imgui_io) {};
+    // This function should contain the render code for your ImGui window.
     virtual void render() {}
 
 private:
