@@ -90,7 +90,7 @@ static void draw_navbar_submenu(const ImGuiStyle &style, ImFont *title_font, ImF
 
 static void draw_aim_submenu(const ImGuiStyle &style, const ImFont *font, const float slider_indent)
 {
-    auto &config = cfg.config;
+    auto &config = cfg.cheat;
 
     if (ImGui::CollapsingHeader("Aimbot Options", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -161,7 +161,7 @@ static void draw_aim_submenu(const ImGuiStyle &style, const ImFont *font, const 
 
 static void draw_visuals_submenu(const ImGuiStyle &style, const float slider_indent)
 {
-    auto &config = cfg.config;
+    auto &config = cfg.cheat;
 
     if (ImGui::CollapsingHeader("ESP General", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -244,7 +244,7 @@ static void draw_visuals_submenu(const ImGuiStyle &style, const float slider_ind
 
 static void draw_misc_submenu(const ImGuiStyle &style, const float slider_indent)
 {
-    auto &config = cfg.config;
+    auto &config = cfg.cheat;
 
     if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -271,7 +271,7 @@ static void draw_misc_submenu(const ImGuiStyle &style, const float slider_indent
 
 static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
 {
-    auto &config = cfg.config;
+    auto &config = cfg.cheat;
 
     static char configNameBuffer[cfg.MAX_CONFIG_NAME_LENGTH + 1] = "";
     static bool first = true;
@@ -389,7 +389,7 @@ static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
 
 static void draw_keybinds_submenu(const ImGuiStyle &style)
 {
-    auto &config = cfg.config;
+    auto &config = cfg.cheat;
 
     if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -413,7 +413,7 @@ static void draw_keybinds_submenu(const ImGuiStyle &style)
 
 static void draw_settings_submenu(const ImGuiStyle &style, const float slider_indent, c_overlay &overlay)
 {
-    auto &persistent = cfg.persistentConfig;
+    auto &persistent = cfg.persistent;
 
     if (ImGui::CollapsingHeader("Scaling", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -495,7 +495,7 @@ void c_overlay::draw_menu()
 {
     const ImGuiStyle &style = ImGui::GetStyle();
 
-    auto &main_window = cfg.persistentConfig.mainWindow;
+    auto &main_window = cfg.persistent.mainWindow;
 
     ImGui::SetNextWindowPos(main_window.position, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(main_window.size, ImGuiCond_FirstUseEver);

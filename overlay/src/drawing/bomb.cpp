@@ -5,7 +5,7 @@
 
 void c_overlay::draw_bomb()
 {
-    ImGui::SetNextWindowPos(cfg.persistentConfig.bombWindow.position, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowPos(cfg.persistent.bombWindow.position, ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(bombWindowSize);
 
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
@@ -17,7 +17,7 @@ void c_overlay::draw_bomb()
         //| (show_menu ? 0 : ImGuiWindowFlags_NoBackground)
     );
 
-    cfg.persistentConfig.bombWindow.position = ImGui::GetWindowPos();
+    cfg.persistent.bombWindow.position = ImGui::GetWindowPos();
 
     ImGui::PushFont(bomb_font);
 

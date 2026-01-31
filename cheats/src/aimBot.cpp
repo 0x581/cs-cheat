@@ -10,7 +10,7 @@
 
 void runAimBot(const CheatData &cheat_data)
 {
-    const auto &config = cfg.config;
+    const auto &config = cfg.cheat;
 
     Vector2 screenCenter{(float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f};
 

@@ -21,26 +21,26 @@ c_overlay::c_overlay() : OverlayBase(),
 
 bool c_overlay::mouse_over_window(const ImVec2 &mouse_pos)
 {
-    ImVec2 menu_tl = cfg.persistentConfig.mainWindow.position;
-    ImVec2 menu_br = menu_tl + cfg.persistentConfig.mainWindow.size;
+    ImVec2 menu_tl = cfg.persistent.mainWindow.position;
+    ImVec2 menu_br = menu_tl + cfg.persistent.mainWindow.size;
 
-    ImVec2 bomb_tl = cfg.persistentConfig.bombWindow.position;
+    ImVec2 bomb_tl = cfg.persistent.bombWindow.position;
     ImVec2 bomb_br = bomb_tl + bombWindowSize;
 
     const ImRect menu_rect = ImRect(menu_tl, menu_br);
     const ImRect bomb_rect = ImRect(bomb_tl, bomb_br);
 
     const bool mouse_over_menu = menu_rect.Contains(mouse_pos);
-    const bool mouse_over_bomb = (cfg.config.activeCheats.bombTimer && bomb_rect.Contains(mouse_pos));
+    const bool mouse_over_bomb = (cfg.cheat.activeCheats.bombTimer && bomb_rect.Contains(mouse_pos));
 
     return mouse_over_menu || mouse_over_bomb;
 }
 
-bool c_overlay::should_show_fps() { return cfg.persistentConfig.showFPS; }
-int c_overlay::get_target_fps() { return cfg.persistentConfig.targetFPS; }
-int c_overlay::get_quick_exit_key() { return cfg.config.keybinds.quickExit; }
-int c_overlay::get_menu_toggle_key() { return cfg.config.keybinds.showMenu; }
-float c_overlay::get_style_scale() { return cfg.persistentConfig.mainWindow.scale; }
+bool c_overlay::should_show_fps() { return cfg.persistent.showFPS; }
+int c_overlay::get_target_fps() { return cfg.persistent.targetFPS; }
+int c_overlay::get_quick_exit_key() { return cfg.cheat.keybinds.quickExit; }
+int c_overlay::get_menu_toggle_key() { return cfg.cheat.keybinds.showMenu; }
+float c_overlay::get_style_scale() { return cfg.persistent.mainWindow.scale; }
 
 void c_overlay::render()
 {
@@ -48,7 +48,7 @@ void c_overlay::render()
     {
         draw_cheats();
 
-        if (cfg.config.activeCheats.bombTimer)
+        if (cfg.cheat.activeCheats.bombTimer)
             draw_bomb();
     }
 
@@ -60,7 +60,7 @@ void c_overlay::on_reload(ImGuiIO &imgui_io)
 {
     const auto font_path = "C:\\Windows\\Fonts\\Tahoma.ttf";
 
-    const auto &persistent_config = cfg.persistentConfig;
+    const auto &persistent_config = cfg.persistent;
 
     const auto Fonts = imgui_io.Fonts;
 

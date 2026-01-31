@@ -6,7 +6,7 @@
 
 void runTriggerBot(const CheatData &cheatData)
 {
-    auto &config = cfg.config;
+    auto &config = cfg.cheat;
 
     const auto lookAtEntityIdx = cheatData.lookAtEntityIndex;
 

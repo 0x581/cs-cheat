@@ -7,7 +7,7 @@
 
 void c_overlay::draw_cheats()
 {
-    const auto &config = cfg.config;
+    const auto &config = cfg.cheat;
 
     if (config.activeCheats.esp)
     {
