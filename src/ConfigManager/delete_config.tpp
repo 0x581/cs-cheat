@@ -8,8 +8,8 @@ namespace fs = std::filesystem;
 using fs::path;
 using std::ofstream;
 
-template <typename T_PersistentConfig, typename T_Config>
-bool ConfigManager<T_PersistentConfig, T_Config>::delete_config(const std::string_view config_name)
+template <typename T_PersistentConfig, typename T_CheatConfig>
+bool ConfigManager<T_PersistentConfig, T_CheatConfig>::delete_config(const std::string_view config_name)
 {
     if (config_name == files::persistentConfig)
     {

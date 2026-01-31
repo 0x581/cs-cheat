@@ -9,20 +9,20 @@
 namespace fs = std::filesystem;
 using fs::path;
 
-template <typename T_PersistentConfig, typename T_Config>
-ConfigManager<T_PersistentConfig, T_Config>::ConfigManager()
-    : config{}, persistentConfig{}, workingDirectory{}, configs{}, currentConfig{files::defaultConfig}, verbose{false}
+template <typename T_PersistentConfig, typename T_CheatConfig>
+ConfigManager<T_PersistentConfig, T_CheatConfig>::ConfigManager()
+    : persistent{}, cheat{}, workingDirectory{}, configs{}, currentConfig{files::defaultConfig}, verbose{false}
 {
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-ConfigManager<T_PersistentConfig, T_Config>::ConfigManager(path folder) : ConfigManager()
+template <typename T_PersistentConfig, typename T_CheatConfig>
+ConfigManager<T_PersistentConfig, T_CheatConfig>::ConfigManager(path folder) : ConfigManager()
 {
     set_working_directory(folder);
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-bool ConfigManager<T_PersistentConfig, T_Config>::set_working_directory(const path &folder)
+template <typename T_PersistentConfig, typename T_CheatConfig>
+bool ConfigManager<T_PersistentConfig, T_CheatConfig>::set_working_directory(const path &folder)
 {
     path expanded;
 
@@ -45,8 +45,8 @@ bool ConfigManager<T_PersistentConfig, T_Config>::set_working_directory(const pa
     return true;
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-bool ConfigManager<T_PersistentConfig, T_Config>::set_config_name(const std::string_view config_name)
+template <typename T_PersistentConfig, typename T_CheatConfig>
+bool ConfigManager<T_PersistentConfig, T_CheatConfig>::set_config_name(const std::string_view config_name)
 {
     if (!is_valid_config_name(config_name))
     {
@@ -59,15 +59,15 @@ bool ConfigManager<T_PersistentConfig, T_Config>::set_config_name(const std::str
     return true;
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-void ConfigManager<T_PersistentConfig, T_Config>::reset_config()
+template <typename T_PersistentConfig, typename T_CheatConfig>
+void ConfigManager<T_PersistentConfig, T_CheatConfig>::reset_config()
 {
-    config = T_Config();
+    cheat = T_CheatConfig();
     set_config_name(files::defaultConfig);
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-void ConfigManager<T_PersistentConfig, T_Config>::update_available_configs()
+template <typename T_PersistentConfig, typename T_CheatConfig>
+void ConfigManager<T_PersistentConfig, T_CheatConfig>::update_available_configs()
 {
     configs.clear();
 
@@ -95,8 +95,8 @@ void ConfigManager<T_PersistentConfig, T_Config>::update_available_configs()
     }
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-bool ConfigManager<T_PersistentConfig, T_Config>::is_valid_config_name(const std::string_view config_name) const
+template <typename T_PersistentConfig, typename T_CheatConfig>
+bool ConfigManager<T_PersistentConfig, T_CheatConfig>::is_valid_config_name(const std::string_view config_name) const
 {
     if (config_name.empty() || config_name.length() > MAX_CONFIG_NAME_LENGTH)
         return false;

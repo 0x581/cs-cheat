@@ -12,8 +12,8 @@ namespace fs = std::filesystem;
 using fs::path;
 using std::ifstream;
 
-template <typename T_PersistentConfig, typename T_Config>
-std::string ConfigManager<T_PersistentConfig, T_Config>::load_persistent_config()
+template <typename T_PersistentConfig, typename T_CheatConfig>
+std::string ConfigManager<T_PersistentConfig, T_CheatConfig>::load_persistent_config()
 {
     const path cfg_path = workingDirectory / (std::string(files::persistentConfig) + std::string(files::configExtension));
 
@@ -39,7 +39,7 @@ std::string ConfigManager<T_PersistentConfig, T_Config>::load_persistent_config(
             return "";
         }
 
-        persistentConfig = j.get<T_PersistentConfig>();
+        persistent = j.get<T_PersistentConfig>();
 
         if (verbose)
             std::cout << "Loaded persistent config." << std::endl;
@@ -55,8 +55,8 @@ std::string ConfigManager<T_PersistentConfig, T_Config>::load_persistent_config(
     };
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-void ConfigManager<T_PersistentConfig, T_Config>::load_cheat_config(std::string_view config_name)
+template <typename T_PersistentConfig, typename T_CheatConfig>
+void ConfigManager<T_PersistentConfig, T_CheatConfig>::load_cheat_config(std::string_view config_name)
 {
     if (!is_valid_config_name(config_name))
     {
@@ -95,7 +95,7 @@ void ConfigManager<T_PersistentConfig, T_Config>::load_cheat_config(std::string_
             return;
         }
 
-        config = j.get<T_Config>();
+        cheat = j.get<T_CheatConfig>();
 
         set_config_name(config_name);
 
@@ -109,8 +109,8 @@ void ConfigManager<T_PersistentConfig, T_Config>::load_cheat_config(std::string_
     }
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-void ConfigManager<T_PersistentConfig, T_Config>::load_all_config_data()
+template <typename T_PersistentConfig, typename T_CheatConfig>
+void ConfigManager<T_PersistentConfig, T_CheatConfig>::load_all_config_data()
 {
     const auto config = load_persistent_config();
 

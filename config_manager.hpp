@@ -5,7 +5,7 @@
 #include <string_view>
 #include <vector>
 
-template <typename T_PersistentConfig, typename T_Config>
+template <typename T_PersistentConfig, typename T_CheatConfig>
 class ConfigManager
 {
 private:
@@ -14,8 +14,8 @@ public:
     static constexpr auto PERSISTENT_CONFIG_KEYWORD = std::string_view("Merkur Persistent Config");
     static constexpr auto CHEAT_CONFIG_KEYWORD = std::string_view("Merkur Cheat Config");
 
-    T_PersistentConfig persistentConfig;
-    T_Config config;
+    T_PersistentConfig persistent;
+    T_CheatConfig cheat;
 
     std::filesystem::path workingDirectory;
 

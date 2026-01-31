@@ -12,8 +12,8 @@ namespace fs = std::filesystem;
 using fs::path;
 using std::ofstream;
 
-template <typename T_PersistentConfig, typename T_Config>
-void ConfigManager<T_PersistentConfig, T_Config>::store_persistent_config()
+template <typename T_PersistentConfig, typename T_CheatConfig>
+void ConfigManager<T_PersistentConfig, T_CheatConfig>::store_persistent_config()
 {
     const path cfg_path = workingDirectory / (std::string(files::persistentConfig) + std::string(files::configExtension));
 
@@ -29,7 +29,7 @@ void ConfigManager<T_PersistentConfig, T_Config>::store_persistent_config()
         {"Config type", PERSISTENT_CONFIG_KEYWORD},
         {"Selected Config", currentConfig}};
 
-    j.update(persistentConfig);
+    j.update(persistent);
 
     o_file << j.dump(4);
 
@@ -40,8 +40,8 @@ void ConfigManager<T_PersistentConfig, T_Config>::store_persistent_config()
         std::cout << "Stored persistent config." << std::endl;
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-void ConfigManager<T_PersistentConfig, T_Config>::store_cheat_config()
+template <typename T_PersistentConfig, typename T_CheatConfig>
+void ConfigManager<T_PersistentConfig, T_CheatConfig>::store_cheat_config()
 {
     if (currentConfig.empty())
     {
@@ -77,7 +77,7 @@ void ConfigManager<T_PersistentConfig, T_Config>::store_cheat_config()
     auto j = nlohmann::json{
         {"Config type", CHEAT_CONFIG_KEYWORD}};
 
-    j.update(config);
+    j.update(cheat);
 
     o_file << j.dump(4);
 
@@ -90,8 +90,8 @@ void ConfigManager<T_PersistentConfig, T_Config>::store_cheat_config()
     update_available_configs();
 }
 
-template <typename T_PersistentConfig, typename T_Config>
-void ConfigManager<T_PersistentConfig, T_Config>::store_all_config_data()
+template <typename T_PersistentConfig, typename T_CheatConfig>
+void ConfigManager<T_PersistentConfig, T_CheatConfig>::store_all_config_data()
 {
     store_persistent_config();
 
