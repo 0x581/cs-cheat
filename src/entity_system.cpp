@@ -1,8 +1,8 @@
-#include "../entity_system.hpp"
+#include "entity_system.hpp"
 
-#include "../offsets.hpp"
-#include "../modules.hpp"
-#include "../cs_defines.hpp"
+#include "offsets.hpp"
+#include "modules.hpp"
+#include "cs_defines.hpp"
 
 struct EntityList
 {
