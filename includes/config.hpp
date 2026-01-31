@@ -111,18 +111,18 @@ struct ConfigData
     } keybinds;
 };
 
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData::MainWindowSettings, position, size, scale)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData::BombSettings, position, scale)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(PersistentConfigData, mainWindow, bombWindow, targetFPS, showFPS, espFontScale)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::ActiveCheats, aimBot, antiFlash, bombTimer, bunnyHop, esp, fovChanger, radar, triggerBot, rageBot)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::EspSettings, renderFriendlies, boxGlow, bone, box, name, font_scale, health, boneWidth, colorEnemyVisible, colorEnemyHidden, colorTeamVisible, colorTeamHidden, colorItem)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::AimBotSettings, pixelRadius, speedFactor, drawFovCircle, ignoreTeam, checkVisible, fovCircleColor, hitbox, shotDelay)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::FovSettings, desiredFov)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::RcsSettings, Rcs, OldPunchAngleX, OldPunchAngleY)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::RageBotSettings, pixelRadius, speedFactor, checkVisible, hitbox, shotDelay)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::DevSettings, devMode)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData::KeyBinds, showMenu, quickExit, bunnyHop, triggerBot, aimBot, rageBot)
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(ConfigData, activeCheats, esp, aimBot, fov, rcs, rageBot, devSettings, keybinds)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(PersistentConfigData::MainWindowSettings, position, size, scale)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(PersistentConfigData::BombSettings, position, scale)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(PersistentConfigData, mainWindow, bombWindow, targetFPS, showFPS, espFontScale)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData::ActiveCheats, aimBot, antiFlash, bombTimer, bunnyHop, esp, fovChanger, radar, triggerBot, rageBot)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData::EspSettings, renderFriendlies, boxGlow, bone, box, name, font_scale, health, boneWidth, colorEnemyVisible, colorEnemyHidden, colorTeamVisible, colorTeamHidden, colorItem)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData::AimBotSettings, pixelRadius, speedFactor, drawFovCircle, ignoreTeam, checkVisible, fovCircleColor, hitbox, shotDelay)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData::FovSettings, desiredFov)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData::RcsSettings, Rcs, OldPunchAngleX, OldPunchAngleY)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData::RageBotSettings, pixelRadius, speedFactor, checkVisible, hitbox, shotDelay)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData::DevSettings, devMode)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData::KeyBinds, showMenu, quickExit, bunnyHop, triggerBot, aimBot, rageBot)
+NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData, activeCheats, esp, aimBot, fov, rcs, rageBot, devSettings, keybinds)
 
 using ConfigManagerInstance = ConfigManager<PersistentConfigData, ConfigData>;
 
