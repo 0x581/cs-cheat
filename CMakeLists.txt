@@ -26,27 +26,19 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/output")
 
 # Define the SOURCE files (those that compile to .obj)
-file(GLOB_RECURSE CHEAT_SOURCES CONFIGURE_DEPENDS "cheats/*.cpp")
-file(GLOB_RECURSE OVERLAY_SOURCES CONFIGURE_DEPENDS "overlay/*.cpp")
-file(GLOB_RECURSE INCLUDE_SOURCES CONFIGURE_DEPENDS "includes/*.cpp")
+file(GLOB_RECURSE INCLUDE_SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 
 
 set(PROJECT_SOURCES
     main.cpp
-    ${CHEAT_SOURCES}
-    ${OVERLAY_SOURCES}
     ${INCLUDE_SOURCES}
 )
 
-file (GLOB_RECURSE CHEAT_HEADERS CONFIGURE_DEPENDS "cheats/*.hpp")
 file (GLOB_RECURSE INCLUDE_HEADERS CONFIGURE_DEPENDS "includes/*.hpp")
-file (GLOB_RECURSE OVERLAY_HEADERS CONFIGURE_DEPENDS "overlay/*.hpp")
 
 # Define HEADER files (ONLY C++ headers that are directly used or are top-level includes)
 set(PROJECT_HEADERS
-    ${CHEAT_HEADERS}
     ${INCLUDE_HEADERS}
-    ${OVERLAY_HEADERS}
 )
 
 add_executable(CS_Cheat ${PROJECT_SOURCES})
