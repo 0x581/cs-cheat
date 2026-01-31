@@ -10,12 +10,14 @@
 
 static void releaseRageShot()
 {
-    std::this_thread::sleep_for(std::chrono::milliseconds(config.aimBot.shotDelay)); // shotDelay in ms in deiner Config!
+    std::this_thread::sleep_for(std::chrono::milliseconds(cfg.config.aimBot.shotDelay)); // shotDelay in ms in deiner Config!
     mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 }
 
 void runRageAimbot(const CheatData &cheatData)
 {
+    const auto &config = cfg.config;
+
     const auto localPlayerTeam = cheatData.localPlayer.team;
 
     Vector2 screenCenter{(float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f};

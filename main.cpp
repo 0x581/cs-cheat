@@ -22,7 +22,7 @@ static void cleanUp()
 {
     delete overlay;
 
-    configManager.store_persistent_config();
+    cfg.store_persistent_config();
 }
 
 static BOOL WINAPI ConsoleCtrlHandler(DWORD fdwCtrlType)
@@ -56,10 +56,10 @@ int main()
         return 1;
     }
 
-    configManager.verbose = true;
+    cfg.verbose = true;
 
-    configManager.set_working_directory(files::config_folder);
-    configManager.load_all_config_data();
+    cfg.set_working_directory(files::config_folder);
+    cfg.load_all_config_data();
 
     overlay = new c_overlay();
 

@@ -90,6 +90,8 @@ static void draw_navbar_submenu(const ImGuiStyle &style, ImFont *title_font, ImF
 
 static void draw_aim_submenu(const ImGuiStyle &style, const ImFont *font, const float slider_indent)
 {
+    auto &config = cfg.config;
+
     if (ImGui::CollapsingHeader("Aimbot Options", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::Checkbox("Triggerbot", &config.activeCheats.triggerBot);
@@ -159,6 +161,7 @@ static void draw_aim_submenu(const ImGuiStyle &style, const ImFont *font, const 
 
 static void draw_visuals_submenu(const ImGuiStyle &style, const float slider_indent)
 {
+    auto &config = cfg.config;
 
     if (ImGui::CollapsingHeader("ESP General", ImGuiTreeNodeFlags_DefaultOpen))
     {
@@ -241,6 +244,8 @@ static void draw_visuals_submenu(const ImGuiStyle &style, const float slider_ind
 
 static void draw_misc_submenu(const ImGuiStyle &style, const float slider_indent)
 {
+    auto &config = cfg.config;
+
     if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
     {
         if (config.devSettings.devMode)
@@ -266,11 +271,13 @@ static void draw_misc_submenu(const ImGuiStyle &style, const float slider_indent
 
 static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
 {
-    static char configNameBuffer[configManager.MAX_CONFIG_NAME_LENGTH + 1] = "";
+    auto &config = cfg.config;
+
+    static char configNameBuffer[cfg.MAX_CONFIG_NAME_LENGTH + 1] = "";
     static bool first = true;
     if (first)
     {
-        strncpy_s(configNameBuffer, sizeof(configNameBuffer), configManager.currentConfig.c_str(), _TRUNCATE);
+        strncpy_s(configNameBuffer, sizeof(configNameBuffer), cfg.currentConfig.c_str(), _TRUNCATE);
         first = false;
     }
 
@@ -290,7 +297,7 @@ static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
 
             if (ImGui::BeginListBox("##ConfigList", ImVec2(-1, -1)))
             {
-                for (const auto &config : configManager.configs)
+                for (const auto &config : cfg.configs)
                     if (ImGui::Selectable(config.c_str()))
                         strncpy_s(configNameBuffer, sizeof(configNameBuffer), config.c_str(), _TRUNCATE);
 
@@ -309,19 +316,19 @@ static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
             {
                 if (configNameBuffer[0] != '\0')
                 {
-                    if (configManager.set_config_name(configNameBuffer))
-                        configManager.store_all_config_data();
+                    if (cfg.set_config_name(configNameBuffer))
+                        cfg.store_all_config_data();
                 }
             }
             if (ImGui::Button("Load", ImVec2(-1, 0)))
             {
                 if (configNameBuffer[0] != '\0')
-                    configManager.load_cheat_config(configNameBuffer);
+                    cfg.load_cheat_config(configNameBuffer);
             }
             if (ImGui::Button("Delete", ImVec2(-1, 0)))
             {
                 if (configNameBuffer[0] != '\0')
-                    configManager.delete_config(configNameBuffer);
+                    cfg.delete_config(configNameBuffer);
             }
             ImGui::EndChild();
 
@@ -382,6 +389,8 @@ static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
 
 static void draw_keybinds_submenu(const ImGuiStyle &style)
 {
+    auto &config = cfg.config;
+
     if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
     {
         HotkeyEdit("Quick Exit", &config.keybinds.quickExit);
@@ -404,6 +413,8 @@ static void draw_keybinds_submenu(const ImGuiStyle &style)
 
 static void draw_settings_submenu(const ImGuiStyle &style, const float slider_indent, c_overlay &overlay)
 {
+    auto &persistent = cfg.persistentConfig;
+
     if (ImGui::CollapsingHeader("Scaling", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::AlignTextToFramePadding();
@@ -412,7 +423,7 @@ static void draw_settings_submenu(const ImGuiStyle &style, const float slider_in
         ImGui::PushItemWidth(-1);
         bool value_changed = ImGui::SliderFloat(
             "##MainWindowScale",
-            &persistentConfig.mainWindow.scale,
+            &persistent.mainWindow.scale,
             0.5,
             3.0,
             "%.2fx",
@@ -428,7 +439,7 @@ static void draw_settings_submenu(const ImGuiStyle &style, const float slider_in
         ImGui::PushItemWidth(-1);
         value_changed = ImGui::SliderFloat(
             "##BombWindowScale",
-            &persistentConfig.bombWindow.scale,
+            &persistent.bombWindow.scale,
             0.5,
             3.0,
             "%.2fx",
@@ -444,7 +455,7 @@ static void draw_settings_submenu(const ImGuiStyle &style, const float slider_in
         ImGui::PushItemWidth(-1);
         value_changed = ImGui::SliderFloat(
             "##NameFontScale",
-            &persistentConfig.espFontScale,
+            &persistent.espFontScale,
             0.5f,
             3.0f,
             "%.2fx",
@@ -463,20 +474,20 @@ static void draw_settings_submenu(const ImGuiStyle &style, const float slider_in
         ImGui::PushItemWidth(-1);
         const bool value_changed = ImGui::SliderInt(
             "##FPS",
-            &persistentConfig.targetFPS,
+            &persistent.targetFPS,
             59,
             1000,
-            persistentConfig.targetFPS ? "%d" : "Unlimited",
+            persistent.targetFPS ? "%d" : "Unlimited",
             ImGuiSliderFlags_ClampOnInput);
         ImGui::PopItemWidth();
 
-        if (persistentConfig.targetFPS == 59)
-            persistentConfig.targetFPS = 0;
+        if (persistent.targetFPS == 59)
+            persistent.targetFPS = 0;
 
         ImGui::AlignTextToFramePadding();
         ImGui::TextUnformatted("Limits Maximum FPS. Ctrl click to manually edit.");
 
-        ImGui::Checkbox("Show FPS", &persistentConfig.showFPS);
+        ImGui::Checkbox("Show FPS", &persistent.showFPS);
     }
 }
 
@@ -484,15 +495,17 @@ void c_overlay::draw_menu()
 {
     const ImGuiStyle &style = ImGui::GetStyle();
 
-    ImGui::SetNextWindowPos(persistentConfig.mainWindow.position, ImGuiCond_FirstUseEver);
-    ImGui::SetNextWindowSize(persistentConfig.mainWindow.size, ImGuiCond_FirstUseEver);
+    auto &main_window = cfg.persistentConfig.mainWindow;
+
+    ImGui::SetNextWindowPos(main_window.position, ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(main_window.size, ImGuiCond_FirstUseEver);
 
     ImGui::Begin("Main GUI",
                  nullptr,
                  ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoSavedSettings);
 
-    persistentConfig.mainWindow.position = ImGui::GetWindowPos();
-    persistentConfig.mainWindow.size = ImGui::GetWindowSize();
+    main_window.position = ImGui::GetWindowPos();
+    main_window.size = ImGui::GetWindowSize();
 
     if (ImGui::BeginTable("TopLevelTable", 2, 0))
     {

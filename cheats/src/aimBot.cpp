@@ -10,6 +10,8 @@
 
 void runAimBot(const CheatData &cheat_data)
 {
+    const auto &config = cfg.config;
+
     Vector2 screenCenter{(float)GetSystemMetrics(SM_CXSCREEN) / 2.f, (float)GetSystemMetrics(SM_CYSCREEN) / 2.f};
 
     const auto localPlayerPawn = cheat_data.localPlayer.pawnPtr;

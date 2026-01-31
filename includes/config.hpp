@@ -126,6 +126,4 @@ NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConfigData, activeCheats, esp, a
 
 using ConfigManagerInstance = ConfigManager<PersistentConfigData, ConfigData>;
 
-extern ConfigManagerInstance configManager;
-extern PersistentConfigData &persistentConfig;
-extern ConfigData &config;
+extern ConfigManagerInstance cfg;

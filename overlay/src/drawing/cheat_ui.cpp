@@ -7,6 +7,8 @@
 
 void c_overlay::draw_cheats()
 {
+    const auto &config = cfg.config;
+
     if (config.activeCheats.esp)
     {
         float dynamicGlowSize = 0.0f;
