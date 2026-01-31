@@ -5,12 +5,10 @@
 
 #include "CheatBase/keyboard.hpp"
 
-#include "files.hpp"
-#include "config.hpp"
-
-#include "overlay/overlay.hpp"
-
 #include "cheats/cheats.hpp"
+#include "config.hpp"
+#include "files.hpp"
+#include "overlay.hpp"
 
 static c_overlay *overlay;
 

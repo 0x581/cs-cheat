@@ -1,4 +1,4 @@
-#include "../../overlay.hpp"
+#include "overlay.hpp"
 
 #include "config.hpp"
 #include "render_data.hpp"

@@ -1,4 +1,4 @@
-#include "../overlay.hpp"
+#include "overlay.hpp"
 
 #include "config.hpp"
 #include "render_data.hpp"
@@ -41,6 +41,16 @@ int c_overlay::get_target_fps() { return cfg.persistent.targetFPS; }
 int c_overlay::get_quick_exit_key() { return cfg.cheat.keybinds.quickExit; }
 int c_overlay::get_menu_toggle_key() { return cfg.cheat.keybinds.showMenu; }
 float c_overlay::get_style_scale() { return cfg.persistent.mainWindow.scale; }
+
+void c_overlay::update_keybinds()
+{
+    auto &kb = cfg.cheat.keybinds;
+
+    kb.aimBot.update();
+    kb.bunnyHop.update();
+    kb.rageBot.update();
+    kb.triggerBot.update();
+}
 
 void c_overlay::render()
 {

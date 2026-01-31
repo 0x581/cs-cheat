@@ -1,4 +1,4 @@
-#include "../../overlay.hpp"
+#include "overlay.hpp"
 
 #include "CheatBase/hotkey_edit.hpp"
 
