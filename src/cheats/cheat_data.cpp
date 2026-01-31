@@ -1,4 +1,4 @@
-#include "cheat_data.hpp"
+#include "cheats/cheat_data.hpp"
 
 #include "CheatBase/string_utilities.hpp"
 #include "CheatBase/vector_math.hpp"
