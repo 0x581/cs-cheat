@@ -1,4 +1,4 @@
-#include "cheats.hpp"
+#include "cheats/cheats.hpp"
 
 #include <thread>
 
@@ -9,8 +9,7 @@
 #include "entity_system.hpp"
 #include "render_data.hpp"
 
-#include "check_cheat_should_run.hpp"
-#include "src/cheat_entries.hpp"
+#include "impl/cheat_entries.hpp"
 
 static void run_all_cheats(const Memory &mem, const CheatData &cheat_data, const size_t iteration)
 {
