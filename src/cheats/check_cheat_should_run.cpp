@@ -1,33 +1,30 @@
-#include "check_cheat_should_run.hpp"
+#include "cheats/cheats.hpp"
+
+#include <format>
+#include <iostream>
 
 #include "CheatBase/keyboard.hpp"
 
 #include "config.hpp"
 #include "delays.hpp"
 
-static bool handleToggleableKeybind(ToggleableKeybind &keybind, bool &key_pressed_last_frame)
+static bool shouldCheatRun(bool active, int ms_interval, int ms_offset, size_t iteration)
 {
-    const bool isKeyPressed = IsKeyPressed(keybind.key);
-
-    if (keybind.keybindChanged)
-    {
-        key_pressed_last_frame = true;
-
-        if (!isKeyPressed)
-            keybind.keybindChanged = false;
-
+    if (!active)
         return false;
-    }
 
-    if (keybind.isToggle && (isKeyPressed && !key_pressed_last_frame))
-    {
-        keybind.toggleState = !keybind.toggleState;
-        std::cout << "Toggle state changed to : " << (keybind.toggleState ? "ON" : "OFF") << std::endl;
-    }
+    if (iteration % ms_interval != ms_offset)
+        return false;
 
-    key_pressed_last_frame = isKeyPressed;
+    return true;
+}
 
-    return keybind.isToggle ? keybind.toggleState : isKeyPressed;
+static bool shouldCheatRun(bool active, int ms_interval, int ms_offset, size_t iteration, ToggleableKeybind &keybind)
+{
+    if (!shouldCheatRun(active, ms_interval, ms_offset, iteration))
+        return false;
+
+    return keybind.get();
 }
 
 bool shouldAimBotRun(size_t iteration)
@@ -38,8 +35,7 @@ bool shouldAimBotRun(size_t iteration)
     if (!cfg.cheat.activeCheats.aimBot)
         return false;
 
-    static bool key_pressed_last_frame = false;
-    return handleToggleableKeybind(cfg.cheat.keybinds.aimBot, key_pressed_last_frame);
+    return cfg.cheat.keybinds.aimBot.get();
 }
 
 bool shouldTriggerBotRun(size_t iteration)
@@ -50,8 +46,7 @@ bool shouldTriggerBotRun(size_t iteration)
     if (!cfg.cheat.activeCheats.triggerBot)
         return false;
 
-    static bool key_pressed_last_frame = false;
-    return handleToggleableKeybind(cfg.cheat.keybinds.triggerBot, key_pressed_last_frame);
+    return cfg.cheat.keybinds.triggerBot.get();
 }
 
 bool shouldEspRun(size_t iteration)
@@ -70,8 +65,7 @@ bool shouldBunnyHopRun(size_t iteration)
     if (!cfg.cheat.activeCheats.bunnyHop)
         return false;
 
-    static bool key_pressed_last_frame = false;
-    return handleToggleableKeybind(cfg.cheat.keybinds.bunnyHop, key_pressed_last_frame);
+    return cfg.cheat.keybinds.bunnyHop.get();
 }
 
 bool shouldBombTimerRun(size_t iteration)
@@ -114,6 +108,5 @@ bool shouldRageBotRun(size_t iteration)
     if (!cfg.cheat.activeCheats.rageBot)
         return false;
 
-    static bool key_pressed_last_frame = false;
-    return handleToggleableKeybind(cfg.cheat.keybinds.rageBot, key_pressed_last_frame);
+    return cfg.cheat.keybinds.rageBot.get();
 }
