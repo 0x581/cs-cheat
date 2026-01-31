@@ -2,7 +2,7 @@
 
 #include "CheatBase/memory.hpp"
 
-#include "../cheat_data.hpp"
+#include "cheats/cheat_data.hpp"
 
 void runAimBot(const CheatData &cheat_data);
 
