@@ -21,8 +21,6 @@ private:
     void update_keybinds();
     bool should_show_fps();
     int get_target_fps();
-    int get_quick_exit_key();
-    int get_menu_toggle_key();
     float get_style_scale();
     void on_reload(ImGuiIO &imgui_io);
     void render();

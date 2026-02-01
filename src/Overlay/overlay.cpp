@@ -3,7 +3,7 @@
 #include "config.hpp"
 #include "render_data.hpp"
 
-c_overlay::c_overlay() : OverlayBase(),
+c_overlay::c_overlay() : OverlayBase(cfg.cheat.keybinds.quickExit, cfg.cheat.keybinds.showMenu),
                          //		  //
                          // Window //
                          //		  //
@@ -38,8 +38,6 @@ bool c_overlay::mouse_over_window(const ImVec2 &mouse_pos)
 
 bool c_overlay::should_show_fps() { return cfg.persistent.showFPS; }
 int c_overlay::get_target_fps() { return cfg.persistent.targetFPS; }
-int c_overlay::get_quick_exit_key() { return cfg.cheat.keybinds.quickExit; }
-int c_overlay::get_menu_toggle_key() { return cfg.cheat.keybinds.showMenu; }
 float c_overlay::get_style_scale() { return cfg.persistent.mainWindow.scale; }
 
 void c_overlay::update_keybinds()

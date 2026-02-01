@@ -101,8 +101,8 @@ struct ConfigData
 
     struct KeyBinds
     {
-        int showMenu = VK_PRIOR;
-        int quickExit = VK_NEXT;
+        Keybind showMenu = {VK_PRIOR};
+        Keybind quickExit = {VK_NEXT};
 
         ToggleableKeybind bunnyHop = {VK_SPACE};
         ToggleableKeybind triggerBot = {VK_RBUTTON};
