@@ -320,3 +320,11 @@ bool HotkeyEdit(const char *label, ToggleableKeybind &keybind)
     keybind.setEditing(edited);
     return ret;
 }
+
+bool HotkeyEdit(const char *label, Keybind &keybind)
+{
+    bool edited = false;
+    const auto ret = HotkeyEdit(label, &keybind.key, nullptr, &edited);
+    keybind.setEditing(edited);
+    return ret;
+}

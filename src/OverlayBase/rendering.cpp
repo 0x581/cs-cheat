@@ -90,7 +90,6 @@ bool OverlayBase::msg_loop()
     }
 
     handle_focus();
-    handle_keybinds();
 
     update_keybinds();
 
@@ -126,6 +125,8 @@ bool OverlayBase::msg_loop()
     clear_screen();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
     swap_chain->Present(0, 0);
+
+    handle_keybinds();
 
     return msg.message != WM_QUIT;
 }

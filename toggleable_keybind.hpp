@@ -29,3 +29,32 @@ public:
 
     NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(ToggleableKeybind, key, isToggle, toggleState)
 };
+
+class Keybind
+{
+public:
+    int key;
+
+private:
+    bool pressed = false;
+    bool waitingForKeyRelease = false;
+    bool editing = false;
+
+public:
+    Keybind(int key = -1) : key(key) {}
+
+    void awaitKeyRelease()
+    {
+        this->waitingForKeyRelease = true;
+    }
+
+    void setEditing(bool editing);
+
+    // Updates the Keybind state. Should only be called once per iteration. Use .get() after.
+    void update();
+
+    // Checks the current state of the keybind and returns whether it represents the state "enabled".
+    bool get() const;
+
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(Keybind, key)
+};

@@ -25,32 +25,35 @@ inline void OverlayBase::safe_release(T *&p)
     }
 }
 
-OverlayBase::OverlayBase() : //		  //
-                             // Window //
-                             //		  //
-                             window_handle(nullptr),
-                             window_width((float)GetSystemMetrics(SM_CXSCREEN)),
-                             window_height((float)GetSystemMetrics(SM_CYSCREEN)),
-                             style_reload_required(false),
-                             //			  //
-                             // DX11 stuff //
-                             //			  //
-                             d3d_device(nullptr),
-                             device_context(nullptr),
-                             swap_chain(nullptr),
-                             render_target_view(nullptr),
-                             //			   //
-                             // ImGui stuff //
-                             //			   //
-                             draw_list(nullptr),
-                             imguiContext(nullptr),
-                             info_font(nullptr),
-                             editing_hotkey_last_frame(false),
-                             //				//
-                             // Flow control //
-                             //				//
-                             show_menu(true),
-                             exit(false)
+OverlayBase::OverlayBase(Keybind &quick_exit, Keybind &toggle_visibility)
+    : //		  //
+      // Window //
+      //		  //
+      window_handle(nullptr),
+      window_width((float)GetSystemMetrics(SM_CXSCREEN)),
+      window_height((float)GetSystemMetrics(SM_CYSCREEN)),
+      style_reload_required(false),
+      //			  //
+      // DX11 stuff //
+      //			  //
+      d3d_device(nullptr),
+      device_context(nullptr),
+      swap_chain(nullptr),
+      render_target_view(nullptr),
+      //			   //
+      // ImGui stuff //
+      //			   //
+      draw_list(nullptr),
+      imguiContext(nullptr),
+      info_font(nullptr),
+      editing_hotkey_last_frame(false),
+      //				//
+      // Flow control //
+      //				//
+      quick_exit_keybind(quick_exit),
+      toggle_visibility_keybind(toggle_visibility),
+      show_menu(true),
+      exit(false)
 {
     if (!getWindowHandle(&window_handle))
         throw std::runtime_error("Failed to acquire window handle. Did you run with Administrator privileges?");
@@ -218,37 +221,20 @@ void OverlayBase::handle_focus()
 
 void OverlayBase::handle_keybinds()
 {
-    static bool menu_key_held_last_frame = false;
-    static bool quick_exit_held_last_frame = false;
-
-    if (editing_hotkey_last_frame)
-    {
-        menu_key_held_last_frame = true;
-        quick_exit_held_last_frame = true;
-        return;
-    }
+    this->quick_exit_keybind.update();
+    this->toggle_visibility_keybind.update();
 
     // panic key
-    if (IsKeyPressed(get_quick_exit_key()))
-    {
-        if (!quick_exit_held_last_frame)
-            exit = true;
-
-        quick_exit_held_last_frame = true;
-    }
-    else
-        quick_exit_held_last_frame = false;
+    if (this->quick_exit_keybind.get())
+        exit = true;
 
     // Show/Hide menu
-    if (IsKeyPressed(get_menu_toggle_key()))
+    if (this->toggle_visibility_keybind.get())
     {
-        if (!menu_key_held_last_frame)
-            show_menu = !show_menu;
-
-        menu_key_held_last_frame = true;
+        show_menu = !show_menu;
+        // This makes sure that the keybind has to be released before toggling the menu again
+        this->toggle_visibility_keybind.awaitKeyRelease();
     }
-    else
-        menu_key_held_last_frame = false;
 }
 
 void OverlayBase::run()
