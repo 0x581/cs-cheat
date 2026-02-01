@@ -389,25 +389,25 @@ static void draw_config_submenu(const ImGuiStyle &style, const ImFont *font)
 
 static void draw_keybinds_submenu(const ImGuiStyle &style)
 {
-    auto &config = cfg.cheat;
+    auto &kb = cfg.cheat.keybinds;
 
     if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        HotkeyEdit("Quick Exit", &config.keybinds.quickExit);
-        HotkeyEdit("Toggle Menu", &config.keybinds.showMenu);
+        HotkeyEdit("Quick Exit", kb.quickExit);
+        HotkeyEdit("Toggle Menu", kb.showMenu);
     }
 
     if (ImGui::CollapsingHeader("Aimbot", ImGuiTreeNodeFlags_DefaultOpen))
     {
-        HotkeyEdit("Aimbot", config.keybinds.aimBot);
-        HotkeyEdit("Triggerbot", config.keybinds.triggerBot);
-        HotkeyEdit("Ragebot", config.keybinds.rageBot);
+        HotkeyEdit("Aimbot", kb.aimBot);
+        HotkeyEdit("Triggerbot", kb.triggerBot);
+        HotkeyEdit("Ragebot", kb.rageBot);
     }
 
-    if (config.devSettings.devMode && ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
+    if (cfg.cheat.devSettings.devMode && ImGui::CollapsingHeader("Other", ImGuiTreeNodeFlags_DefaultOpen))
     {
         ImGui::TextUnformatted("Dev mode is enabled, some features may not work as intended.");
-        HotkeyEdit("BunnyHop", config.keybinds.bunnyHop);
+        HotkeyEdit("BunnyHop", kb.bunnyHop);
     }
 }
 
