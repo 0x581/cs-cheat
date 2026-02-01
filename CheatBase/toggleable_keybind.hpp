@@ -27,5 +27,5 @@ public:
     // Checks the current state of the keybind and returns whether it represents the state "enabled".
     bool get() const;
 
-    NLOHMANN_DEFINE_TYPE_INTRUSIVE(ToggleableKeybind, key, isToggle, toggleState)
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE_WITH_DEFAULT(ToggleableKeybind, key, isToggle, toggleState)
 };
