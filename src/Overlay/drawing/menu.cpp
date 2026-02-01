@@ -98,32 +98,11 @@ static void draw_aim_submenu(const ImGuiStyle &style, const ImFont *font, const 
         ImGui::Checkbox("Enable Aimbot", &config.activeCheats.aimBot);
         if (config.activeCheats.aimBot)
         {
-            if (ImGui::CollapsingHeader("Ragebot Options", ImGuiTreeNodeFlags_DefaultOpen))
-            {
-                if (config.devSettings.devMode)
-                {
-                    ImGui::Checkbox("Enable Ragebot", &config.activeCheats.rageBot);
-                    if (config.activeCheats.rageBot)
-                    {
-
-                        ImGui::TextUnformatted("Ragebot use the aimbot funktions.");
-
-                        ImGui::AlignTextToFramePadding();
-                        ImGui::TextUnformatted("Shot Delay");
-                        ImGui::SameLine(slider_indent);
-                        ImGui::PushItemWidth(-1);
-                        ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms", ImGuiSliderFlags_ClampOnInput);
-                        ImGui::PopItemWidth();
-                    }
-                }
-            }
             ImGui::Indent();
 
             ImGui::Checkbox("Draw FOV Circle", &config.aimBot.drawFovCircle);
             if (config.aimBot.drawFovCircle)
             {
-                static int currentKey = -1;
-
                 ImGui::SameLine(0, style.ItemInnerSpacing.x * 2);
                 ImGui::ColorEdit4("##FovCircleColor", (float *)&config.aimBot.fovCircleColor, ImGuiColorEditFlags_NoInputs | ImGuiColorEditFlags_AlphaBar);
             }
@@ -155,6 +134,27 @@ static void draw_aim_submenu(const ImGuiStyle &style, const ImFont *font, const 
             ImGui::PopItemWidth();
 
             ImGui::Unindent();
+        }
+    }
+
+    if (config.devSettings.devMode)
+    {
+        if (ImGui::CollapsingHeader("Ragebot Options", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            ImGui::Checkbox("Enable Ragebot", &config.activeCheats.rageBot);
+            if (config.activeCheats.rageBot)
+            {
+                ImGui::Indent();
+
+                ImGui::TextUnformatted("Ragebot use the aimbot funktions.");
+
+                ImGui::AlignTextToFramePadding();
+                ImGui::TextUnformatted("Shot Delay");
+                ImGui::SameLine(slider_indent);
+                ImGui::PushItemWidth(-1);
+                ImGui::SliderInt("##RageShotDelay", &config.rageBot.shotDelay, 0, 200, "%d ms", ImGuiSliderFlags_ClampOnInput);
+                ImGui::PopItemWidth();
+            }
         }
     }
 }
@@ -192,8 +192,6 @@ static void draw_visuals_submenu(const ImGuiStyle &style, const float slider_ind
             ImGui::Unindent();
         }
     }
-    ImGui::Separator();
-
     if (config.activeCheats.esp)
     {
         if (ImGui::CollapsingHeader("ESP Colors", ImGuiTreeNodeFlags_DefaultOpen))
@@ -231,7 +229,6 @@ static void draw_visuals_submenu(const ImGuiStyle &style, const float slider_ind
             ImGui::Unindent();
         }
     }
-    ImGui::Separator();
     if (config.devSettings.devMode)
     {
         if (ImGui::CollapsingHeader("Other Visuals", ImGuiTreeNodeFlags_DefaultOpen))
