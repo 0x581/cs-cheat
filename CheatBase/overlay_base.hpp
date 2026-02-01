@@ -3,10 +3,12 @@
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 
+#include "toggleable_keybind.hpp"
+
 class OverlayBase
 {
 public:
-    OverlayBase();
+    OverlayBase(Keybind &quick_exit, Keybind &toggle_visibility);
     ~OverlayBase();
 
     void run();
@@ -22,10 +24,6 @@ protected:
     virtual void update_keybinds() {};
     // In this function, you should return the Overlay target fps. Use 0 to disable the limit.
     virtual int get_target_fps() { return 0; }
-    // This function should return the key used to quick exit.
-    virtual int get_quick_exit_key() { return VK_END; }
-    // This function should return the key used to toggle the overlay.
-    virtual int get_menu_toggle_key() { return VK_INSERT; }
     // This function should return the scale that should be applied to the ImGui style. Called only when updating the window.
     virtual float get_style_scale() { return 1.0f; }
     // This function should contain all the code that needs to run when reloading the window.
@@ -54,6 +52,9 @@ private:
     ImFont *info_font;
 
     bool editing_hotkey_last_frame;
+
+    Keybind &quick_exit_keybind;
+    Keybind &toggle_visibility_keybind;
 
 public:
     bool show_menu;
