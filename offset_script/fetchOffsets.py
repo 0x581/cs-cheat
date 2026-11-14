@@ -1,7 +1,6 @@
 """
-This file gets the offsets from any of the following sites:
-https://cloud.0x581.zip/s/fZna7TEp5SbsBc4/download?path=%2F&files=
-https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/
+Fetches game offsets from the public CS2 dumper repository (a2x/cs2-dumper)
+and generates includes/offsets.hpp.
 """
 
 import os
@@ -9,11 +8,9 @@ import sys
 import requests
 
 from offsets import OFFSETS
-
 from parse_file import parse, NamespaceNode
 
 OFFSETS_URL = "https://raw.githubusercontent.com/a2x/cs2-dumper/main/output/"
-# OFFSETS_URL = "https://cloud.0x581.zip/s/dwiLHbz7SHcwKZ3/download?path=%2F&files="
 
 FETCHED_FILES: dict[str, NamespaceNode] = {}
 

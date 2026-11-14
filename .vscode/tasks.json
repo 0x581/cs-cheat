@@ -76,7 +76,7 @@
         {
             "label": "Pull CheatBase subtree",
             "type": "shell",
-            "command": "git subtree pull --prefix=CheatBase git@github.com:0x581/cheat-base.git main --squash",
+            "command": "git subtree pull --prefix=CheatBase https://github.com/0x581/cheat-base.git main --squash",
             "group": {
                 "kind": "none",
                 "isDefault": false
